@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 enum BusTripStatus {
@@ -34,6 +35,8 @@ public class BusTrip {
         this.busId = busId;
         this.startTime = startTime;
         status = BusTripStatus.PLANNED;
+        tickets = new ArrayList<Ticket>();
+        assignments = new ArrayList<DutyAssignment>();
     }
 
     /// Getters
