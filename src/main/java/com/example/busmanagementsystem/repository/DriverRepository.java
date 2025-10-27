@@ -1,11 +1,17 @@
 package com.example.busmanagementsystem.repository;
 
 import com.example.busmanagementsystem.model.Driver;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriverRepository implements CRUD<Driver>{
 
     private List<Driver> drivers;
+
+    public DriverRepository(){
+        drivers = new ArrayList<Driver>();
+    }
 
     @Override
     public boolean create(Driver entity) {

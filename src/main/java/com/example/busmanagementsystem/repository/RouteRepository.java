@@ -1,10 +1,16 @@
 package com.example.busmanagementsystem.repository;
 import com.example.busmanagementsystem.model.Route;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteRepository implements CRUD<Route> {
 
     private List<Route> routes;
+
+    public RouteRepository() {
+        routes = new ArrayList<Route>();
+    }
 
     @Override
     public boolean create(Route entity) {
