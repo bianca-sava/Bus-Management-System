@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Route {
@@ -15,6 +16,7 @@ public class Route {
         this.origin = origin;
         this.destination = destination;
         this.distance = distance;
+        trips = new ArrayList<BusTrip>();
     }
 
     /// Getters and Setters
