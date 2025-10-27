@@ -62,7 +62,4 @@ public class Passenger {
                 '}';
     }
 
-    public void addTicket(Ticket ticket) {
-        this.tickets.add(ticket);
-    }
 }
