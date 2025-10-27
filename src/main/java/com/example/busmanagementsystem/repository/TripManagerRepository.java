@@ -2,10 +2,15 @@ package com.example.busmanagementsystem.repository;
 
 import com.example.busmanagementsystem.model.TripManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripManagerRepository implements CRUD<TripManager> {
     List<TripManager> tripManagers;
+
+    public TripManagerRepository() {
+        tripManagers = new ArrayList<TripManager>();
+    }
 
     @Override
     public boolean create(TripManager entity) {
