@@ -1,6 +1,6 @@
 package com.example.busmanagementsystem.model;
 
-enum BusTripStatus {
+public enum BusTripStatus {
     PLANNED("This trip is planned"),
     ACTIVE("This trip is active"),
     COMPLETED("This trip was completed");

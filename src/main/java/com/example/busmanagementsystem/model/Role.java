@@ -1,6 +1,6 @@
 package com.example.busmanagementsystem.model;
 
-enum Role {
+public enum Role {
     PRIMARY_DRIVER("Primary Driver"),
     RESERVE_DRIVER("Reserve  Driver");
 

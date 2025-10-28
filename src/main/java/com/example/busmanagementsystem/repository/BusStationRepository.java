@@ -8,7 +8,13 @@ public class BusStationRepository implements CRUD<BusStation> {
     private List<BusStation> busStations;
 
     public BusStationRepository() {
+
         busStations = new ArrayList<BusStation>();
+        BusStation station1 = new BusStation("BS001", "Central Station", "123 Main St");
+        BusStation station2 = new BusStation("BS002", "North Station", "456 North St");
+        BusStation station3 = new BusStation("BS003", "East Station", "789 East St");
+        busStations.add(station1);
+        busStations.add(station2);
     }
 
     @Override
