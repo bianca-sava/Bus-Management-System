@@ -1,6 +1,35 @@
 package com.example.busmanagementsystem.service;
 
+import com.example.busmanagementsystem.model.Staff;
+import com.example.busmanagementsystem.repository.StaffRepository;
+
+import java.util.List;
+
 public class StaffService {
 
-    private
+    private StaffRepository staffRepository;
+
+    public StaffService(StaffRepository staffRepository) {
+        this.staffRepository = staffRepository;
+    }
+
+    public boolean addStaff(Staff staff){
+        return staffRepository.create(staff);
+    }
+
+    public Staff getStaffById(String id){
+        return staffRepository.findById(id);
+    }
+
+    public List<Staff> getAllStaff(){
+        return staffRepository.findAll();
+    }
+
+    public boolean updateStaff(String id, Staff staff){
+        return staffRepository.update(id, staff);
+    }
+
+    public boolean deleteStaff(String id){
+        return staffRepository.delete(id);
+    }
 }
