@@ -1,15 +1,23 @@
 package com.example.busmanagementsystem.repository;
 
+import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.model.Staff;
+import com.example.busmanagementsystem.model.TripManager;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class StaffRepository implements CRUD<Staff> {
     private List<Staff> staffList;
 
     public StaffRepository() {
-        staffList = new ArrayList<Staff>();
+        staffList = new ArrayList<>(List.of(
+                new Driver("D1", "John Smith", "5"),
+                new Driver("D2", "Emily Clark", "8"),
+                new TripManager("TM1", "Michael Brown", "TM-202")
+        ));
     }
 
 

@@ -2,13 +2,17 @@ package com.example.busmanagementsystem.service;
 
 import com.example.busmanagementsystem.model.Staff;
 import com.example.busmanagementsystem.repository.StaffRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class StaffService {
 
     private StaffRepository staffRepository;
 
+    @Autowired
     public StaffService(StaffRepository staffRepository) {
         this.staffRepository = staffRepository;
     }
