@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Driver extends Staff {
@@ -9,6 +10,7 @@ public class Driver extends Staff {
     public Driver(String id, String name, String yearsOfExperience) {
         super(id, name);
         this.yearsOfExperience = yearsOfExperience;
+        assignments = new ArrayList<DutyAssignment>();
     }
 
 

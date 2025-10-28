@@ -1,22 +1,7 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
-enum BusTripStatus {
-    PLANNED("This trip is planned"),
-    ACTIVE("This trip is active"),
-    COMPLETED("This trip was completed");
-
-    private final String description;
-
-    BusTripStatus(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-}
 
 public class BusTrip {
 
@@ -34,6 +19,8 @@ public class BusTrip {
         this.busId = busId;
         this.startTime = startTime;
         status = BusTripStatus.PLANNED;
+        tickets = new ArrayList<Ticket>();
+        assignments = new ArrayList<DutyAssignment>();
     }
 
     /// Getters
