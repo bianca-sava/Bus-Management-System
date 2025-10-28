@@ -9,14 +9,17 @@ public class Route {
     private BusStation destination;
     private double distance;
     private List<BusTrip> trips;
+    private int nrOfStations;
+
 
     /// Constructor
-    public Route(String id, BusStation origin, BusStation destination, double distance) {
+    public Route(String id, BusStation origin, BusStation destination, double distance, int nrOfStations) {
         this.id = id;
         this.origin = origin;
         this.destination = destination;
         this.distance = distance;
         trips = new ArrayList<BusTrip>();
+        this.nrOfStations = nrOfStations;
     }
 
     /// Getters and Setters
@@ -60,6 +63,14 @@ public class Route {
 
     public void setTrips(List<BusTrip> trips) {
         this.trips = trips;
+    }
+
+    public int getNrOfStations() {
+        return nrOfStations;
+    }
+
+    public void setNrOfStations(int nrOfStations) {
+        this.nrOfStations = nrOfStations;
     }
     //endregion
 
