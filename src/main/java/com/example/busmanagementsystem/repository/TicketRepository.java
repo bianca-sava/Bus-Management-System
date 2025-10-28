@@ -11,7 +11,11 @@ public class TicketRepository implements CRUD<Ticket>{
     private List<Ticket> tickets;
 
     public TicketRepository() {
-        tickets = new ArrayList<Ticket>();
+        tickets = new ArrayList<>(List.of(
+                new Ticket("T1", "TRIP1", "P1", "12A", 99.99),
+                new Ticket("T2", "TRIP2", "P2", "7B", 79.50),
+                new Ticket("T3", "TRIP3", "P3", "18C", 120.00)
+        ));
     }
 
     @Override
