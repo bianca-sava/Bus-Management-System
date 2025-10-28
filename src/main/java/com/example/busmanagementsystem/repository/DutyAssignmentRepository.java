@@ -1,10 +1,12 @@
 package com.example.busmanagementsystem.repository;
 
 import com.example.busmanagementsystem.model.DutyAssignment;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class DutyAssignmentRepository implements CRUD<DutyAssignment> {
 
     private List<DutyAssignment> assignments;

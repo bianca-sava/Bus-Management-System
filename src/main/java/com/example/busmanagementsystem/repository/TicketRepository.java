@@ -3,7 +3,9 @@ package com.example.busmanagementsystem.repository;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.busmanagementsystem.model.Ticket;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TicketRepository implements CRUD<Ticket>{
 
     private List<Ticket> tickets;

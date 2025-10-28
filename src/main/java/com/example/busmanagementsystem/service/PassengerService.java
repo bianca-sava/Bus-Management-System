@@ -3,15 +3,19 @@ package com.example.busmanagementsystem.service;
 
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.repository.PassengerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PassengerService {
 
     private PassengerRepository repository;
 
-    public PassengerService() {
-        this.repository = new PassengerRepository();
+    @Autowired
+    public PassengerService(PassengerRepository repository) {
+        this.repository = repository;
     }
 
     public boolean create (Passenger passenger) {
