@@ -12,7 +12,14 @@ public class DutyAssignmentRepository implements CRUD<DutyAssignment> {
     private List<DutyAssignment> assignments;
 
     public DutyAssignmentRepository() {
+
         assignments = new ArrayList<DutyAssignment>();
+        DutyAssignment sampleAssignment = new DutyAssignment("DA001", "BT001", "2024-07-01");
+        DutyAssignment sampleAssignment2 = new DutyAssignment("DA002", "BT002", "2024-07-02", Role.RESERVE_DRIVER);
+        DutyAssignment sampleAssignment3 = new DutyAssignment("DA003", "BT003", "2024-07-03", Role.PRIMARY_DRIVER);
+        assignments.add(sampleAssignment);
+        assignments.add(sampleAssignment2);
+        assignments.add(sampleAssignment3);
     }
 
     @Override

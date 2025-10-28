@@ -1,4 +1,5 @@
 package com.example.busmanagementsystem.repository;
+import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.model.Route;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,14 @@ public class RouteRepository implements CRUD<Route> {
     private List<Route> routes;
 
     public RouteRepository() {
+
         routes = new ArrayList<Route>();
+        Route route1 = new Route("R001", new BusStation("BS001", "Central Station", "123 Main St"), new BusStation("BS003", "East Station", "789 East St"), 120, 10);
+        Route route2 = new Route("R002", new BusStation("BS002", "North Station", "456 North St"), new BusStation("BS003", "East Station", "789 East St"), 90, 8);
+        Route route3 = new Route("R003", new BusStation("BS001", "Central Station", "123 Main St"), new BusStation("BS002", "North Station", "456 North St"), 60, 5);
+        routes.add(route1);
+        routes.add(route2);
+        routes.add(route3);
     }
 
     @Override

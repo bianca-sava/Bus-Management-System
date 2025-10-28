@@ -11,7 +11,14 @@ public class PassengerRepository implements CRUD<Passenger> {
     private List<Passenger> passengers;
 
     public PassengerRepository() {
+
         passengers = new ArrayList<Passenger>();
+        Passenger passenger1 = new Passenger("P001", "Bob", "Leu");
+        Passenger passenger2 = new Passenger("P002", "Alice", "Euro");
+        Passenger passenger3 = new Passenger("P003", "Dob", "Leu");
+        passengers.add(passenger1);
+        passengers.add(passenger2);
+        passengers.add(passenger3);
     }
 
     @Override
