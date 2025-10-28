@@ -6,6 +6,7 @@ public class Ticket {
     private String passengerId;
     private String seatNumber;
     private double price;
+    boolean isCheckedIn;
 
     public Ticket(String id, String tripId, String passengerId, String seatNumber, double price) {
         this.id = id;
@@ -13,6 +14,7 @@ public class Ticket {
         this.passengerId = passengerId;
         this.seatNumber = seatNumber;
         this.price = price;
+        isCheckedIn = false;
     }
 
     ///  Getters and Setters
@@ -55,6 +57,14 @@ public class Ticket {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public boolean isCheckedIn() {
+        return isCheckedIn;
+    }
+
+    public void setCheckedIn(boolean checkedIn) {
+        isCheckedIn = checkedIn;
     }
     //endregion
 
