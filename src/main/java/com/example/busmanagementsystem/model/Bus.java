@@ -1,31 +1,20 @@
 package com.example.busmanagementsystem.model;
 
-enum BusStatus {
-    DOWN("Down"),
-    ACTIVE("Active");
-
-    private final String description;
-    BusStatus(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-}
-
 public class Bus {
 
     private String id;
     private String registrationNumber;
-    int capacity;
+    private int capacity;
     private BusStatus status;
+    private int nrOfPassengers;
+
 
     public Bus(String id, String registrationNumber, int capacity) {
         this.id = id;
         this.registrationNumber = registrationNumber;
         this.capacity = capacity;
         status = BusStatus.DOWN;
+        nrOfPassengers = 0;
     }
 
     /// Getters
@@ -49,7 +38,11 @@ public class Bus {
         else
             return "Active";
     }
-//endregion
+
+    public int getNrOfPassengers() {
+        return nrOfPassengers;
+    }
+    //endregion
 
     /// Setters
 
@@ -69,7 +62,11 @@ public class Bus {
     public void setStatus(BusStatus status) {
         this.status = status;
     }
-//endregion
+
+    public void setNrOfPassengers(int nrOfPassengers) {
+        this.nrOfPassengers = nrOfPassengers;
+    }
+    //endregion
 
 
     @Override

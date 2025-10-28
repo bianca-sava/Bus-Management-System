@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripManager extends Staff {
@@ -9,6 +10,7 @@ public class TripManager extends Staff {
     public TripManager(String id, String name, String employeeCode) {
         super(id, name);
         this.employeeCode = employeeCode;
+        assignments = new ArrayList<DutyAssignment>();
     }
 
     /// Getters

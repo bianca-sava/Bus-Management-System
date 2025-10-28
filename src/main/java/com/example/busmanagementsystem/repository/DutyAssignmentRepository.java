@@ -2,11 +2,16 @@ package com.example.busmanagementsystem.repository;
 
 import com.example.busmanagementsystem.model.DutyAssignment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DutyAssignmentRepository implements CRUD<DutyAssignment> {
 
     private List<DutyAssignment> assignments;
+
+    public DutyAssignmentRepository() {
+        assignments = new ArrayList<DutyAssignment>();
+    }
 
     @Override
     public boolean create(DutyAssignment entity) {

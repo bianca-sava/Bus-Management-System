@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BusStation {
@@ -13,6 +14,7 @@ public class BusStation {
         this.id = id;
         this.name = name;
         this.city = city;
+        trips = new ArrayList<BusTrip>();
     }
 
     /// Getters and Setters
