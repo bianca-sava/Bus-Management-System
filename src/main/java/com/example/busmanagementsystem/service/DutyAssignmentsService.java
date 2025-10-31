@@ -5,7 +5,7 @@ import com.example.busmanagementsystem.repository.DutyAssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class DutyAssignmentsService {
@@ -25,7 +25,7 @@ public class DutyAssignmentsService {
         return assignmentRepository.findById(id);
     }
 
-    public List<DutyAssignment> getAllAssignments(){
+    public Map<String, DutyAssignment> getAllAssignments(){
         return assignmentRepository.findAll();
     }
 

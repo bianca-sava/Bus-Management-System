@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusService {
@@ -21,7 +21,7 @@ public class BusService {
         return repository.create(bus);
     }
 
-    public List<Bus> findAll() {
+    public Map<String ,Bus> findAll() {
         return repository.findAll();
     }
 

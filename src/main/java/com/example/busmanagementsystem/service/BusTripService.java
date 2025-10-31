@@ -5,7 +5,7 @@ import com.example.busmanagementsystem.repository.BusTripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusTripService {
@@ -21,7 +21,7 @@ public class BusTripService {
         return repository.create(busTrip);
     }
 
-    public List<BusTrip> findAll() {
+    public Map<String, BusTrip> findAll() {
         return repository.findAll();
     }
 
