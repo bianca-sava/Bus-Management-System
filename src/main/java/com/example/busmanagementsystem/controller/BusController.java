@@ -20,9 +20,9 @@ public class BusController {
         this.busService = busService;
     }
 
-    @GetMapping
-    public List<Bus> getAllBuses() {
-        return busService.findAll();
-    }
+//    @GetMapping
+//    public List<Bus> getAllBuses() {
+//        return busService.findAll();
+//    }
 
 }

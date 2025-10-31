@@ -1,15 +1,15 @@
 package com.example.busmanagementsystem.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/hello")
+@Controller
 public class HelloController {
 
-    @GetMapping
-    public String sayHello(){
-        return "Hello Guys 🚌🚏";
+    @GetMapping("/home")
+    public String homePage(Model model) {
+        model.addAttribute("message", "Welcome to my site!");
+        return "home/index"; // returns the view name (Thymeleaf template: home.html)
     }
 }
