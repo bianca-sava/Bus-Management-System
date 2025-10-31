@@ -8,7 +8,10 @@ public class Bus {
     private BusStatus status;
     private int nrOfPassengers;
 
-
+    public Bus(){
+        status = BusStatus.DOWN;
+        nrOfPassengers = 0;
+    }
     public Bus(String id, String registrationNumber, int capacity) {
         this.id = id;
         this.registrationNumber = registrationNumber;
