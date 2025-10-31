@@ -4,8 +4,7 @@ import com.example.busmanagementsystem.model.Staff;
 import com.example.busmanagementsystem.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class StaffService {
@@ -25,7 +24,7 @@ public class StaffService {
         return staffRepository.findById(id);
     }
 
-    public List<Staff> getAllStaff(){
+    public Map<String, Staff> getAllStaff(){
         return staffRepository.findAll();
     }
 

@@ -4,8 +4,7 @@ import com.example.busmanagementsystem.model.Route;
 import com.example.busmanagementsystem.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class RouteService {
@@ -20,7 +19,7 @@ public class RouteService {
         return repository.create(route);
     }
 
-    public List<Route> findAll() {
+    public Map<String, Route> findAll() {
         return repository.findAll();
     }
 
