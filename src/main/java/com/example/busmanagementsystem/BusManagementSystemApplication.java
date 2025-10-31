@@ -8,6 +8,8 @@ public class BusManagementSystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BusManagementSystemApplication.class, args);
+
+
     }
 
 }

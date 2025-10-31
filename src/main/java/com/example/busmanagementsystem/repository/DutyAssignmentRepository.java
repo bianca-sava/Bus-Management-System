@@ -1,6 +1,7 @@
 package com.example.busmanagementsystem.repository;
 
 import com.example.busmanagementsystem.model.DutyAssignment;
+import com.example.busmanagementsystem.model.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
