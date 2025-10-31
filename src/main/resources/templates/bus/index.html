@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Management</title>
+</head>
+<body>
+<h1>Bus List</h1>
+
+<a href="/bus/new">Add New Bus</a>
+<br/><br/>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Registration Number</th>
+        <th>Capacity</th>
+        <th>Status</th>
+        <th>Passengers</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${buses}">
+        <td th:text="${item.id}">NULL</td>
+        <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
+        <td th:text="${item.capacity}">0</td>
+        <td th:text="${item.status}">Active</td>
+        <td th:text="${item.nrOfPassengers}">0</td>
+        <td>
+            <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
