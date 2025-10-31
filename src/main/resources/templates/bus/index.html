@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        /**
+         * Funcție pentru a naviga la pagina de adăugare a unui autobuz nou.
+         */
+        function goToNewBusPage() {
+            window.location.href = '/bus/new';
+        }
+    </script>
+</head>
+<body>
+<h1>Bus List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Registration Number</th>
+        <th>Capacity</th>
+        <th>Status</th>
+        <th>Passengers</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${buses}">
+        <td th:text="${item.id}">0</td>
+        <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
+        <td th:text="${item.capacity}">0</td>
+        <td th:text="${item.status}">Down</td>
+        <td th:text="${item.nrOfPassengers}">0</td>
+        <td>
+            <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewBusPage()">Add New Bus</button>
+</div>
+</body>
+</html>

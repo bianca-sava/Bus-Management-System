@@ -5,8 +5,7 @@ import com.example.busmanagementsystem.model.Ticket;
 import com.example.busmanagementsystem.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class TicketService {
@@ -21,7 +20,7 @@ public class TicketService {
         return repository.create(ticket);
     }
 
-    public List<Ticket> findAll() {
+    public Map<String, Ticket> findAll() {
         return repository.findAll();
     }
 
