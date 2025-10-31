@@ -1,0 +1,75 @@
+/* --- 5. Stiluri pentru Formulare (New Bus Form) --- */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F7F1DE;
+    color: #f4f4f4; /* Culoarea textului de bază */
+    line-height: 1.6;
+    padding: 2rem;
+}
+
+/* Containerul principal al formularului (similar cu 'table') */
+.form-container {
+    width: 100%;
+    max-width: 600px; /* Mai mic decât tabelul */
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #C4A484; /* Fundal similar cu tabelul */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Reajustarea culorii textului în containerul formularului */
+.form-container, .form-container label {
+    color: #333; /* Text mai închis pentru contrast pe fundalul #C4A484 */
+}
+
+/* Stil pentru fiecare grup de input + label */
+form div {
+    margin-bottom: 15px;
+}
+
+/* Stil pentru etichete (labels) */
+label {
+    display: block; /* Face label-ul să ocupe propria linie */
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Stil pentru câmpurile de input */
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #B87C4C; /* Bordură în culoarea accentului */
+    border-radius: 5px;
+    box-sizing: border-box; /* Asigură că padding-ul nu mărește lățimea totală */
+    font-size: 16px;
+    background-color: #F7F1DE; /* Fundal similar cu body */
+    color: #333;
+}
+
+/* Focus pe câmpul de input */
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #007bff; /* Culoarea primară la focus */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Asigură că butonul din formular aplică stilul specific de submit/danger */
+.form-container button[type="submit"] {
+    /* Folosește stilul existent: background-color: #dc3545; etc. */
+    background-color: #8D9C89;
+    color: #fff;
+    width: 100%; /* Face butonul să ocupe toată lățimea */
+    font-size: 18px; /* Mărește fontul pentru un buton principal */
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #B87C4C;
+}
+
+.form-container button[type="submit"]:hover {
+    /* Folosește stilul existent: background-color: #dc3545; etc. */
+    background-color: #A8BBA3;
+}
