@@ -2,13 +2,17 @@ package com.example.busmanagementsystem.service;
 
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.repository.DutyAssignmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DutyAssignmentsService {
 
     private DutyAssignmentRepository assignmentRepository;
 
+    @Autowired
     public  DutyAssignmentsService(DutyAssignmentRepository assignmentRepository){
         this.assignmentRepository = assignmentRepository;
     }

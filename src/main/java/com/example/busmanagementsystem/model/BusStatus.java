@@ -1,6 +1,6 @@
 package com.example.busmanagementsystem.model;
 
-enum BusStatus {
+public enum BusStatus {
     DOWN("Down"),
     ACTIVE("Active");
 

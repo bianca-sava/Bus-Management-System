@@ -1,15 +1,23 @@
 package com.example.busmanagementsystem.repository;
 import com.example.busmanagementsystem.model.Bus;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class BusRepository implements CRUD<Bus> {
 
     private List<Bus> buses;
 
     public BusRepository() {
         buses = new ArrayList<Bus>();
+        Bus b1 = new Bus("B001", "Volvo", 50);
+        Bus b2 = new Bus("B002", "Mercedes", 45);
+        Bus b3 = new Bus("B003", "Ford", 30);
+        buses.add(b1);
+        buses.add(b2);
+        buses.add(b3);
     }
 
     @Override
