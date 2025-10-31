@@ -23,10 +23,10 @@
     </thead>
     <tbody>
     <tr th:each="item : ${buses}">
-        <td th:text="${item.id}">NULL</td>
+        <td th:text="${item.id}">0</td>
         <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
         <td th:text="${item.capacity}">0</td>
-        <td th:text="${item.status}">Active</td>
+        <td th:text="${item.status}">Down</td>
         <td th:text="${item.nrOfPassengers}">0</td>
         <td>
             <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post">

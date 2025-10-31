@@ -50,28 +50,20 @@ public class BusController {
      * Implementează POST /bus
      * Procesează datele din formular și creează un autobuz nou. [cite: 66]
      */
+    /**
+     * Implementează POST /bus (Varianta 2 - Folosind constructorul cu argumente)
+     * Procesează datele din formular și creează un autobuz nou.
+     */
     @PostMapping
-    public String createBus(@ModelAttribute Bus bus) {
-        // Datorită @ModelAttribute, Spring ia datele din formular
-        // și le pune în obiectul 'bus' folosind setter-ii.
+    public String createBus(@RequestParam String id,
+                            @RequestParam String registrationNumber,
+                            @RequestParam int capacity) {
 
-        // Constructorul tău setează statusul și nrOfPassengers,
-        // dar deoarece folosim constructorul gol, ar fi bine
-        // să le setăm manual aici, sau să ajustăm formularul.
-        // Pentru a păstra simplitatea, ne bazăm pe ce vine din formular.
-        // Dacă ID, registrationNumber și capacity sunt singurele câmpuri,
-        // va trebui să setăm manual statusul și nrOfPassengers.
+        Bus newBus = new Bus(id, registrationNumber, capacity);
 
-        // O abordare mai simplă (bazată pe constructorul tău):
-        // Presupunând că formularul trimite id, registrationNumber și capacity.
-        // Și că 'bus' le conține.
 
-        // Să simplificăm: Presupunem că 'bus' e populat corect de Spring.
-        // (Vom crea formularul să trimită doar câmpurile necesare)
+        busService.create(newBus);
 
-        busService.create(bus); // Salvăm autobuzul
-
-        // Redirecționăm către lista principală pentru a vedea noul autobuz
         return "redirect:/bus";
     }
 
