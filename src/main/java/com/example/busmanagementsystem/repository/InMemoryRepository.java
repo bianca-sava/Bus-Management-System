@@ -19,7 +19,8 @@ public abstract class InMemoryRepository<T> implements CRUD<T>{
         else if(database.containsKey(getIdFromEntity(entity))){
             throw  new RuntimeException("Entity already exists");
         }
-        return (boolean) database.put(getIdFromEntity(entity), entity);
+        database.put(getIdFromEntity(entity), entity);
+        return true;
     }
 
     @Override
