@@ -7,13 +7,14 @@ public class DutyAssignment {
     private String staffId;
     private Role role;
     /// Constructors
+    public DutyAssignment() {}
     public DutyAssignment(String id, String tripId, String staffId, Role role) {
         this.id = id;
         this.tripId = tripId;
         this.staffId = staffId;
         this.role = role;
     }
-    /// If no role is specified, default to RESERVE_DRIVER
+
     public DutyAssignment(String id, String tripId, String staffId) {
         this.id = id;
         this.tripId = tripId;

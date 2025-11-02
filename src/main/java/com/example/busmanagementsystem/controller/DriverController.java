@@ -27,9 +27,9 @@ public class DriverController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        // [CORECT] Folosim "driver" (singular) pentru formular
-        model.addAttribute("driver", new Driver()); // Vezi nota de mai jos
-        return "driver/form"; // Calea către: resources/templates/driver/form.html
+
+        model.addAttribute("driver", new Driver());
+        return "driver/form";
     }
 
     @PostMapping
