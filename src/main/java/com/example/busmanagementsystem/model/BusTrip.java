@@ -13,6 +13,7 @@ public class BusTrip {
     private List<DutyAssignment> assignments;
     private BusTripStatus status;
 
+    public BusTrip() {}
     public BusTrip(String id, String routeId, String busId, String startTime) {
         this.id = id;
         this.routeId = routeId;
