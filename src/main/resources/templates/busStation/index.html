@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Bus Station Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewBusStationPage() {
+            window.location.href = '/bus-station/new';
+        }
+    </script>
 </head>
 <body>
+<h1>Bus Station List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Trips</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${busStations}">
+        <td th:text="${item.id}">1</td>
+        <td th:text="${item.name}">Central Station</td>
+        <td th:text="${item.city}">Metropolis</td>
+        <td th:text="${item.trips.size}">0</td>
+
+        <td>
+            <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewBusStationPage()">Add New Bus Station</button>
+</div>
 </body>
 </html>
