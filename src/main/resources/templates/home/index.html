@@ -1,17 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Bus Management System - Home</title>
+    <link rel="stylesheet" th:href="@{/css/homestyle.css}">
 </head>
 <body>
-<p>Welcome to my site!</p>
-<img
-        src="https://2.bp.blogspot.com/-euazKXrGMNs/T56zLMVzWKI/AAAAAAAAAV4/29hCX8d7Usw/s1600/Mystery+machine+cartoon+version-ScoobyDoo.jpg"
-        alt="Mystery Machine Van"
-        title="Mystery Machine Van"
-        width="400"
->
+<div class="header-banner">
+    <h1><span th:text="${message}">Welcome to the Bus Management System!</span></h1>
+    <p style="color: #333;">Your centralized dashboard for managing all transport entities.</p>
+</div>
 
+<div class="menu-grid">
+    <a th:href="@{/bus}" class="menu-item">
+        <span>🚌 Bus Management</span>
+    </a>
+
+    <a th:href="@{/bus-station}" class="menu-item">
+        <span>🚉 Bus Stations</span>
+    </a>
+
+    <a th:href="@{/bus-trip}" class="menu-item">
+        <span>🛣️ Bus Trips</span>
+    </a>
+
+    <a th:href="@{/route}" class="menu-item">
+        <span>🗺️ Route Planning</span>
+    </a>
+
+    <a th:href="@{/ticket}" class="menu-item">
+        <span>🎫 Ticket Sales</span>
+    </a>
+
+    <a th:href="@{/passenger}" class="menu-item">
+        <span>👨‍👩‍👧‍👦 Passengers</span>
+    </a>
+
+    <a th:href="@{/driver}" class="menu-item">
+        <span>👨‍✈️ Drivers</span>
+    </a>
+
+    <a th:href="@{/tripmanager}" class="menu-item">
+        <span>👤 Trip Managers</span>
+    </a>
+
+    <a th:href="@{/duty-assignment}" class="menu-item">
+        <span>📋 Duty Assignments</span>
+    </a>
+
+</div>
 </body>
 </html>

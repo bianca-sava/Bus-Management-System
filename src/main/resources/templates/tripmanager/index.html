@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Trip Manager Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        /**
+         * Funcție pentru a naviga la pagina de adăugare a unui nou Trip Manager.
+         */
+        function goToNewTripManagerPage() {
+            // Ruta către formularul de creare al TripManager este /tripmanager/new
+            window.location.href = '/tripmanager/new';
+        }
+    </script>
 </head>
 <body>
+<h1>Trip Manager List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Employee Code</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${tripmanagers}">
+        <td th:text="${item.id}">0</td>
+        <td th:text="${item.name}">John Doe</td>
+        <td th:text="${item.employeeCode}">EM-001</td>
+        <td>
+            <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewTripManagerPage()">Add New Trip Manager</button>
+</div>
 </body>
 </html>

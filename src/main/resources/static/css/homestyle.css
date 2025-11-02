@@ -1,0 +1,227 @@
+
+body {
+    text-align: center;
+}
+
+.header-banner {
+    background-color: #C4A484;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.header-banner h1 {
+    color: #B87C4C;
+    font-size: 2.5em;
+    margin: 0 0 10px 0;
+    letter-spacing: 1px;
+}
+
+/* Grila a fost extinsă pentru a cuprinde mai multe elemente */
+.menu-grid {
+    display: grid;
+    /* Creăm o grilă flexibilă de 3 coloane pe desktop */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.menu-item {
+    background-color: #F7F1DE;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: #B87C4C;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+    border: 2px solid #C4A484;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background-color: #E6DBC9;
+}
+
+.menu-item span {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+/* --- 1. Stiluri Globale și Reset --- */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F7F1DE;
+    color: #f4f4f4; /* Culoarea textului de bază */
+    line-height: 1.6;
+    padding: 2rem;
+}
+
+h1 {
+    color: #B87C4C;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Stil pentru formurile din tabel (pentru alinierea butonului de Delete) */
+form {
+    margin: 0;
+    display: inline-block;
+}
+
+/* Container pentru butonul 'Add New Bus' */
+.action-button-right {
+    width: 80%;
+    margin: 20px auto 20px auto;
+    text-align: right;
+    padding: 0;
+}
+
+/* --- 2. Stiluri de Bază pentru Butoane (Clasa: .btn) --- */
+
+/* Bază - Aplicată tuturor butoanelor pentru proprietăți comune */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+/* Stilul General/Primar (Culoarea Albastră originală) */
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+
+/* Stilul de Succes (Butonul 'Add New Bus' - Culoarea Verde) */
+.btn-success {
+    background-color: #A8BBA3;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-success:hover {
+    background-color: #A8BBA3;
+}
+
+/* Stilul de Pericol (Butonul 'Delete' - Culoarea Roșie) */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 10px; /* Setare de padding mai mică, conform cerinței */
+    font-weight: normal; /* Setare font-weight normal, conform cerinței */
+    font-size: 14px; /* Setare de font mai mică, conform cerinței */
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+
+/* --- 3. Compatibilitate Selectoare Originale (Păstrate pentru siguranță) --- */
+
+/* Aplică stilul primar (albastru) la elementele vechi */
+button, .button-link {
+    /* Replică proprietățile din .btn și .btn-primary */
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .button-link:hover {
+    background-color: #0056b3;
+}
+
+/* Aplică stilul de succes (verde) la selectorul onclick */
+button[onclick="goToNewBusPage()"] {
+    background-color: #8D9C89;
+}
+
+button[onclick="goToNewBusPage()"]:hover {
+    background-color: #A8BBA3;
+}
+
+/* Aplică stilul de pericol (roșu) la selectorul submit */
+button[type="submit"] {
+    background-color: #dc3545;
+    padding: 6px 10px;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+button[type="submit"]:hover {
+    background-color: #c82333;
+}
+
+/* --- 4. Stiluri pentru Tabel --- */
+table {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #C4A484; /* Fundal tabel */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+thead tr {
+    background-color: #B87C4C; /* Antetul tabelului */
+    color: #ffffff; /* Text antet */
+    text-align: center;
+    font-weight: bold;
+}
+
+th, td {
+    padding: 15px 20px;
+    border-bottom: 1px solid black;
+}
+
+tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Efect de "zebra" pentru rânduri (păstrat) */
+tbody tr:nth-of-type(even) {
+    background-color: #C4A484;
+}
+
+tbody tr:hover {
+    background-color: #B87C4C; /* Evidențiere la hover */
+}
+
+/* Aliniere verticală pentru butoanele (form-urile) din celulele tabelului */
+td form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Route Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewRoutePage() {
+            // Ruta către formularul de creare este /route/new
+            window.location.href = '/route/new';
+        }
+    </script>
 </head>
 <body>
+<h1>Route List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Origin (Station ID)</th>
+        <th>Destination (Station ID)</th>
+        <th>Distance (km)</th>
+        <th>Stations</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${route}">
+        <td th:text="${item.id}">R-001</td>
+        <td th:text="${item.origin.id}">ST-1</td>
+        <td th:text="${item.destination.id}">ST-2</td>
+        <td th:text="${item.distance}">45.5</td>
+        <td th:text="${item.nrOfStations}">12</td>
+        <td>
+            <form th:action="@{'/route/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewRoutePage()">Add New Route</button>
+</div>
 </body>
 </html>

@@ -4,7 +4,10 @@ public abstract class Staff {
     protected String id;
     protected String name;
 
-    public Staff() {}
+    public Staff(){
+
+    }
+
     public Staff(String id, String name) {
         this.id = id;
         this.name = name;
