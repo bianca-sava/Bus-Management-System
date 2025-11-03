@@ -10,6 +10,10 @@ public class Passenger {
     private List<Ticket> tickets;
 
     /// Constructor
+    public Passenger() {
+        this.tickets = new ArrayList<Ticket>();
+    }
+
     public Passenger(String id, String name, String currency) {
         this.id = id;
         this.name = name;

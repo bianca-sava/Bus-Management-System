@@ -8,6 +8,10 @@ public class Ticket {
     private double price;
     boolean isCheckedIn;
 
+    public Ticket() {
+        isCheckedIn = false;
+    }
+
     public Ticket(String id, String tripId, String passengerId, String seatNumber, double price) {
         this.id = id;
         this.tripId = tripId;
