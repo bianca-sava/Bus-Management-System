@@ -31,7 +31,6 @@ public class RouteController {
 
     @GetMapping("/new")
     public String createRoute(Model model) {
-        model.addAttribute("routes", new Route());
 
         return "route/form";
     }
