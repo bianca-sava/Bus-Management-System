@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Driver Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewDriverPage() {
+            window.location.href = '/driver/new';
+        }
+    </script>
 </head>
 <body>
+<h1>Driver List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Years of Experience</th>
+        <th>Assignments</th> <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${drivers}">
+        <td th:text="${item.id}">D-01</td>
+        <td th:text="${item.name}">John Doe</td>
+        <td th:text="${item.yearsOfExperience}">5</td>
+
+        <td th:text="${item.assignments.size}">0</td>
+
+        <td>
+            <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewDriverPage()">Add New Driver</button>
+</div>
 </body>
 </html>

@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Duty Assignment Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewDutyAssignmentPage() {
+            window.location.href = '/duty-assignment/new';
+        }
+    </script>
 </head>
 <body>
+<h1>Duty Assignment List</h1>
 
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Trip ID</th>
+        <th>Staff ID</th>
+        <th>Role</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${dutyAssignments}">
+        <td th:text="${item.id}">DA-01</td>
+        <td th:text="${item.tripId}">TR-01</td>
+        <td th:text="${item.staffId}">D-01</td>
+        <td th:text="${item.role}">DRIVER</td>
+
+        <td>
+            <form th:action="@{'/duty-assignment/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewDutyAssignmentPage()">Add New Duty Assignment</button>
+</div>
 </body>
 </html>

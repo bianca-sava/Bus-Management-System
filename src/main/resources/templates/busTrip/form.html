@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create New Bus Trip</title>
+    <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
-<body>
+<body style="color: #333;">
+<div class="form-container">
+    <h1>New Bus Trip Form</h1>
 
+    <form th:action="@{/bus-trip}" th:object="${busTrip}" method="post">
+        <div>
+            <label for="id">ID:</label>
+            <input type="text" id="id" th:field="*{id}" />
+        </div>
+        <div>
+            <label for="routeId">Route ID:</label>
+            <input type="text" id="routeId" th:field="*{routeId}" />
+        </div>
+        <div>
+            <label for="busId">Bus ID:</label>
+            <input type="text" id="busId" th:field="*{busId}" />
+        </div>
+        <div>
+            <label for="startTime">Start Time:</label>
+            <input type="text" id="startTime" th:field="*{startTime}" />
+        </div>
+
+        <div>
+            <button type="submit">Create Bus Trip</button>
+        </div>
+    </form>
+</div>
 </body>
 </html>

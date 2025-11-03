@@ -10,6 +10,7 @@ public class BusStation {
     private List<BusTrip> trips;
 
     /// Constructor
+    public BusStation() {}
     public BusStation(String id, String name, String city) {
         this.id = id;
         this.name = name;

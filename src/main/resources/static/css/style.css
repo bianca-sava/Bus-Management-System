@@ -57,13 +57,13 @@ form {
 
 /* Stilul de Succes (Butonul 'Add New Bus' - Culoarea Verde) */
 .btn-success {
-    background-color: #28a745;
+    background-color: #A8BBA3;
     color: white;
     font-weight: bold;
 }
 
 .btn-success:hover {
-    background-color: #218838;
+    background-color: #A8BBA3;
 }
 
 /* Stilul de Pericol (Butonul 'Delete' - Culoarea Roșie) */
