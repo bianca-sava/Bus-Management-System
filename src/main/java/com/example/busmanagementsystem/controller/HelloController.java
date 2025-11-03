@@ -9,7 +9,7 @@ public class HelloController {
 
     @GetMapping("/home")
     public String homePage(Model model) {
-        model.addAttribute("message", "Welcome to my site!");
+        model.addAttribute("message", "Welcome to Your Bus Management App!");
         return "home/index"; // returns the view name (Thymeleaf template: home.html)
     }
 }
