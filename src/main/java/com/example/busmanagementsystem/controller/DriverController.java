@@ -21,7 +21,7 @@ public class DriverController {
     @GetMapping
     public String getAllDrivers(Model model) {
 
-        model.addAttribute("drivers", driverService.getAllStaff().values());
+        model.addAttribute("drivers", driverService.getAllDrivers().values());
         return "driver/index";
     }
 
