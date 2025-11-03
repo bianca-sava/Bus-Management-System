@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Passenger Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewPassengerPage() {
+            // Ruta către formularul de creare este /passenger/new
+            window.location.href = '/passenger/new';
+        }
+    </script>
 </head>
 <body>
+<div class="back-button-container">
+    <a th:href="@{/home}" class="btn btn-primary">
+        🏠 Go to Home Page
+    </a>
+</div>
 
+<h1>Passenger List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Currency</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${passengers}">
+        <td th:text="${item.id}">PASS-001</td>
+        <td th:text="${item.name}">John Doe</td>
+        <td th:text="${item.currency}">EUR</td>
+        <td>
+            <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewPassengerPage()">Add New Passenger</button>
+</div>
 </body>
 </html>

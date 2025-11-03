@@ -11,6 +11,7 @@ public class Route {
     private List<BusTrip> trips;
     private int nrOfStations;
 
+    public Route() {}
 
     /// Constructor
     public Route(String id, BusStation origin, BusStation destination, double distance, int nrOfStations) {

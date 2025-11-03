@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Ticket Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewTicketPage() {
+            window.location.href = '/ticket/new';
+        }
+    </script>
 </head>
 <body>
+<div class="back-button-container">
+    <a th:href="@{/home}" class="btn btn-primary">
+        🏠 Go to Home Page
+    </a>
+</div>
 
+<h1>Ticket List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Trip ID</th>
+        <th>Passenger ID</th>
+        <th>Seat Number</th>
+        <th>Price</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${ticket}">
+        <td th:text="${item.id}">TKT-001</td>
+        <td th:text="${item.tripId}">TRIP-101</td>
+        <td th:text="${item.passengerId}">PASS-500</td>
+        <td th:text="${item.seatNumber}">15A</td>
+        <td th:text="${item.price}">25.50</td>
+        <td>
+            <form th:action="@{'/ticket/' + ${item.id} + '/delete'}" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <button type="button" class="btn btn-success" onclick="goToNewTicketPage()">Add New Ticket</button>
+</div>
 </body>
 </html>
