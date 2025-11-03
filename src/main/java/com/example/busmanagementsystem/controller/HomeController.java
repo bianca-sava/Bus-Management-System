@@ -5,11 +5,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class HelloController {
+public class HomeController {
 
     @GetMapping("/home")
     public String homePage(Model model) {
-        model.addAttribute("message", "Welcome to my site!");
-        return "home/index"; // returns the view name (Thymeleaf template: home.html)
+        model.addAttribute("message", "Welcome to the Bus Management System!");
+        return "home/index";
     }
 }
