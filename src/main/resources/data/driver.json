@@ -1,0 +1,62 @@
+{
+  "driver-001": {
+    "id": "driver-001",
+    "name": "Mihai Popescu",
+    "assignments": [],
+    "yearsOfExperience": "10 years"
+  },
+  "driver-002": {
+    "id": "driver-002",
+    "name": "Ionut Radu",
+    "assignments": [],
+    "yearsOfExperience": "5 years"
+  },
+  "driver-003": {
+    "id": "driver-003",
+    "name": "Vasile Georgescu",
+    "assignments": [],
+    "yearsOfExperience": "15 years"
+  },
+  "driver-004": {
+    "id": "driver-004",
+    "name": "Stefan Barbu",
+    "assignments": [],
+    "yearsOfExperience": "8 years"
+  },
+  "driver-005": {
+    "id": "driver-005",
+    "name": "Cristian Dobre",
+    "assignments": [],
+    "yearsOfExperience": "3 years"
+  },
+  "driver-006": {
+    "id": "driver-006",
+    "name": "Alexandru Nistor",
+    "assignments": [],
+    "yearsOfExperience": "12 years"
+  },
+  "driver-007": {
+    "id": "driver-007",
+    "name": "Adrian Munteanu",
+    "assignments": [],
+    "yearsOfExperience": "6 years"
+  },
+  "driver-008": {
+    "id": "driver-008",
+    "name": "Florin Cojocaru",
+    "assignments": [],
+    "yearsOfExperience": "2 years"
+  },
+  "driver-009": {
+    "id": "driver-009",
+    "name": "George Lupu",
+    "assignments": [],
+    "yearsOfExperience": "7 years"
+  },
+  "driver-010": {
+    "id": "driver-010",
+    "name": "Andrei Stoica",
+    "assignments": [],
+    "yearsOfExperience": "9 years"
+  }
+}

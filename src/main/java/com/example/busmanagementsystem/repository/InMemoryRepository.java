@@ -40,6 +40,7 @@ public abstract class InMemoryRepository<T> implements CRUD<T>{
     public boolean update(String id, T entity) {
         if(database.containsKey(id)){
             database.put(id, entity);
+
             return true;
         }
         return false;

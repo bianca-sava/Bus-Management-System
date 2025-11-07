@@ -1,16 +1,18 @@
 package com.example.busmanagementsystem.repository;
+import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.model.BusStation;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 
 @Repository
-public class BusStationRepository extends InMemoryRepository<BusStation> {
+public class BusStationRepository extends InFileRepository<BusStation> {
 
-    public BusStationRepository() {
-        this.database = new ConcurrentHashMap<>();
-        this.database.put("BS1", new BusStation("BS1", "Central Station", "123 Main St"));
+    protected BusStationRepository(ObjectMapper objectMapper, @Value("${repository.filepath.busstation}") String filePath ) {
+        super(filePath, objectMapper,  BusStation.class);
     }
 
     @Override

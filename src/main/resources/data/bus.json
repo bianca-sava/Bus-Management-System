@@ -1,0 +1,72 @@
+{
+  "bus-001": {
+    "id": "bus-001",
+    "registrationNumber": "CJ-01-BUS",
+    "capacity": 50,
+    "status": "ACTIVE",
+    "nrOfPassengers": 15
+  },
+  "bus-002": {
+    "id": "bus-002",
+    "registrationNumber": "CJ-102-XYZ",
+    "capacity": 75,
+    "status": "DOWN",
+    "nrOfPassengers": 0
+  },
+  "bus-003": {
+    "id": "bus-003",
+    "registrationNumber": "CJ-25-ABC",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "nrOfPassengers": 28
+  },
+  "bus-004": {
+    "id": "bus-004",
+    "registrationNumber": "CJ-08-DEF",
+    "capacity": 50,
+    "status": "ACTIVE",
+    "nrOfPassengers": 45
+  },
+  "bus-005": {
+    "id": "bus-005",
+    "registrationNumber": "CJ-99-OLD",
+    "capacity": 50,
+    "status": "DOWN",
+    "nrOfPassengers": 0
+  },
+  "bus-006": {
+    "id": "bus-006",
+    "registrationNumber": "CJ-200-NEW",
+    "capacity": 100,
+    "status": "ACTIVE",
+    "nrOfPassengers": 70
+  },
+  "bus-007": {
+    "id": "bus-007",
+    "registrationNumber": "CJ-05-GHI",
+    "capacity": 75,
+    "status": "ACTIVE",
+    "nrOfPassengers": 12
+  },
+  "bus-008": {
+    "id": "bus-008",
+    "registrationNumber": "CJ-12-JKL",
+    "capacity": 30,
+    "status": "DOWN",
+    "nrOfPassengers": 0
+  },
+  "bus-009": {
+    "id": "bus-009",
+    "registrationNumber": "CJ-02-BUS",
+    "capacity": 50,
+    "status": "ACTIVE",
+    "nrOfPassengers": 50
+  },
+  "bus-010": {
+    "id": "bus-010",
+    "registrationNumber": "CJ-01-MNO",
+    "capacity": 75,
+    "status": "ACTIVE",
+    "nrOfPassengers": 65
+  }
+}
