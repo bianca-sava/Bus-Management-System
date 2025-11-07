@@ -2,32 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Trip Manager</title>
+
+    <title th:text="${tripmanager.id == null} ? 'Create New Trip Manager' : 'Edit Trip Manager'">Trip Manager Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Trip Manager Form</h1>
 
-    <form th:action="@{/tripmanager}" th:object="${tripmanager}" method="post">
+    <h1 th:text="${tripmanager.id == null} ? 'New Trip Manager Form' : 'Edit Trip Manager (' + ${tripmanager.id} + ')'">Trip Manager Form</h1>
+
+    <form th:action="${tripmanager.id == null} ? @{/tripmanager/create} : @{'/tripmanager/' + ${tripmanager.id}}" th:object="${tripmanager}" method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" name="id" th:field="*{id}" />
+            <input type="text" id="id" th:field="*{id}"
+                   th:attrappend="readonly=${tripmanager.id != null} ? 'readonly'"
+                   class="readonly-field"
+                   required />
         </div>
 
         <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" th:field="*{name}" />
+            <input type="text" id="name" th:field="*{name}" required />
         </div>
 
         <div>
             <label for="employeeCode">Employee Code:</label>
-            <input type="text" id="employeeCode" name="employeeCode" th:field="*{employeeCode}" />
+            <input type="text" id="employeeCode" th:field="*{employeeCode}" required />
         </div>
 
         <div>
-            <button type="submit">Create Trip Manager</button>
+            <button type="submit" th:text="${tripmanager.id == null} ? 'Create Trip Manager' : 'Update Trip Manager'">Submit</button>
         </div>
     </form>
 </div>

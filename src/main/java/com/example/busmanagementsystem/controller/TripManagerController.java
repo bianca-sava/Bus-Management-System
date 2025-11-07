@@ -20,24 +20,48 @@ public class TripManagerController {
     @GetMapping
     public String getAllTripManagers(Model model) {
         model.addAttribute("tripmanagers", tripManagerService.findAllTripManagers().values());
-
         return "tripmanager/index";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("tripmanager", new TripManager());
-
         return "tripmanager/form";
     }
 
-    @PostMapping
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        TripManager existingManager = tripManagerService.getTripManagerById(id);
+
+        if (existingManager != null) {
+            model.addAttribute("tripmanager", existingManager);
+            return "tripmanager/form";
+        }
+        return "redirect:/tripmanager";
+    }
+
+    @PostMapping("/{id}")
+    public String updateTripManager(@PathVariable String id,
+                                    @RequestParam String name,
+                                    @RequestParam String employeeCode) {
+
+        TripManager existingManager = tripManagerService.getTripManagerById(id);
+
+        if (existingManager != null) {
+            existingManager.setName(name);
+            existingManager.setEmployeeCode(employeeCode);
+
+            tripManagerService.updateTripManager(id, existingManager);
+        }
+        return "redirect:/tripmanager";
+    }
+
+    @PostMapping("/create")
     public String createTripManager(@RequestParam String id,
-                            @RequestParam String name,
-                            @RequestParam String employeeCode) {
+                                    @RequestParam String name,
+                                    @RequestParam String employeeCode) {
 
         TripManager newTripManager = new TripManager(id, name, employeeCode);
-
 
         tripManagerService.addTripManager(newTripManager);
 
@@ -47,7 +71,6 @@ public class TripManagerController {
     @PostMapping("/{id}/delete")
     public String deleteTripManager(@PathVariable String id) {
         tripManagerService.deleteTripManager(id);
-
         return "redirect:/tripmanager";
     }
 }
