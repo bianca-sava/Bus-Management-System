@@ -2,35 +2,63 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Route</title>
+
+    <title th:text="${route.id == null} ? 'Create New Route' : 'Edit Route'">Route Form</title>
+
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Route Form</h1>
 
-    <form th:action="@{/route}" method="post"> <div>
-        <label for="id">ID:</label>
-        <input type="text" id="id" name="id" /> </div>
+    <h1 th:text="${route.id == null} ? 'New Route Form' : 'Edit Route (' + ${route.id} + ')'">Route Form</h1>
 
-        <div>
-            <label for="originId">Origin (BusStation ID):</label>
-            <input type="text" id="originId" name="originId" /> </div>
+    <form th:action="${route.id == null} ? @{/route/create} : @{'/route/' + ${route.id}}" th:object="${route}" method="post">
 
         <div>
-            <label for="destinationId">Destination (BusStation ID):</label>
-            <input type="text" id="destinationId" name="destinationId" /> </div>
+            <label for="id">ID:</label>
+            <input type="text" id="id" th:field="*{id}"
+
+                   th:attrappend="readonly=${route.id != null} ? 'readonly'"
+                   class="readonly-field"
+                   required />
+        </div>
+
+        <div>
+            <label for="originId">Origin:</label>
+            <select id="originId" name="originId" required>
+                <option value="">-- Select Origin Station --</option>
+                <option th:each="station : ${allBusStations}"
+                        th:value="${station.id}"
+                        th:text="${station.name + ' (' + station.id + ')'}"
+                        th:selected="${route.origin != null and route.origin.id == station.id}">
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="destinationId">Destination:</label>
+            <select id="destinationId" name="destinationId" required>
+                <option value="">-- Select Destination Station --</option>
+                <option th:each="station : ${allBusStations}"
+                        th:value="${station.id}"
+                        th:text="${station.name + ' (' + station.id + ')'}"
+                        th:selected="${route.destination != null and route.destination.id == station.id}">
+                </option>
+            </select>
+        </div>
 
         <div>
             <label for="distance">Distance (km):</label>
-            <input type="number" step="0.01" id="distance" name="distance" /> </div>
+            <input type="number" step="0.01" id="distance" th:field="*{distance}" required />
+        </div>
 
         <div>
             <label for="nrOfStations">Number of Stations:</label>
-            <input type="number" id="nrOfStations" name="nrOfStations" /> </div>
+            <input type="number" id="nrOfStations" th:field="*{nrOfStations}" required />
+        </div>
 
         <div>
-            <button type="submit">Create Route</button>
+            <button type="submit" th:text="${route.id == null} ? 'Create Route' : 'Update Route'">Submit</button>
         </div>
     </form>
 </div>
