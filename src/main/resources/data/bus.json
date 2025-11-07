@@ -5,5 +5,19 @@
     "capacity" : 1,
     "status" : "Down",
     "nrOfPassengers" : 0
+  },
+  "2" : {
+    "id" : "2",
+    "registrationNumber" : "2",
+    "capacity" : 2,
+    "status" : "Down",
+    "nrOfPassengers" : 0
+  },
+  "4" : {
+    "id" : "4",
+    "registrationNumber" : "4",
+    "capacity" : 5,
+    "status" : "Down",
+    "nrOfPassengers" : 0
   }
 }
