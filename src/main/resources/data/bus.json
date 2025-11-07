@@ -1,0 +1,9 @@
+{
+  "1" : {
+    "id" : "1",
+    "registrationNumber" : "1",
+    "capacity" : 1,
+    "status" : "Down",
+    "nrOfPassengers" : 0
+  }
+}
