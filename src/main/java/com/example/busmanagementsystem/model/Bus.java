@@ -20,6 +20,14 @@ public class Bus {
         nrOfPassengers = 0;
     }
 
+    public Bus(String id, String registrationNumber, int capacity,  BusStatus status, int  nrOfPassengers) {
+        this.id = id;
+        this.registrationNumber = registrationNumber;
+        this.capacity = capacity;
+        this.status = status;
+        this.nrOfPassengers = nrOfPassengers;
+    }
+
     /// Getters
 
 //region
@@ -35,11 +43,8 @@ public class Bus {
         return capacity;
     }
 
-    public String getStatus() {
-        if (status == BusStatus.DOWN)
-            return "Down";
-        else
-            return "Active";
+    public BusStatus getStatus() {
+        return status;
     }
 
     public int getNrOfPassengers() {

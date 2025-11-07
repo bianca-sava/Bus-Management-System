@@ -1,6 +1,7 @@
 package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.model.Bus;
+import com.example.busmanagementsystem.model.BusStatus;
 import com.example.busmanagementsystem.service.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,35 @@ public class BusController {
         return "bus/form";
     }
 
-    @PostMapping
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+
+        model.addAttribute("statusOptions", BusStatus.values());
+
+        Bus existingBus = busService.findById(id);
+
+        if (existingBus != null) {
+            model.addAttribute("bus", existingBus);
+            return "bus/form";
+        }
+        return "redirect:/bus";
+    }
+
+    @PostMapping("/{id}")
+    public String updateBus(@PathVariable String id,
+                            @RequestParam String registrationNumber,
+                            @RequestParam int capacity,
+                            @RequestParam BusStatus status,
+                            @RequestParam int nrOfPassengers) {
+
+        Bus updatedBus = new Bus(id, registrationNumber, capacity, status, nrOfPassengers);
+
+        busService.update(id, updatedBus);
+
+        return "redirect:/bus";
+    }
+
+    @PostMapping("/create")
     public String createBus(@RequestParam String id,
                             @RequestParam String registrationNumber,
                             @RequestParam int capacity) {
