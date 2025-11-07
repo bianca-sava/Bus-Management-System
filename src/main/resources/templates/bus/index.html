@@ -37,12 +37,20 @@
         <td th:text="${item.id}">0</td>
         <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
         <td th:text="${item.capacity}">0</td>
-        <td th:text="${item.status}">Down</td>
+        <td th:text="${item.status.description}">Down</td>
         <td th:text="${item.nrOfPassengers}">0</td>
         <td>
-            <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            <div class="action-container">
+
+                <a th:href="@{'/bus/' + ${item.id} + '/edit'}" class="btn-warning">
+                    Edit
+                </a>
+
+                <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+
+            </div>
         </td>
     </tr>
     </tbody>

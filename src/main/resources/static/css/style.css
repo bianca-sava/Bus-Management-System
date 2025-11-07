@@ -79,6 +79,45 @@ form {
     background-color: #c82333;
 }
 
+/* Stil pentru Butonul de Editare (btn-warning) */
+.btn-warning {
+    /* Proprietăți de bază pentru a arăta ca un buton */
+    display: inline-block;
+    padding: 6px 12px;
+    margin-right: 5px; /* Păstrează un spațiu mic la dreapta */
+    margin-bottom: 5px; /* ADAUGAT: Spațiu sub buton, pentru a le separa pe verticală */
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+
+    /* Culorile specifice de Avertisment (Galben/Portocaliu) */
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}
+
+/* Efectul de hover (la trecerea mouse-ului) */
+.btn-warning:hover {
+    color: #fff;
+    background-color: #ec971f;
+    border-color: #d58512;
+}
+
+/* Containerul pentru Acțiuni (în celula tabelului)
+   Acesta este cel mai important stil pentru a le pune una sub alta!
+*/
+.action-container {
+    display: flex;
+    flex-direction: column; /* Aliniază copiii pe verticală (una sub alta) */
+    align-items: flex-start; /* Asigură că butoanele încep de la stânga (nu sunt centrate) */
+}
 
 /* --- 3. Compatibilitate Selectoare Originale (Păstrate pentru siguranță) --- */
 
@@ -174,3 +213,26 @@ td form {
     text-align: left;
 }
 
+/* Modificare: Container principal pentru centrare */
+.main-content-container {
+    /* Nu mai setăm max-width! Lăsăm tabelul să fie cât de lat are nevoie. */
+    width: 90%; /* Păstrează conținutul într-o zonă rezonabilă a ecranului */
+    margin: 30px auto; /* Centrare pe orizontală */
+    padding: 0 20px;
+}
+
+/* Asigură alinierea perfectă a textului în celule */
+table th,
+table td {
+    text-align: center; /* Centrează textul din toate coloanele, inclusiv anteturile */
+}
+
+{
+    text-align: left;
+    padding-left: 10px; /* Adaugă un mic spațiu */
+}
+
+/* Celula de acțiuni are nevoie de aliniere diferită pentru a arăta bine */
+table td:nth-child(6) {
+    text-align: center;
+}
