@@ -38,7 +38,8 @@ label {
 
 /* Stil pentru câmpurile de input */
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+select { /* <<< ADDED 'select' HERE */
     width: 100%;
     padding: 10px;
     border: 1px solid #B87C4C; /* Bordură în culoarea accentului */
