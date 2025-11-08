@@ -34,8 +34,34 @@ public class BusStationController {
         return "busStation/form";
     }
 
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        BusStation existingBusStation = busStationService.findById(id);
 
-    @PostMapping
+        if (existingBusStation != null) {
+            model.addAttribute("busStation", existingBusStation);
+            return "busStation/form";
+        }
+
+        return "redirect:/bus-station";
+    }
+
+    @PostMapping("/{id}")
+    public String updateBusStation(@RequestParam String id,
+                                   @RequestParam String name,
+                                   @RequestParam String city) {
+        BusStation existingBusStation = busStationService.findById(id);
+        if(existingBusStation != null) {
+            existingBusStation.setName(name);
+            existingBusStation.setCity(city);
+
+            busStationService.update(id, existingBusStation);
+        }
+
+        return "redirect:/bus-station";
+    }
+
+    @PostMapping("/create")
     public String createBusStation(@RequestParam String id,@RequestParam String name, @RequestParam String city) {
         busStationService.create(new BusStation(id, name, city));
         return "redirect:/bus-station";

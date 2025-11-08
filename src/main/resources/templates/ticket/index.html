@@ -28,20 +28,28 @@
         <th>Passenger ID</th>
         <th>Seat Number</th>
         <th>Price</th>
-        <th>Action</th>
+        <th>Checked In</th> <th>Action</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${ticket}">
+    <tr th:each="item : ${tickets}">
         <td th:text="${item.id}">TKT-001</td>
         <td th:text="${item.tripId}">TRIP-101</td>
         <td th:text="${item.passengerId}">PASS-500</td>
         <td th:text="${item.seatNumber}">15A</td>
         <td th:text="${item.price}">25.50</td>
+
+        <td th:text="${item.isCheckedIn ? 'Yes' : 'No'}">No</td>
+
         <td>
-            <form th:action="@{'/ticket/' + ${item.id} + '/delete'}" method="post">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            <div class="action-container">
+                <a th:href="@{'/ticket/' + ${item.id} + '/edit'}" class="btn-warning">
+                    Edit
+                </a>
+                <form th:action="@{'/ticket/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

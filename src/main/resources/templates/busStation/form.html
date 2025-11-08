@@ -2,29 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Bus Station</title>
+    <title>Bus Station Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Bus Station Form</h1>
+    <h1 th:text="${busStation.id == null} ? 'Create New Bus Station' : 'Edit Bus Station'">Bus Station Form</h1>
 
-    <form th:action="@{/bus-station}" th:object="${busStation}" method="post">
+    <form th:action="${busStation.id == null} ? @{/bus-station/create} : @{'/bus-station/' + ${busStation.id}}" th:object="${busStation}" method="post">
+
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" />
+            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busStation.id != null} ? 'readonly'" />
         </div>
+
         <div>
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" />
         </div>
+
         <div>
             <label for="city">City:</label>
             <input type="text" id="city" th:field="*{city}" />
         </div>
 
         <div>
-            <button type="submit">Create Bus Station</button>
+            <button type="submit" th:text="${busStation.id == null} ? 'Create Bus Station' : 'Save Changes'">Submit</button>
         </div>
     </form>
 </div>

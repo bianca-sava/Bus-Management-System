@@ -7,7 +7,6 @@
 
     <script>
         function goToNewPassengerPage() {
-            // Ruta către formularul de creare este /passenger/new
             window.location.href = '/passenger/new';
         }
     </script>
@@ -27,8 +26,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Currency</th>
-        <th>Action</th>
-    </tr>
+        <th>Action</th> </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${passengers}">
@@ -36,9 +34,17 @@
         <td th:text="${item.name}">John Doe</td>
         <td th:text="${item.currency}">EUR</td>
         <td>
-            <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            <div class="action-container">
+
+                <a th:href="@{'/passenger/' + ${item.id} + '/edit'}" class="btn-warning">
+                    Edit
+                </a>
+
+                <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+
+            </div>
         </td>
     </tr>
     </tbody>

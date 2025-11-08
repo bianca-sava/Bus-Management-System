@@ -1,6 +1,8 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.model.BusTrip;
+import com.example.busmanagementsystem.model.BusTripStatus;
 import com.example.busmanagementsystem.service.BusTripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +35,34 @@ public class BusTripController {
         return "busTrip/form";
     }
 
-    @PostMapping
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        BusTrip existingBusTrip = busTripService.findById(id);
+
+        if(existingBusTrip != null) {
+            model.addAttribute("busTrip", existingBusTrip);
+            model.addAttribute("statusOptions", BusTripStatus.values());
+            return "busTrip/form";
+        }
+
+        return "redirect:/bus-trip";
+    }
+
+    @PostMapping("/{id}")
+    public String updateBusTrip(@PathVariable String id,
+                                @RequestParam String routeId,
+                                @RequestParam String busId,
+                                @RequestParam String startTime,
+                                @RequestParam BusTripStatus status) {
+
+        BusTrip updatedBusTrip = new BusTrip(id, routeId, busId, startTime, status);
+
+        busTripService.update(id, updatedBusTrip);
+
+        return "redirect:/bus-trip";
+    }
+
+    @PostMapping("/create")
     public String createBusTrip(@RequestParam String id, @RequestParam String routeId, @RequestParam String busId, @RequestParam String startTime) {
         busTripService.create(new BusTrip(id, routeId, busId, startTime));
         return "redirect:/bus-trip";

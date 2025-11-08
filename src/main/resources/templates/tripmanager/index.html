@@ -39,9 +39,17 @@
         <td th:text="${item.name}">John Doe</td>
         <td th:text="${item.employeeCode}">EM-001</td>
         <td>
-            <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            <div class="action-container">
+
+                <a th:href="@{'/tripmanager/' + ${item.id} + '/edit'}" class="btn-warning">
+                    Edit
+                </a>
+
+                <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+
+            </div>
         </td>
     </tr>
     </tbody>

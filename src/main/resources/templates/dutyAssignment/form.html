@@ -2,40 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Duty Assignment</title>
+    <title>Duty Assignment Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Duty Assignment Form</h1>
+    <h1 th:text="${dutyAssignment.id == null} ? 'Create New Duty Assignment' : 'Edit Duty Assignment'">Duty Assignment Form</h1>
 
-    <form th:action="@{/duty-assignment}" method="post">
+    <form th:action="${dutyAssignment.id == null} ? @{/duty-assignment/create} : @{'/duty-assignment/' + ${dutyAssignment.id}}" th:object="${dutyAssignment}" method="post">
+
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" name="id" />
+            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${dutyAssignment.id != null} ? 'readonly'" />
         </div>
+
         <div>
             <label for="tripId">Trip ID:</label>
-            <input type="text" id="tripId" name="tripId" />
+            <input type="text" id="tripId" th:field="*{tripId}" />
         </div>
+
         <div>
             <label for="staffId">Staff ID:</label>
-            <input type="text" id="staffId" name="staffId" />
+            <input type="text" id="staffId" th:field="*{staffId}" />
         </div>
 
         <div>
             <label for="role">Role:</label>
-            <select id="role" name="role">
+            <select id="role" th:field="*{role}">
                 <option th:each="r : ${roles}"
                         th:value="${r}"
                         th:text="${r}">
-                    RESERVE_DRIVER
+                    DRIVER
                 </option>
             </select>
         </div>
 
         <div>
-            <button type="submit">Create Duty Assignment</button>
+            <button type="submit" th:text="${dutyAssignment.id == null} ? 'Create Duty Assignment' : 'Save Changes'">Submit</button>
         </div>
     </form>
 </div>

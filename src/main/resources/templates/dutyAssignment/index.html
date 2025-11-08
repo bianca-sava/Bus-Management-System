@@ -27,8 +27,7 @@
         <th>Trip ID</th>
         <th>Staff ID</th>
         <th>Role</th>
-        <th>Action</th>
-    </tr>
+        <th>Actions</th> </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${dutyAssignments}">
@@ -37,8 +36,10 @@
         <td th:text="${item.staffId}">D-01</td>
         <td th:text="${item.role}">DRIVER</td>
 
-        <td>
-            <form th:action="@{'/duty-assignment/' + ${item.id} + '/delete'}" method="post">
+        <td class="action-cell">
+            <a th:href="@{'/duty-assignment/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+
+            <form th:action="@{'/duty-assignment/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
         </td>

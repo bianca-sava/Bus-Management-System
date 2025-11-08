@@ -26,8 +26,8 @@
         <th>ID</th>
         <th>Name</th>
         <th>Years of Experience</th>
-        <th>Assignments</th> <th>Action</th>
-    </tr>
+        <th>Assignments</th>
+        <th>Actions</th> </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${drivers}">
@@ -37,8 +37,10 @@
 
         <td th:text="${item.assignments.size}">0</td>
 
-        <td>
-            <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post">
+        <td class="action-cell">
+            <a th:href="@{'/driver/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+
+            <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
         </td>

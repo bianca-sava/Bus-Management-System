@@ -27,8 +27,7 @@
         <th>Name</th>
         <th>City</th>
         <th>Trips</th>
-        <th>Action</th>
-    </tr>
+        <th>Actions</th> </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${busStations}">
@@ -37,8 +36,10 @@
         <td th:text="${item.city}">Metropolis</td>
         <td th:text="${item.trips.size}">0</td>
 
-        <td>
-            <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post">
+        <td class="action-cell">
+            <a th:href="@{'/bus-station/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+
+            <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
         </td>

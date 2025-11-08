@@ -35,8 +35,33 @@ public class DutyAssignmentController {
         return "dutyAssignment/form";
     }
 
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
 
-    @PostMapping
+        DutyAssignment existingAssignment = dutyAssignmentService.getAssignmentById(id);
+
+        if (existingAssignment != null) {
+            model.addAttribute("dutyAssignment", existingAssignment);
+            model.addAttribute("roles", Role.values());
+            return "dutyAssignment/form";
+        }
+        return "redirect:/duty-assignment";
+    }
+
+    @PostMapping("/{id}")
+    public String updateDutyAssignment(@PathVariable String id,
+                                       @RequestParam String tripId,
+                                       @RequestParam String staffId,
+                                       @RequestParam Role role) {
+
+        DutyAssignment updatedAssignment = new DutyAssignment(id, tripId, staffId, role);
+
+        dutyAssignmentService.updateAssignment(id,  updatedAssignment);
+
+        return "redirect:/duty-assignment";
+    }
+
+    @PostMapping("/create")
     public String createDutyAssignment(@RequestParam String id,
                                        @RequestParam String tripId,
                                        @RequestParam String staffId,

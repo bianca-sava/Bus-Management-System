@@ -7,7 +7,7 @@
 
     <script>
         function goToNewRoutePage() {
-            // Ruta către formularul de creare este /route/new
+            // This path is correct
             window.location.href = '/route/new';
         }
     </script>
@@ -25,8 +25,8 @@
     <thead>
     <tr>
         <th>ID</th>
-        <th>Origin (Station ID)</th>
-        <th>Destination (Station ID)</th>
+        <th>Origin</th>
+        <th>Destination</th>
         <th>Distance (km)</th>
         <th>Stations</th>
         <th>Action</th>
@@ -35,14 +35,23 @@
     <tbody>
     <tr th:each="item : ${routes}">
         <td th:text="${item.id}">R-001</td>
-        <td th:text="${item.origin.id}">ST-1</td>
-        <td th:text="${item.destination.id}">ST-2</td>
+
+        <td th:text="${item.origin.name + ' (' + item.origin.id + ')'}">Origin Station (ST-1)</td>
+        <td th:text="${item.destination.name + ' (' + item.destination.id + ')'}">Dest. Station (ST-2)</td>
+
         <td th:text="${item.distance}">45.5</td>
         <td th:text="${item.nrOfStations}">12</td>
         <td>
-            <form th:action="@{'/route/' + ${item.id} + '/delete'}" method="post">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            <div class="action-container">
+
+                <a th:href="@{'/route/' + ${item.id} + '/edit'}" class="btn-warning">
+                    Edit
+                </a>
+
+                <form th:action="@{'/route/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

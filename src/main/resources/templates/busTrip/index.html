@@ -6,7 +6,6 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
-        // Funcție adaptată pentru BusTrip
         function goToNewBusTripPage() {
             window.location.href = '/bus-trip/new';
         }
@@ -29,8 +28,9 @@
         <th>Bus ID</th>
         <th>Start Time</th>
         <th>Status</th>
-        <th>Tickets</th>     <th>Assignments</th> <th>Action</th>
-    </tr>
+        <th>Tickets</th>
+        <th>Assignments</th>
+        <th>Actions</th> </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${busTrips}">
@@ -42,8 +42,10 @@
         <td th:text="${item.tickets.size}">0</td>
         <td th:text="${item.assignments.size}">0</td>
 
-        <td>
-            <form th:action="@{'/bus-trip/' + ${item.id} + '/delete'}" method="post">
+        <td class="action-cell">
+            <a th:href="@{'/bus-trip/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+
+            <form th:action="@{'/bus-trip/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
         </td>

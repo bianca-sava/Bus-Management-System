@@ -2,33 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Bus Trip</title>
+    <title>Bus Trip Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Bus Trip Form</h1>
+    <h1 th:text="${busTrip.id == null} ? 'Create New Bus Trip' : 'Edit Bus Trip'">Bus Trip Form</h1>
 
-    <form th:action="@{/bus-trip}" th:object="${busTrip}" method="post">
+    <form th:action="${busTrip.id == null} ? @{/bus-trip/create} : @{'/bus-trip/' + ${busTrip.id}}" th:object="${busTrip}" method="post">
+
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" />
+            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busTrip.id != null} ? 'readonly'" />
         </div>
+
         <div>
             <label for="routeId">Route ID:</label>
             <input type="text" id="routeId" th:field="*{routeId}" />
         </div>
+
         <div>
             <label for="busId">Bus ID:</label>
             <input type="text" id="busId" th:field="*{busId}" />
         </div>
+
         <div>
             <label for="startTime">Start Time:</label>
             <input type="text" id="startTime" th:field="*{startTime}" />
         </div>
 
+        <div th:if="${busTrip.id != null}">
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}">
+                <option th:each="stat : ${statusOptions}"
+                        th:value="${stat}"
+                        th:text="${stat.description}">Planned Status</option>
+            </select>
+        </div>
+
         <div>
-            <button type="submit">Create Bus Trip</button>
+            <button type="submit" th:text="${busTrip.id == null} ? 'Create Bus Trip' : 'Save Changes'">Submit</button>
         </div>
     </form>
 </div>

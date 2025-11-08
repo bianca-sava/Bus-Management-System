@@ -2,17 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Driver</title>
+    <title>Driver Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1>New Driver Form</h1>
+    <h1 th:text="${driver.id == null} ? 'Create New Driver' : 'Edit Driver'">Driver Form</h1>
 
-    <form th:action="@{/driver}" th:object="${driver}" method="post">
+    <form th:action="${driver.id == null} ? @{/driver/create} : @{'/driver/' + ${driver.id}}" th:object="${driver}" method="post">
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" />
+            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${driver.id != null} ? 'readonly'" />
         </div>
         <div>
             <label for="name">Name:</label>
@@ -24,7 +24,7 @@
         </div>
 
         <div>
-            <button type="submit">Create Driver</button>
+            <button type="submit" th:text="${driver.id == null} ? 'Create Driver' : 'Save Changes'">Submit</button>
         </div>
     </form>
 </div>
