@@ -25,37 +25,80 @@ public class RouteController {
     @GetMapping
     public String getAllRoutes(Model model) {
         model.addAttribute("routes", routeService.findAll().values());
-
         return "route/index";
     }
 
     @GetMapping("/new")
-    public String createRoute(Model model) {
+    public String showCreateForm(Model model) {
+        model.addAttribute("route", new Route());
+
+        model.addAttribute("allBusStations", busStationService.findAll().values());
 
         return "route/form";
     }
 
-    @PostMapping
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+
+        Route existingRoute = routeService.findById(id);
+
+        if (existingRoute != null) {
+            model.addAttribute("route", existingRoute);
+
+            model.addAttribute("allBusStations", busStationService.findAll().values());
+
+            return "route/form";
+        }
+
+        return "redirect:/route";
+    }
+
+    @PostMapping("/{id}")
+    public String updateRoute(@PathVariable String id,
+                              @RequestParam String originId,
+                              @RequestParam String destinationId,
+                              @RequestParam double distance,
+                              @RequestParam int nrOfStations) {
+
+        Route existingRoute = routeService.findById(id);
+
+        if (existingRoute != null) {
+
+            BusStation origin = busStationService.findById(originId);
+            BusStation destination = busStationService.findById(destinationId);
+
+            existingRoute.setOrigin(origin);
+            existingRoute.setDestination(destination);
+            existingRoute.setDistance(distance);
+            existingRoute.setNrOfStations(nrOfStations);
+
+            routeService.update(id, existingRoute);
+        }
+
+        return "redirect:/route";
+    }
+
+
+    @PostMapping("/create")
     public String createRoute(@RequestParam String id,
                               @RequestParam String originId,
                               @RequestParam String destinationId,
                               @RequestParam double distance,
                               @RequestParam int nrOfStations) {
 
-         BusStation origin = busStationService.findById(originId);
-         BusStation destination = busStationService.findById(destinationId);
+        BusStation origin = busStationService.findById(originId);
+        BusStation destination = busStationService.findById(destinationId);
 
-         Route newRoute = new Route(id, origin, destination, distance, nrOfStations);
+        Route newRoute = new Route(id, origin, destination, distance, nrOfStations);
 
-         routeService.create(newRoute);
+        routeService.create(newRoute);
 
-         return "redirect:/route";
+        return "redirect:/route";
     }
 
     @PostMapping("/{id}/delete")
     public String deleteRoute(@PathVariable String id) {
         routeService.delete(id);
-
         return "redirect:/route";
     }
 }

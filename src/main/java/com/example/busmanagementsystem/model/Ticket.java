@@ -6,10 +6,10 @@ public class Ticket {
     private String passengerId;
     private String seatNumber;
     private double price;
-    boolean isCheckedIn;
+    boolean checkedIn;
 
     public Ticket() {
-        isCheckedIn = false;
+        checkedIn = false;
     }
 
     public Ticket(String id, String tripId, String passengerId, String seatNumber, double price) {
@@ -18,7 +18,7 @@ public class Ticket {
         this.passengerId = passengerId;
         this.seatNumber = seatNumber;
         this.price = price;
-        isCheckedIn = false;
+        checkedIn = false;
     }
 
     ///  Getters and Setters
@@ -64,11 +64,11 @@ public class Ticket {
     }
 
     public boolean isCheckedIn() {
-        return isCheckedIn;
+        return checkedIn;
     }
 
     public void setCheckedIn(boolean checkedIn) {
-        isCheckedIn = checkedIn;
+        this.checkedIn = checkedIn;
     }
     //endregion
 
