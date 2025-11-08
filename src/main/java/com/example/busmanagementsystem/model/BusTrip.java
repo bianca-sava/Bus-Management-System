@@ -14,6 +14,17 @@ public class BusTrip {
     private BusTripStatus status;
 
     public BusTrip() {}
+
+    public BusTrip(String id, String routeId, String busId, String startTime, BusTripStatus status) {
+        this.id = id;
+        this.routeId = routeId;
+        this.busId = busId;
+        this.startTime = startTime;
+        this.status = status;
+        tickets = new ArrayList<Ticket>();
+        assignments = new ArrayList<DutyAssignment>();
+    }
+
     public BusTrip(String id, String routeId, String busId, String startTime) {
         this.id = id;
         this.routeId = routeId;
