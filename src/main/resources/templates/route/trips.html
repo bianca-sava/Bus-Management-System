@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Route Trips</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="back-button-container">
+  <a th:href="@{/route}" class="btn btn-primary">⬅ Back to Routes</a>
+</div>
+
+<h1 th:text="'Trips for Route: ' + ${routeName}">Route Trips</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Trip ID</th>
+    <th>Bus ID</th>
+    <th>Start Time</th>
+    <th>Status</th>
+    <th>Tickets</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="trip : ${trips}">
+    <td th:text="${trip.id}">T1</td>
+    <td th:text="${trip.busId}">B55</td>
+    <td th:text="${trip.startTime}">10:00</td>
+    <td th:text="${trip.status}">PLANNED</td>
+    <td th:text="${trip.tickets.size}">0</td>
+    <td class="action-cell">
+      <form th:action="@{'/route/' + ${routeId} + '/trips/' + ${trip.id} + '/delete'}" method="post" style="display: inline;">
+        <button type="submit" class="btn-danger">Delete</button>
+      </form>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(trips)}">
+    <td colspan="6" style="text-align:center;">No trips assigned to this route.</td>
+  </tr>
+  </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+<div class="action-button-right">
+  <a th:href="@{'/route/' + ${routeId} + '/trips/new'}" class="btn btn-success">Add New Trip</a>
+</div>
+</body>
+</html>

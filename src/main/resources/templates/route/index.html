@@ -4,19 +4,10 @@
     <meta charset="UTF-8">
     <title>Route Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        function goToNewRoutePage() {
-            // This path is correct
-            window.location.href = '/route/new';
-        }
-    </script>
 </head>
 <body>
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
 </div>
 
 <h1>Route List</h1>
@@ -28,39 +19,36 @@
         <th>Origin</th>
         <th>Destination</th>
         <th>Distance (km)</th>
-        <th>Stations</th>
-        <th>Action</th>
+        <th>Stops</th>
+        <th>Trips</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${routes}">
-        <td th:text="${item.id}">R-001</td>
+        <td th:text="${item.id}">R1</td>
+        <td th:text="${item.origin.name}">Cluj-Napoca</td>
+        <td th:text="${item.destination.name}">Bucuresti</td>
+        <td th:text="${item.distance}">450.0</td>
+        <td th:text="${item.nrOfStations}">5</td>
+        <td th:text="${item.trips.size}">0</td>
 
-        <td th:text="${item.origin.name + ' (' + item.origin.id + ')'}">Origin Station (ST-1)</td>
-        <td th:text="${item.destination.name + ' (' + item.destination.id + ')'}">Dest. Station (ST-2)</td>
+        <td class="action-cell">
+            <a th:href="@{'/route/' + ${item.id} + '/trips'}" class="btn-warning">View Trips</a>
 
-        <td th:text="${item.distance}">45.5</td>
-        <td th:text="${item.nrOfStations}">12</td>
-        <td>
-            <div class="action-container">
+            <a th:href="@{'/route/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
 
-                <a th:href="@{'/route/' + ${item.id} + '/edit'}" class="btn-warning">
-                    Edit
-                </a>
-
-                <form th:action="@{'/route/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn-danger">Delete</button>
-                </form>
-            </div>
+            <form th:action="@{'/route/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
         </td>
     </tr>
     </tbody>
 </table>
 
 <div style="height: 40px;"></div>
-
 <div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewRoutePage()">Add New Route</button>
+    <a th:href="@{/route/new}" class="btn btn-success">Add New Route</a>
 </div>
 </body>
 </html>
