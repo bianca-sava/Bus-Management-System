@@ -1,0 +1,62 @@
+{
+  "station-cluj-004" : {
+    "id" : "station-cluj-004",
+    "name" : "Statie Piata Marastii",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-005" : {
+    "id" : "station-cluj-005",
+    "name" : "Statie Piata Cipariu",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-002" : {
+    "id" : "station-cluj-002",
+    "name" : "Autogara Fany",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-003" : {
+    "id" : "station-cluj-003",
+    "name" : "Gara Centrala",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-001" : {
+    "id" : "station-cluj-001",
+    "name" : "Sora",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-010" : {
+    "id" : "station-cluj-010",
+    "name" : "Statie Regionala",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-008" : {
+    "id" : "station-cluj-008",
+    "name" : "Statie Piata Garii",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-009" : {
+    "id" : "station-cluj-009",
+    "name" : "Statie Memorandumului",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-006" : {
+    "id" : "station-cluj-006",
+    "name" : "Statie Zorilor",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  },
+  "station-cluj-007" : {
+    "id" : "station-cluj-007",
+    "name" : "Statie Manastur",
+    "city" : "Cluj-Napoca",
+    "trips" : [ ]
+  }
+}
