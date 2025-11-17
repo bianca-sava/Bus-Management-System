@@ -74,3 +74,27 @@ input[type="number"]:focus {
     /* Folosește stilul existent: background-color: #dc3545; etc. */
     background-color: #A8BBA3;
 }
+
+/* Stilul de bază pentru butonul de Cancel (Roșu) */
+.btn-cancel {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #dc3545; /* Roșu intens */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px; /* Similar cu butonul de submit */
+    border: 1px solid #dc3545;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Tranziție fină */
+    margin-top: 15px;
+    text-align: center;
+    width: 93%;
+}
+
+/* Stilul la hover (Roșu mai deschis/spălăcit) */
+.btn-cancel:hover {
+    background-color: #e4888b; /* Un roșu mai deschis, spălăcit */
+    border-color: #e4888b;
+    color: white;
+}
