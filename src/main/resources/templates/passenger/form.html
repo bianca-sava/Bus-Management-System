@@ -2,43 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
-    <title th:text="${passenger.id == null} ? 'Create New Passenger' : 'Edit Passenger'">Passenger Form</title>
-
+    <title>Passenger Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
 <body style="color: #333;">
 <div class="form-container">
+    <h1 th:text="${passenger.id == null} ? 'Create New Passenger' : 'Edit Passenger'">Passenger Form</h1>
 
-    <h1 th:text="${passenger.id == null} ? 'New Passenger Form' : 'Edit Passenger (' + ${passenger.id} + ')'">Passenger Form</h1>
-
-    <form th:action="${passenger.id == null} ? @{/passenger/create} : @{'/passenger/' + ${passenger.id}}" th:object="${passenger}" method="post">
+    <form th:action="${passenger.id == null} ? @{/passenger/create} : @{'/passenger/' + ${passenger.id}}"
+          th:object="${passenger}"
+          method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}"
-
-                   th:attrappend="readonly=${passenger.id != null} ? 'readonly'"
-                   class="readonly-field"
-                   required />
+            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${passenger.id != null} ? 'readonly'" />
         </div>
 
         <div>
             <label for="name">Name:</label>
-
-            <input type="text" id="name" th:field="*{name}" required />
+            <input type="text" id="name" th:field="*{name}" />
         </div>
 
         <div>
             <label for="currency">Currency:</label>
-
-            <input type="text" id="currency" th:field="*{currency}" required />
+            <input type="text" id="currency" th:field="*{currency}" />
         </div>
 
         <div>
-            <button type="submit" th:text="${passenger.id == null} ? 'Create Passenger' : 'Update Passenger'">Submit</button>
+            <button type="submit" th:text="${passenger.id == null} ? 'Create Passenger' : 'Save Changes'">Submit</button>
         </div>
     </form>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <a th:href="@{/passenger}" class="btn-cancel">Cancel</a>
+    </div>
 </div>
 </body>
 </html>

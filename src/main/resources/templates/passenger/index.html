@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <title>Passenger Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        function goToNewPassengerPage() {
-            window.location.href = '/passenger/new';
-        }
-    </script>
 </head>
 <body>
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
 </div>
 
 <h1>Passenger List</h1>
@@ -26,34 +18,31 @@
         <th>ID</th>
         <th>Name</th>
         <th>Currency</th>
-        <th>Action</th> </tr>
+        <th>Tickets</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${passengers}">
-        <td th:text="${item.id}">PASS-001</td>
+        <td th:text="${item.id}">P1</td>
         <td th:text="${item.name}">John Doe</td>
-        <td th:text="${item.currency}">EUR</td>
-        <td>
-            <div class="action-container">
+        <td th:text="${item.currency}">RON</td>
+        <td th:text="${item.tickets.size}">0</td>
 
-                <a th:href="@{'/passenger/' + ${item.id} + '/edit'}" class="btn-warning">
-                    Edit
-                </a>
-
-                <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn-danger">Delete</button>
-                </form>
-
-            </div>
+        <td class="action-cell">
+            <a th:href="@{'/passenger/' + ${item.id} + '/tickets'}" class="btn-warning">View Tickets</a>
+            <a th:href="@{'/passenger/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+            <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
         </td>
     </tr>
     </tbody>
 </table>
 
 <div style="height: 40px;"></div>
-
 <div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewPassengerPage()">Add New Passenger</button>
+    <a th:href="@{/passenger/new}" class="btn btn-success">Add New Passenger</a>
 </div>
 </body>
 </html>
