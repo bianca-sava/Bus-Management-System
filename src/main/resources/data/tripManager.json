@@ -1,0 +1,62 @@
+{
+  "tm-001": {
+    "id": "tm-001",
+    "name": "Elena Popa",
+    "assignments": [],
+    "employeeCode": "TM1001"
+  },
+  "tm-002": {
+    "id": "tm-002",
+    "name": "Dan Iliescu",
+    "assignments": [],
+    "employeeCode": "TM1002"
+  },
+  "tm-003": {
+    "id": "tm-003",
+    "name": "Ana Maria Craciun",
+    "assignments": [],
+    "employeeCode": "TM1003"
+  },
+  "tm-004": {
+    "id": "tm-004",
+    "name": "Bogdan Vasilescu",
+    "assignments": [],
+    "employeeCode": "TM1004"
+  },
+  "tm-005": {
+    "id": "tm-005",
+    "name": "Simona Halep",
+    "assignments": [],
+    "employeeCode": "TM1005"
+  },
+  "tm-006": {
+    "id": "tm-006",
+    "name": "Catalin Morosanu",
+    "assignments": [],
+    "employeeCode": "TM1006"
+  },
+  "tm-007": {
+    "id": "tm-007",
+    "name": "Lucian Bute",
+    "assignments": [],
+    "employeeCode": "TM1007"
+  },
+  "tm-008": {
+    "id": "tm-008",
+    "name": "David Popovici",
+    "assignments": [],
+    "employeeCode": "TM1008"
+  },
+  "tm-009": {
+    "id": "tm-009",
+    "name": "Cristina Neagu",
+    "assignments": [],
+    "employeeCode": "TM1009"
+  },
+  "tm-010": {
+    "id": "tm-010",
+    "name": "Gheorghe Hagi",
+    "assignments": [],
+    "employeeCode": "TM1010"
+  }
+}

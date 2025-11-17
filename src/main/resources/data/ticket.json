@@ -1,0 +1,82 @@
+{
+  "tkt-001": {
+    "id": "tkt-001",
+    "tripId": "trip-001",
+    "passengerId": "pass-001",
+    "seatNumber": "1A",
+    "price": 15.0,
+    "checkedIn": false
+  },
+  "tkt-002": {
+    "id": "tkt-002",
+    "tripId": "trip-001",
+    "passengerId": "pass-002",
+    "seatNumber": "1B",
+    "price": 15.0,
+    "checkedIn": false
+  },
+  "tkt-003": {
+    "id": "tkt-003",
+    "tripId": "trip-002",
+    "passengerId": "pass-003",
+    "seatNumber": "2A",
+    "price": 18.0,
+    "checkedIn": false
+  },
+  "tkt-004": {
+    "id": "tkt-004",
+    "tripId": "trip-003",
+    "passengerId": "pass-004",
+    "seatNumber": "1C",
+    "price": 22.5,
+    "checkedIn": false
+  },
+  "tkt-005": {
+    "id": "tkt-005",
+    "tripId": "trip-003",
+    "passengerId": "pass-005",
+    "seatNumber": "1D",
+    "price": 22.5,
+    "checkedIn": false
+  },
+  "tkt-006": {
+    "id": "tkt-006",
+    "tripId": "trip-004",
+    "passengerId": "pass-006",
+    "seatNumber": "3A",
+    "price": 12.0,
+    "checkedIn": false
+  },
+  "tkt-007": {
+    "id": "tkt-007",
+    "tripId": "trip-006",
+    "passengerId": "pass-007",
+    "seatNumber": "4B",
+    "price": 30.0,
+    "checkedIn": false
+  },
+  "tkt-008": {
+    "id": "tkt-008",
+    "tripId": "trip-006",
+    "passengerId": "pass-008",
+    "seatNumber": "4C",
+    "price": 30.0,
+    "checkedIn": false
+  },
+  "tkt-009": {
+    "id": "tkt-009",
+    "tripId": "trip-007",
+    "passengerId": "pass-009",
+    "seatNumber": "1A",
+    "price": 15.0,
+    "checkedIn": false
+  },
+  "tkt-010": {
+    "id": "tkt-010",
+    "tripId": "trip-007",
+    "passengerId": "pass-010",
+    "seatNumber": "1B",
+    "price": 15.0,
+    "checkedIn": false
+  }
+}
