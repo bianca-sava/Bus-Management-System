@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Passenger Tickets</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="back-button-container">
+  <a th:href="@{/passenger}" class="btn btn-primary">⬅ Back to Passengers</a>
+</div>
+
+<h1 th:text="'Tickets for ' + ${passengerName}">Passenger Tickets</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Ticket ID</th>
+    <th>Trip ID</th>
+    <th>Seat</th>
+    <th>Price</th>
+    <th>Checked In</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="ticket : ${tickets}">
+    <td th:text="${ticket.id}">T1</td>
+    <td th:text="${ticket.tripId}">TRIP1</td>
+    <td th:text="${ticket.seatNumber}">1A</td>
+    <td th:text="${ticket.price}">15.0</td>
+    <td th:text="${ticket.checkedIn}">false</td>
+    <td class="action-cell">
+      <form th:action="@{'/passenger/' + ${passengerId} + '/tickets/' + ${ticket.id} + '/delete'}" method="post" style="display: inline;">
+        <button type="submit" class="btn-danger">Delete</button>
+      </form>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(tickets)}">
+    <td colspan="6" style="text-align:center;">No tickets found for this passenger.</td>
+  </tr>
+  </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+<div class="action-button-right">
+  <a th:href="@{'/passenger/' + ${passengerId} + '/tickets/new'}" class="btn btn-success">Add New Ticket</a>
+</div>
+</body>
+</html>

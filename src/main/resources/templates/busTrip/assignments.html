@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Assignments</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="back-button-container">
+    <a th:href="@{/bus-trip}" class="btn btn-primary">⬅ Back to Bus Trips</a>
+</div>
+
+<h1 th:text="'Staff Assignments for ' + ${tripName}">Trip Assignments</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Assignment ID</th>
+        <th>Staff ID</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="assignment : ${assignments}">
+        <td th:text="${assignment.id}">DA1</td>
+        <td th:text="${assignment.staffId}">S1</td>
+        <td th:text="${assignment.role}">DRIVER</td>
+        <td class="action-cell">
+            <form th:action="@{'/bus-trip/' + ${tripId} + '/assignments/' + ${assignment.id} + '/delete'}" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(assignments)}">
+        <td colspan="4" style="text-align:center;">No staff assigned to this trip.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+<div class="action-button-right">
+    <a th:href="@{'/bus-trip/' + ${tripId} + '/assignments/new'}" class="btn btn-success">Add New Assignment</a>
+</div>
+</body>
+</html>

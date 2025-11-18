@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Tickets</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="back-button-container">
+    <a th:href="@{/bus-trip}" class="btn btn-primary">⬅ Back to Bus Trips</a>
+</div>
+
+<h1 th:text="'Tickets for ' + ${tripName}">Trip Tickets</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Ticket ID</th>
+        <th>Passenger ID</th>
+        <th>Seat</th>
+        <th>Price</th>
+        <th>Checked In</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.id}">T1</td>
+        <td th:text="${ticket.passengerId}">P1</td>
+        <td th:text="${ticket.seatNumber}">1A</td>
+        <td th:text="${ticket.price}">15.0</td>
+        <td th:text="${ticket.checkedIn}">false</td> <!-- Am corectat, "checkedIn" e proprietatea corectă -->
+        <td class="action-cell">
+            <form th:action="@{'/bus-trip/' + ${tripId} + '/tickets/' + ${ticket.id} + '/delete'}" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(tickets)}">
+        <td colspan="6" style="text-align:center;">No tickets assigned to this trip.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+<div class="action-button-right">
+    <a th:href="@{'/bus-trip/' + ${tripId} + '/tickets/new'}" class="btn btn-success">Add New Ticket</a>
+</div>
+</body>
+</html>

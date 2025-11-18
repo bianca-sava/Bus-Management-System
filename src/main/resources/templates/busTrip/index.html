@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <title>Bus Trip Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        function goToNewBusTripPage() {
-            window.location.href = '/bus-trip/new';
-        }
-    </script>
 </head>
 <body>
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
 </div>
 
 <h1>Bus Trip List</h1>
@@ -30,21 +22,23 @@
         <th>Status</th>
         <th>Tickets</th>
         <th>Assignments</th>
-        <th>Actions</th> </tr>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${busTrips}">
-        <td th:text="${item.id}">TR-01</td>
-        <td th:text="${item.routeId}">R-01</td>
-        <td th:text="${item.busId}">B-100</td>
-        <td th:text="${item.startTime}">2025-11-02T14:00</td>
+        <td th:text="${item.id}">TRIP1</td>
+        <td th:text="${item.routeId}">ROUTE1</td>
+        <td th:text="${item.busId}">BUS1</td>
+        <td th:text="${item.startTime}">10:00</td>
         <td th:text="${item.status}">PLANNED</td>
         <td th:text="${item.tickets.size}">0</td>
         <td th:text="${item.assignments.size}">0</td>
 
         <td class="action-cell">
+            <a th:href="@{'/bus-trip/' + ${item.id} + '/tickets'}" class="btn-warning">View Tickets</a>
+            <a th:href="@{'/bus-trip/' + ${item.id} + '/assignments'}" class="btn-warning">View Staff</a>
             <a th:href="@{'/bus-trip/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-
             <form th:action="@{'/bus-trip/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
@@ -54,9 +48,8 @@
 </table>
 
 <div style="height: 40px;"></div>
-
 <div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewBusTripPage()">Add New Bus Trip</button>
+    <a th:href="@{/bus-trip/new}" class="btn btn-success">Add New Bus Trip</a>
 </div>
 </body>
 </html>

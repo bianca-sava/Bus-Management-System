@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Assign Trip to Route</title>
+  <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+</head>
+<body style="color: #333;">
+<div class="form-container">
+  <h1>Add Trip to Route</h1>
+
+  <form th:action="@{'/route/' + ${routeId} + '/trips/add'}" method="post">
+    <div>
+      <label for="tripSelect">Choose a Bus Trip:</label>
+      <select id="tripSelect" name="selectedTripId" style="width: 100%; padding: 8px; margin-top: 5px;">
+        <option value="" disabled selected>-- Select an existing trip --</option>
+        <option th:each="trip : ${availableTrips}"
+                th:value="${trip.id}"
+                th:text="${trip.id} + ' - Bus: ' + ${trip.busId} + ' (' + ${trip.startTime} + ')'">
+        </option>
+      </select>
+    </div>
+    <div>
+      <button type="submit">Add Trip</button>
+    </div>
+  </form>
+  <div style="margin-top: 15px; text-align: center;">
+    <a th:href="@{'/route/' + ${routeId} + '/trips'}" class="btn-cancel">Cancel</a>
+  </div>
+</div>
+</body>
+</html>
