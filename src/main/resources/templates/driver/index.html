@@ -38,6 +38,8 @@
         <td th:text="${item.assignments.size}">0</td>
 
         <td class="action-cell">
+            <a th:href="@{'/driver/' + ${item.id} + '/assignments'}" class="btn-warning" style="margin-right: 5px;">View Assignments</a>
+
             <a th:href="@{'/driver/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
 
             <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
