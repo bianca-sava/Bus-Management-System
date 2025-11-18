@@ -33,12 +33,9 @@
             </select>
         </div>
 
-        <!-- Dropdown pentru Destinație -->
         <div>
             <label for="destinationId">Destination:</label>
-            <!--
-                CORECTAT: La fel și aici, folosim name="destinationId"
-            -->
+
             <select id="destinationId" name="destinationId">
                 <option value="" disabled th:selected="${route.destination == null}">-- Selectează o stație de sosire --</option>
 
