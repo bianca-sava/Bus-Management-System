@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class BusTripController {
 
     private final BusTripService busTripService;
-    // --- ADĂUGAT ---
-    // Avem nevoie de aceste servicii pentru a gestiona listele
     private final TicketService ticketService;
     private final DutyAssignmentsService dutyAssignmentService;
 

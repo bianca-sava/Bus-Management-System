@@ -18,22 +18,28 @@
             <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busTrip.id != null} ? 'readonly'" />
         </div>
 
+        <!-- Dropdown Rute -->
         <div>
             <label for="routeId">Route:</label>
             <select id="routeId" th:field="*{routeId}">
                 <option value="" disabled>-- Selectează o rută --</option>
-                <option th:each="route : ${availableRoutes}"
+                <!-- Verificăm dacă availableRoutes există înainte de a itera -->
+                <option th:if="${availableRoutes != null}"
+                        th:each="route : ${availableRoutes}"
                         th:value="${route.id}"
                         th:text="${route.origin.name} + ' - ' + ${route.destination.name}">
                 </option>
             </select>
         </div>
 
+        <!-- Dropdown Autobuze -->
         <div>
             <label for="busId">Bus:</label>
             <select id="busId" th:field="*{busId}">
                 <option value="" disabled>-- Selectează un autobuz --</option>
-                <option th:each="bus : ${availableBuses}"
+                <!-- Verificăm dacă availableBuses există -->
+                <option th:if="${availableBuses != null}"
+                        th:each="bus : ${availableBuses}"
                         th:value="${bus.id}"
                         th:text="${bus.registrationNumber} + ' (Cap: ' + ${bus.capacity} + ')'">
                 </option>
@@ -42,11 +48,11 @@
 
         <div>
             <label for="startTime">Start Time:</label>
-
             <input type="datetime-local" id="startTime" name="startTime"
-                   th:value="${busTrip.startTime != null} ? ${#temporals.format(busTrip.startTime, 'yyyy-MM-dd''T''HH:mm')} : ''" />
+                   th:value="${busTrip.startTime}" />
         </div>
 
+        <!-- Status (Doar la Editare) -->
         <div th:if="${busTrip.id != null}">
             <label for="status">Status:</label>
             <select id="status" name="status">
