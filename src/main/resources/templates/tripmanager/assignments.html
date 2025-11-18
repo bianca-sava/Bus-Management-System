@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Manager Assignments</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="back-button-container">
+    <a th:href="@{/tripmanager}" class="btn btn-primary">
+        ⬅ Back to Trip Managers
+    </a>
+</div>
+
+<h1 th:text="'Assignments for Manager: ' + ${tripManagerName}">Manager Assignments</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Assignment ID</th>
+        <th>Trip ID</th>
+        <th>Staff ID</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="assignment : ${assignments}">
+        <td th:text="${assignment.id}">A1</td>
+        <td th:text="${assignment.tripId}">T100</td> <td th:text="${assignment.staffId}">S5</td>
+        <td th:text="${assignment.role}">RESERVE_DRIVER</td>
+
+        <td class="action-cell">
+            <form th:action="@{'/tripmanager/' + ${tripManagerId} + '/assignment/' + ${assignment.id} + '/delete'}" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(assignments)}">
+        <td colspan="5" style="text-align:center;">No assignments found for this manager.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <a th:href="@{'/tripmanager/' + ${tripManagerId} + '/assignments/new'}" class="btn btn-success">
+        Assign New Duty
+    </a>
+</div>
+
+</body>
+</html>

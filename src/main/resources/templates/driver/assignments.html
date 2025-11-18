@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Driver Assignments</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="back-button-container">
+    <a th:href="@{/driver}" class="btn btn-primary">
+        ⬅ Back to Drivers
+    </a>
+</div>
+
+<h1 th:text="'Assignments for Driver: ' + ${driverName}">Driver Assignments</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Assignment ID</th>
+        <th>Trip ID</th>
+        <th>Staff ID</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="assignment : ${assignments}">
+        <td th:text="${assignment.id}">A1</td>
+        <td th:text="${assignment.tripId}">T100</td>
+        <td th:text="${assignment.staffId}">D5</td>
+        <td th:text="${assignment.role}">DRIVER</td> <td class="action-cell">
+        <form th:action="@{'/driver/' + ${drivarId} + '/assignment/' + ${assignment.id} + '/delete'}" method="post" style="display: inline;">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+    </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(assignments)}">
+        <td colspan="5" style="text-align:center;">No assignments found for this driver.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="height: 40px;"></div>
+
+<div class="action-button-right">
+    <a th:href="@{'/driver/' + ${drivarId} + '/assignments/new'}" class="btn btn-success">
+        Assign New Duty
+    </a>
+</div>
+
+</body>
+</html>

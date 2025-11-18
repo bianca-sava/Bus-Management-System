@@ -30,6 +30,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Employee Code</th>
+        <th>Assignments</th>
         <th>Action</th>
     </tr>
     </thead>
@@ -38,18 +39,19 @@
         <td th:text="${item.id}">0</td>
         <td th:text="${item.name}">John Doe</td>
         <td th:text="${item.employeeCode}">EM-001</td>
-        <td>
-            <div class="action-container">
 
-                <a th:href="@{'/tripmanager/' + ${item.id} + '/edit'}" class="btn-warning">
-                    Edit
-                </a>
+        <td th:text="${item.assignments.size}">0</td>
 
-                <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn-danger">Delete</button>
-                </form>
+        <td class="action-cell">
+            <a th:href="@{'/tripmanager/' + ${item.id} + '/assignments'}" class="btn-warning" style="margin-right: 5px;">View Assignments</a>
 
-            </div>
+            <a th:href="@{'/tripmanager/' + ${item.id} + '/edit'}" class="btn-warning">
+                Edit
+            </a>
+
+            <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
         </td>
     </tr>
     </tbody>
