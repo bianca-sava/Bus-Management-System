@@ -18,7 +18,6 @@
             <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busTrip.id != null} ? 'readonly'" />
         </div>
 
-        <!-- Dropdown Rute -->
         <div>
             <label for="routeId">Route:</label>
             <select id="routeId" th:field="*{routeId}">
@@ -32,7 +31,6 @@
             </select>
         </div>
 
-        <!-- Dropdown Autobuze -->
         <div>
             <label for="busId">Bus:</label>
             <select id="busId" th:field="*{busId}">
@@ -52,7 +50,6 @@
                    th:value="${busTrip.startTime}" />
         </div>
 
-        <!-- Status (Doar la Editare) -->
         <div th:if="${busTrip.id != null}">
             <label for="status">Status:</label>
             <select id="status" name="status">
