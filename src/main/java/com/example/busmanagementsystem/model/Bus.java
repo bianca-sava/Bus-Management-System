@@ -1,10 +1,16 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "buses")
 public class Bus {
 
+    @Id
     private String id;
     private String registrationNumber;
     private int capacity;
+    @Enumerated(EnumType.STRING)
     private BusStatus status;
     private int nrOfPassengers;
 

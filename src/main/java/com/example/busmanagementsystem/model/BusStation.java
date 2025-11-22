@@ -1,9 +1,14 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class BusStation {
+    @Id
     private String id;
     private String name;
     private String city;

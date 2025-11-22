@@ -1,6 +1,11 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "tickets")
 public class Ticket {
+    @Id
     private String id;
     private String tripId;
     private String passengerId;

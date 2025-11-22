@@ -1,13 +1,25 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "routes")
 public class Route {
+    @Id
     private String id;
+    @ManyToOne
+    @JoinColumn(name = "origin_station_id", nullable = false)
     private BusStation origin;
+    @ManyToOne
+    @JoinColumn(name = "destination_station_id", nullable = false)
     private BusStation destination;
     private double distance;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "route_id")
     private List<BusTrip> trips;
     private int nrOfStations;
 
