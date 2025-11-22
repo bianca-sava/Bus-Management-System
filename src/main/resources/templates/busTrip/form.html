@@ -22,7 +22,6 @@
             <label for="routeId">Route:</label>
             <select id="routeId" th:field="*{routeId}">
                 <option value="" disabled>-- Selectează o rută --</option>
-                <!-- Verificăm dacă availableRoutes există înainte de a itera -->
                 <option th:if="${availableRoutes != null}"
                         th:each="route : ${availableRoutes}"
                         th:value="${route.id}"
@@ -35,7 +34,6 @@
             <label for="busId">Bus:</label>
             <select id="busId" th:field="*{busId}">
                 <option value="" disabled>-- Selectează un autobuz --</option>
-                <!-- Verificăm dacă availableBuses există -->
                 <option th:if="${availableBuses != null}"
                         th:each="bus : ${availableBuses}"
                         th:value="${bus.id}"

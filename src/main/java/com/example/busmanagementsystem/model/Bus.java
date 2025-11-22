@@ -1,9 +1,16 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Column;
+
 
 @Entity
-@Table(name = "buses")
 public class Bus {
 
     @Id
@@ -19,7 +26,6 @@ public class Bus {
         nrOfPassengers = 0;
     }
     public Bus(String id, String registrationNumber, int capacity) {
-        this.id = id;
         this.registrationNumber = registrationNumber;
         this.capacity = capacity;
         status = BusStatus.DOWN;
@@ -92,4 +98,6 @@ public class Bus {
                 ", status=" + status +
                 '}';
     }
+
+
 }
