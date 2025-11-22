@@ -8,6 +8,7 @@ import java.util.List;
 public class BusTrip {
     @Id
     private String id;
+    @Column(name = "route_id", insertable = false, updatable = false)
     private String routeId;
     private String busId;
     private String startTime;

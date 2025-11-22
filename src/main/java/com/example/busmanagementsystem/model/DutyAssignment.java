@@ -3,9 +3,11 @@ package com.example.busmanagementsystem.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
 
 @Entity
 public class DutyAssignment {
+    @Id
     private String id;
     private String tripId;
     private String staffId;
