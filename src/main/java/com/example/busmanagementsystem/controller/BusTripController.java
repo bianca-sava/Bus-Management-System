@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class BusTripController {
 
     private final BusTripService busTripService;
-    // --- ADĂUGAT ---
-    // Avem nevoie de aceste servicii pentru a gestiona listele
     private final TicketService ticketService;
     private final DutyAssignmentsService dutyAssignmentService;
 
@@ -131,7 +129,7 @@ public class BusTripController {
 
         if (trip != null && ticketToAdd != null) {
             trip.getTickets().add(ticketToAdd);
-            busTripService.update(tripId, trip); // Salvează modificarea
+            busTripService.update(tripId, trip);
         }
         return "redirect:/bus-trip/" + tripId + "/tickets";
     }
@@ -146,7 +144,6 @@ public class BusTripController {
         return "redirect:/bus-trip/" + tripId + "/tickets";
     }
 
-    // --- (NOU) Managementul Listei de Alocări (Assignments) ---
 
     @GetMapping("/{id}/assignments")
     public String getTripAssignments(@PathVariable String id, Model model) {
@@ -166,7 +163,7 @@ public class BusTripController {
         if (trip != null) {
             model.addAttribute("tripId", id);
             model.addAttribute("availableAssignments", dutyAssignmentService.getAllAssignments().values());
-            return "busTrip/assignAssignment"; // Pagină HTML nouă
+            return "busTrip/assignAssignment";
         }
         return "redirect:/bus-trip";
     }

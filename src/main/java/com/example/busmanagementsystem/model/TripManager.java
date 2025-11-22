@@ -1,9 +1,15 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "trip_managers")
 public class TripManager extends Staff {
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "trip_manager_id")
     private List<DutyAssignment> assignments;
     private String employeeCode;
 

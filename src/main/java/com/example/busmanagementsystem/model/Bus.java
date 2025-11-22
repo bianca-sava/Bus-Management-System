@@ -1,10 +1,19 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
+
+@Entity
 public class Bus {
 
+    @Id
     private String id;
     private String registrationNumber;
     private int capacity;
+    @Enumerated(EnumType.STRING)
     private BusStatus status;
     private int nrOfPassengers;
 
@@ -13,7 +22,6 @@ public class Bus {
         nrOfPassengers = 0;
     }
     public Bus(String id, String registrationNumber, int capacity) {
-        this.id = id;
         this.registrationNumber = registrationNumber;
         this.capacity = capacity;
         status = BusStatus.DOWN;
@@ -86,4 +94,6 @@ public class Bus {
                 ", status=" + status +
                 '}';
     }
+
+
 }

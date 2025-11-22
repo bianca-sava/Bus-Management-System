@@ -80,7 +80,7 @@ public abstract class InFileRepository<T> implements CRUD<T>{
         if(entity == null)
             return false;
         else if(database.containsKey(getIdFromEntity(entity))){
-            throw  new RuntimeException("Entity already exists");
+            throw new RuntimeException("Entity already exists");
         }
         database.put(getIdFromEntity(entity), entity);
         saveData();

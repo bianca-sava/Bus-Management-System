@@ -50,7 +50,6 @@ public class TicketController {
         if (existingTicket != null) {
             model.addAttribute("ticket", existingTicket);
 
-            // Avem nevoie de liste și aici
             model.addAttribute("allTrips", busTripService.findAll().values());
             model.addAttribute("allPassengers", passengerService.findAll().values());
 

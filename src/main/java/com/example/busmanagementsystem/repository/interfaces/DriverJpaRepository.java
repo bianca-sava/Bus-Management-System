@@ -1,0 +1,9 @@
+package com.example.busmanagementsystem.repository.interfaces;
+
+import com.example.busmanagementsystem.model.Driver;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface DriverJpaRepository extends JpaRepository<Driver, String> {
+}

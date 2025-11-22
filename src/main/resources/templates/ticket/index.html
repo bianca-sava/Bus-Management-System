@@ -41,15 +41,13 @@
 
         <td th:text="${item.isCheckedIn ? 'Yes' : 'No'}">No</td>
 
-        <td>
-            <div class="action-container">
+        <td class="action-cell">
                 <a th:href="@{'/ticket/' + ${item.id} + '/edit'}" class="btn-warning">
                     Edit
                 </a>
                 <form th:action="@{'/ticket/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
                     <button type="submit" class="btn-danger">Delete</button>
                 </form>
-            </div>
         </td>
     </tr>
     </tbody>

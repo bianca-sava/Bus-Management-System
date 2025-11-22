@@ -1,12 +1,17 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 public class Passenger {
+    @Id
     private String id;
     private String name;
     private String currency;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ticket_id")
     private List<Ticket> tickets;
 
     /// Constructor

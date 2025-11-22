@@ -1,182 +1,190 @@
 {
-  "route-cj-001": {
-    "id": "route-cj-001",
-    "origin": {
-      "id": "station-cluj-003",
-      "name": "Gara Centrala",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-003" : {
+    "id" : "route-cj-003",
+    "origin" : {
+      "id" : "station-cluj-004",
+      "name" : "Statie Piata Marastii",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-007",
-      "name": "Statie Manastur (Big)",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-009",
+      "name" : "Statie Memorandumului",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 4.5,
-    "trips": [],
-    "nrOfStations": 6
+    "distance" : 5.1,
+    "trips" : [ {
+      "id" : "trip-006",
+      "routeId" : "route-cj-006",
+      "busId" : "bus-cj-006",
+      "startTime" : "2025-11-08T08:00:00",
+      "tickets" : [ ],
+      "assignments" : [ ],
+      "status" : "PLANNED"
+    } ],
+    "nrOfStations" : 7
   },
-  "route-cj-002": {
-    "id": "route-cj-002",
-    "origin": {
-      "id": "station-cluj-007",
-      "name": "Statie Manastur (Big)",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-002" : {
+    "id" : "route-cj-002",
+    "origin" : {
+      "id" : "station-cluj-007",
+      "name" : "Statie Manastur (Big)",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-003",
-      "name": "Gara Centrala",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-003",
+      "name" : "Gara Centrala",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 4.5,
-    "trips": [],
-    "nrOfStations": 6
+    "distance" : 4.5,
+    "trips" : [ ],
+    "nrOfStations" : 6
   },
-  "route-cj-003": {
-    "id": "route-cj-003",
-    "origin": {
-      "id": "station-cluj-004",
-      "name": "Statie Piata Marasti",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-005" : {
+    "id" : "route-cj-005",
+    "origin" : {
+      "id" : "station-cluj-005",
+      "name" : "Statie Piata Cipariu",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-006",
-      "name": "Statie Zorilor",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-009",
+      "name" : "Statie Memorandumului",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 5.1,
-    "trips": [],
-    "nrOfStations": 7
+    "distance" : 1.2,
+    "trips" : [ ],
+    "nrOfStations" : 3
   },
-  "route-cj-004": {
-    "id": "route-cj-004",
-    "origin": {
-      "id": "station-cluj-006",
-      "name": "Statie Zorilor",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-004" : {
+    "id" : "route-cj-004",
+    "origin" : {
+      "id" : "station-cluj-006",
+      "name" : "Statie Zorilor",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-004",
-      "name": "Statie Piata Marasti",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-004",
+      "name" : "Statie Piata Marasti",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 5.1,
-    "trips": [],
-    "nrOfStations": 7
+    "distance" : 5.1,
+    "trips" : [ ],
+    "nrOfStations" : 7
   },
-  "route-cj-005": {
-    "id": "route-cj-005",
-    "origin": {
-      "id": "station-cluj-005",
-      "name": "Statie Piata Cipariu",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-007" : {
+    "id" : "route-cj-007",
+    "origin" : {
+      "id" : "station-cluj-008",
+      "name" : "Statie Piata Garii",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-009",
-      "name": "Statie Memorandumului",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-009",
+      "name" : "Statie Memorandumului",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 1.2,
-    "trips": [],
-    "nrOfStations": 3
+    "distance" : 2.0,
+    "trips" : [ ],
+    "nrOfStations" : 3
   },
-  "route-cj-006": {
-    "id": "route-cj-006",
-    "origin": {
-      "id": "station-cluj-001",
-      "name": "Autogara Beta",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-006" : {
+    "id" : "route-cj-006",
+    "origin" : {
+      "id" : "station-cluj-001",
+      "name" : "Autogara Beta",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-002",
-      "name": "Autogara Fany",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-002",
+      "name" : "Autogara Fany",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 2.5,
-    "trips": [],
-    "nrOfStations": 4
+    "distance" : 2.5,
+    "trips" : [ ],
+    "nrOfStations" : 4
   },
-  "route-cj-007": {
-    "id": "route-cj-007",
-    "origin": {
-      "id": "station-cluj-008",
-      "name": "Statie Piata Garii",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-009" : {
+    "id" : "route-cj-009",
+    "origin" : {
+      "id" : "station-cluj-010",
+      "name" : "Statie Regionala",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-009",
-      "name": "Statie Memorandumului",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-007",
+      "name" : "Statie Manastur (Big)",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 2.0,
-    "trips": [],
-    "nrOfStations": 3
+    "distance" : 3.8,
+    "trips" : [ ],
+    "nrOfStations" : 5
   },
-  "route-cj-008": {
-    "id": "route-cj-008",
-    "origin": {
-      "id": "station-cluj-009",
-      "name": "Statie Memorandumului",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-008" : {
+    "id" : "route-cj-008",
+    "origin" : {
+      "id" : "station-cluj-009",
+      "name" : "Statie Memorandumului",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-008",
-      "name": "Statie Piata Garii",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-008",
+      "name" : "Statie Piata Garii",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 2.0,
-    "trips": [],
-    "nrOfStations": 3
+    "distance" : 2.0,
+    "trips" : [ ],
+    "nrOfStations" : 3
   },
-  "route-cj-009": {
-    "id": "route-cj-009",
-    "origin": {
-      "id": "station-cluj-010",
-      "name": "Statie Regionala",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-010" : {
+    "id" : "route-cj-010",
+    "origin" : {
+      "id" : "station-cluj-001",
+      "name" : "Autogara Beta",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-007",
-      "name": "Statie Manastur (Big)",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-003",
+      "name" : "Gara Centrala",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 3.8,
-    "trips": [],
-    "nrOfStations": 5
+    "distance" : 1.5,
+    "trips" : [ ],
+    "nrOfStations" : 3
   },
-  "route-cj-010": {
-    "id": "route-cj-010",
-    "origin": {
-      "id": "station-cluj-001",
-      "name": "Autogara Beta",
-      "city": "Cluj-Napoca",
-      "trips": []
+  "route-cj-001" : {
+    "id" : "route-cj-001",
+    "origin" : {
+      "id" : "station-cluj-003",
+      "name" : "Gara Centrala",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "destination": {
-      "id": "station-cluj-003",
-      "name": "Gara Centrala",
-      "city": "Cluj-Napoca",
-      "trips": []
+    "destination" : {
+      "id" : "station-cluj-007",
+      "name" : "Statie Manastur (Big)",
+      "city" : "Cluj-Napoca",
+      "trips" : [ ]
     },
-    "distance": 1.5,
-    "trips": [],
-    "nrOfStations": 3
+    "distance" : 4.5,
+    "trips" : [ ],
+    "nrOfStations" : 6
   }
 }
