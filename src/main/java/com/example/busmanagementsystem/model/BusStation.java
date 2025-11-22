@@ -11,9 +11,12 @@ public class BusStation {
     private String id;
     private String name;
     private String city;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bus_trip_id")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "station_trips_link", // Se va crea un tabel nou de legătură
+            joinColumns = @JoinColumn(name = "station_id"),
+            inverseJoinColumns = @JoinColumn(name = "trip_id")
+    )
     private List<BusTrip> trips = new ArrayList<>();
 
     /// Constructor
