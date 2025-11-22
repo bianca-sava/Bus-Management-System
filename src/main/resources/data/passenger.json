@@ -1,9 +1,23 @@
 {
   "pass-003" : {
     "id" : "pass-003",
-    "name" : "Vasile Muresan",
+    "name" : "Vasile Muresanu",
     "currency" : "RON",
-    "tickets" : [ ]
+    "tickets" : [ {
+      "id" : "tkt-007",
+      "tripId" : "trip-006",
+      "passengerId" : "pass-007",
+      "seatNumber" : "4B",
+      "price" : 30.0,
+      "checkedIn" : false
+    }, {
+      "id" : "tkt-010",
+      "tripId" : "trip-007",
+      "passengerId" : "pass-010",
+      "seatNumber" : "1B",
+      "price" : 15.0,
+      "checkedIn" : false
+    } ]
   },
   "pass-002" : {
     "id" : "pass-002",
@@ -19,7 +33,7 @@
   },
   "pass-010" : {
     "id" : "pass-010",
-    "name" : "Laura Olteanu",
+    "name" : "Bianca Olteanu",
     "currency" : "RON",
     "tickets" : [ ]
   },

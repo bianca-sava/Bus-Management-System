@@ -1,12 +1,34 @@
 {
   "trip-003" : {
     "id" : "trip-003",
-    "routeId" : "route-cj-003",
-    "busId" : "bus-cj-003",
-    "startTime" : "2025-11-07T19:00:00",
-    "tickets" : [ ],
-    "assignments" : [ ],
-    "status" : "PLANNED"
+    "routeId" : "route-cj-002",
+    "busId" : "bus-010",
+    "startTime" : "2025-11-07T19:00",
+    "tickets" : [ {
+      "id" : "tkt-002",
+      "tripId" : "trip-001",
+      "passengerId" : "pass-002",
+      "seatNumber" : "1B",
+      "price" : 15.0,
+      "checkedIn" : false
+    } ],
+    "assignments" : [ {
+      "id" : "da-001",
+      "tripId" : "trip-001",
+      "staffId" : "driver-001",
+      "role" : "RESERVE_DRIVER"
+    }, {
+      "id" : "da-002",
+      "tripId" : "trip-001",
+      "staffId" : "driver-002",
+      "role" : "RESERVE_DRIVER"
+    }, {
+      "id" : "da-003",
+      "tripId" : "trip-002",
+      "staffId" : "driver-003",
+      "role" : "PRIMARY_DRIVER"
+    } ],
+    "status" : "COMPLETED"
   },
   "trip-002" : {
     "id" : "trip-002",

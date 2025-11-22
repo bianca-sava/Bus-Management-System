@@ -1,16 +1,24 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 public class BusTrip {
-
+    @Id
     private String id;
     private String routeId;
     private String busId;
     private String startTime;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ticket_id")
     private List<Ticket> tickets;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "duty_assignment_id")
     private List<DutyAssignment> assignments;
+    @Enumerated(EnumType.STRING)
     private BusTripStatus status;
 
     public BusTrip() {}
