@@ -13,7 +13,7 @@ public class BusStation {
     private String city;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bus_tip_id")
+    @JoinColumn(name = "bus_trip_id")
     private List<BusTrip> trips = new ArrayList<>();
 
     /// Constructor
