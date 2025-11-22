@@ -1,9 +1,9 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "tickets")
 public class Ticket {
     @Id
     private String id;

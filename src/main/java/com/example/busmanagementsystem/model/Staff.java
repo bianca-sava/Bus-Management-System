@@ -1,6 +1,11 @@
 package com.example.busmanagementsystem.model;
 
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Staff {
+    @Id
     protected String id;
     protected String name;
 
