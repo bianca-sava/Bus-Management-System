@@ -9,10 +9,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BusRepository extends  DatabaseRepository<Bus>{
 
-
     protected BusRepository(JpaRepository<Bus, String> jpaRepository) {
         super(jpaRepository);
     }
+
+//    protected BusRepository(ObjectMapper objectMapper, @Value("${repository.filepath.bus}") String filePath ) {
+//        super(filePath, objectMapper,  Bus.class);
+//    }
+
 
     @Override
     protected String getIdFromEntity(Bus entity) {

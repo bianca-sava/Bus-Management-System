@@ -5,19 +5,25 @@ import com.example.busmanagementsystem.model.DutyAssignment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class DutyAssignmentRepository extends InFileRepository<DutyAssignment> {
+public class DutyAssignmentRepository extends DatabaseRepository<DutyAssignment> {
 
-    @Autowired
-    public DutyAssignmentRepository(
-            ObjectMapper objectMapper,
-            @Value("${repository.filepath.dutyassignment}") String filePath
-    ) {
-        super(filePath, objectMapper, DutyAssignment.class);
+    protected DutyAssignmentRepository(JpaRepository<DutyAssignment, String> jpaRepository) {
+        super(jpaRepository);
     }
+
+
+//    @Autowired
+//    public DutyAssignmentRepository(
+//            ObjectMapper objectMapper,
+//            @Value("${repository.filepath.dutyassignment}") String filePath
+//    ) {
+//        super(filePath, objectMapper, DutyAssignment.class);
+//    }
 
     @Override
     protected String getIdFromEntity(DutyAssignment entity) {
