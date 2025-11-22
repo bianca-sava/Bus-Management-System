@@ -1,7 +1,6 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,10 @@ public class BusStation {
     private String id;
     private String name;
     private String city;
-    private List<BusTrip> trips;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bus_tip_id")
+    private List<BusTrip> trips = new ArrayList<>();
 
     /// Constructor
     public BusStation() {}
