@@ -22,6 +22,7 @@ public class Bus {
         nrOfPassengers = 0;
     }
     public Bus(String id, String registrationNumber, int capacity) {
+        this.id = id;
         this.registrationNumber = registrationNumber;
         this.capacity = capacity;
         status = BusStatus.DOWN;

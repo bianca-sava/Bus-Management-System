@@ -1,17 +1,28 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
 @Entity
 public class BusTrip {
     @Id
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "The ID can't be blank")
     private String id;
-    @Column(name = "route_id", insertable = false, updatable = false)
+
+    @Column(name = "route_id", insertable = false, updatable = false, nullable = false, unique = true)
+    @NotBlank(message = "The Route can't be blank")
     private String routeId;
+
+    @NotBlank(message = "The Bus can't be blank")
     private String busId;
+
+    @NotBlank(message = "The Time can't be blank")
     private String startTime;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ticket_id")
     private List<Ticket> tickets;
@@ -19,6 +30,7 @@ public class BusTrip {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "duty_assignment_id")
     private List<DutyAssignment> assignments;
+
     @Enumerated(EnumType.STRING)
     private BusTripStatus status;
 
