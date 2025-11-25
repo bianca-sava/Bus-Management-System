@@ -16,12 +16,15 @@ public class Route {
     @NotBlank(message= "The Id can't be blank")
     @Column(unique = true)
     private String id;
-
+//TODO Validate that origin and destination are different
+    //TODO origin exists in BusStation table
     @ManyToOne
     @JoinColumn(name = "origin_station_id", nullable = false)
     @NotBlank(message = "The Beginning of the route can't be blank")
     private BusStation origin;
 
+    //TODO Validate that origin and destination are different
+    //TODO destination exists in BusStation table
     @ManyToOne
     @JoinColumn(name = "destination_station_id", nullable = false)
     @NotBlank(message = "The Destination of te route can't be blank")

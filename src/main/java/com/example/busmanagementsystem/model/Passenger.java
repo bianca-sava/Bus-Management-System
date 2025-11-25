@@ -14,9 +14,10 @@ public class Passenger {
     @Column(unique = true, nullable = false)
     private String id;
 
+    @Pattern(regexp = "^[a-zA-Z\\s'-]+$", message = "Name can only contain letters, spaces, apostrophes, and hyphens")
     @NotBlank(message = "Passenger name cannot be blank")
     private String name;
-
+//TODO Validate currency format
     @NotBlank(message = "Currency cannot be blank")
     private String currency;
 
