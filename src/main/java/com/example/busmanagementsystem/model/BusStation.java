@@ -13,13 +13,19 @@ public class BusStation {
     @Column(unique = true, nullable = false)
     @NotBlank(message = "Bus Station ID cannot be blank")
     private String id;
+
     @NotBlank(message = "Bus Station name cannot be blank")
     private String name;
+
     @NotBlank(message = "City cannot be blank")
     private String city;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bus_trip_id")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "station_trips_link", // Se va crea un tabel nou de legătură
+            joinColumns = @JoinColumn(name = "station_id"),
+            inverseJoinColumns = @JoinColumn(name = "trip_id")
+    )
     private List<BusTrip> trips = new ArrayList<>();
 
     /// Constructor

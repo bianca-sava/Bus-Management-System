@@ -2,15 +2,27 @@ package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 public class Ticket {
     @Id
+    @NotBlank(message = "The Id can't be blank")
     private String id;
+
+    @NotBlank(message = "The Trip can't be blank")
     private String tripId;
+
+    @NotBlank(message = "The Passenger")
     private String passengerId;
+
     private String seatNumber;
+
+    @NotBlank(message = "The price can't be blank")
+    @Positive
     private double price;
+
     boolean checkedIn;
 
     public Ticket() {

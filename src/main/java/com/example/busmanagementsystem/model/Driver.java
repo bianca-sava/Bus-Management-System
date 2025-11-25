@@ -1,6 +1,7 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,12 @@ import java.util.List;
 @Entity
 @Table(name = "drivers")
 public class Driver extends Staff {
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     private List<DutyAssignment> assignments;
+
+    @PositiveOrZero
     private String yearsOfExperience;
 
     public Driver() {
