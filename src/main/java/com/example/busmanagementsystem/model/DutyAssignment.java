@@ -6,14 +6,17 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class DutyAssignment {
+
     @Id
     @NotBlank(message = "Duty Assignment ID cannot be blank")
     @Column(unique = true, nullable = false)
     private String id;
 
+    //TODO Check if the tripId exists in the BusTrip table
     @NotBlank(message = "Trip ID cannot be blank")
     private String tripId;
 
+    //TODO Check if the staffId exists in the Staff table
     @NotBlank(message = "Staff ID cannot be blank")
     private String staffId;
 

@@ -10,10 +10,10 @@ public class Ticket {
     @Id
     @NotBlank(message = "The Id can't be blank")
     private String id;
-
+//TODO Check if the tripId exists in the BusTrip table
     @NotBlank(message = "The Trip can't be blank")
     private String tripId;
-
+//TODO Check if the passengerId exists in the Passenger table
     @NotBlank(message = "The Passenger")
     private String passengerId;
 

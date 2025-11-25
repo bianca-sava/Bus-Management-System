@@ -13,10 +13,11 @@ public class BusTrip {
     @NotBlank(message = "The ID can't be blank")
     private String id;
 
-    @Column(name = "route_id", insertable = false, updatable = false, nullable = false, unique = true)
+    //TODO Check if the routeId exists in the Route table
     @NotBlank(message = "The Route can't be blank")
     private String routeId;
 
+    //TODO Check if the busId exists in the Bus table
     @NotBlank(message = "The Bus can't be blank")
     private String busId;
 

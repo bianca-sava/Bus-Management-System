@@ -3,6 +3,7 @@ package com.example.busmanagementsystem.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class BusStation {
     @NotBlank(message = "Bus Station name cannot be blank")
     private String name;
 
+    @Pattern(regexp = "^[a-zA-Z\\s-]+$", message = "City name can only contain letters, spaces, and hyphens")
     @NotBlank(message = "City cannot be blank")
     private String city;
 

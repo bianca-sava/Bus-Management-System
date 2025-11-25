@@ -2,28 +2,32 @@ package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.MessageInterpolator;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 
 @Entity
 public class Bus {
-
+    // TODO id unic in serivce
     @Id
     @Column(unique = true, nullable = false)
     @NotBlank(message = "Bus ID cannot be blank")
     private String id;
+
+
     @NotBlank(message = "Registration number cannot be blank")
+    @Pattern(regexp = "^[A-Z0-9-]{1,10}$", message = "Registration number must be alphanumeric and up to 10 characters")
     private String registrationNumber;
+
     @NotBlank(message = "Capacity cannot be blank")
     @Positive(message = "Capacity must be positive")
     @Size(min = 10, max = 100, message = "Capacity must be between 10 and 100")
     private int capacity;
+
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "Status cannot be blank")
     private BusStatus status;
+
+    // TODO nrOfPassengers <= capacity
     @Positive(message = "Number of passengers must be positive")
     @NotBlank (message = "Number of passengers cannot be blank")
     private int nrOfPassengers;
