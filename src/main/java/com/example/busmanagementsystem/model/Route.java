@@ -28,6 +28,7 @@ public class Route {
     private BusStation destination;
 
     @NotBlank(message = "You must introduce the distance of the route")
+    @Positive
     @Size(min = 2, max = 50)
     private double distance;
 
@@ -36,6 +37,7 @@ public class Route {
     private List<BusTrip> trips;
 
     @Positive
+    @Size(min = 1, max = 20)
     private int nrOfStations;
 
     public Route() {}
