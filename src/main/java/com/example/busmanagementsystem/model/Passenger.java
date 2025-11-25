@@ -12,10 +12,13 @@ public class Passenger {
     @NotBlank(message = "Passenger ID cannot be blank")
     @Column(unique = true, nullable = false)
     private String id;
+
     @NotBlank(message = "Passenger name cannot be blank")
     private String name;
+
     @NotBlank(message = "Currency cannot be blank")
     private String currency;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ticket_id")
     private List<Ticket> tickets;

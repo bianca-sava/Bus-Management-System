@@ -2,11 +2,15 @@ package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.NotBlank;
 
 @MappedSuperclass
 public abstract class Staff {
     @Id
+    @NotBlank(message = "The Id can't be blank")
     protected String id;
+
+    @NotBlank(message = "You must introduce the name")
     protected String name;
 
     public Staff(){

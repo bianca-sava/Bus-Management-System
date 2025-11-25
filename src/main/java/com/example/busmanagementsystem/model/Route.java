@@ -3,6 +3,7 @@ package com.example.busmanagementsystem.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class Route {
     private BusStation destination;
 
     @NotBlank(message = "You must introduce the distance of the route")
-    @Positive
+    @Size(min = 2, max = 50)
     private double distance;
 
     @OneToMany(cascade = CascadeType.ALL)
