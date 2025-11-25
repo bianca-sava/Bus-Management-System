@@ -1,6 +1,8 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +10,12 @@ import java.util.List;
 @Entity
 public class BusStation {
     @Id
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Bus Station ID cannot be blank")
     private String id;
+    @NotBlank(message = "Bus Station name cannot be blank")
     private String name;
+    @NotBlank(message = "City cannot be blank")
     private String city;
 
     @OneToMany(cascade = CascadeType.ALL)

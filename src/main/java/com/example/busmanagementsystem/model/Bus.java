@@ -1,20 +1,26 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 @Entity
 public class Bus {
 
     @Id
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Bus ID cannot be blank")
     private String id;
+    @NotBlank(message = "Registration number cannot be blank")
     private String registrationNumber;
+    @NotBlank(message = "Capacity cannot be blank")
     private int capacity;
     @Enumerated(EnumType.STRING)
+    @NotBlank(message = "Status cannot be blank")
     private BusStatus status;
+    @NotBlank (message = "Number of passengers cannot be blank")
     private int nrOfPassengers;
 
     public Bus(){
@@ -22,6 +28,7 @@ public class Bus {
         nrOfPassengers = 0;
     }
     public Bus(String id, String registrationNumber, int capacity) {
+        this.id = id;
         this.registrationNumber = registrationNumber;
         this.capacity = capacity;
         status = BusStatus.DOWN;
