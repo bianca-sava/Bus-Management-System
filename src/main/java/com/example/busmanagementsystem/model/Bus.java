@@ -1,7 +1,9 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 @Entity
@@ -16,12 +18,15 @@ public class Bus {
     private String registrationNumber;
 
     @NotBlank(message = "Capacity cannot be blank")
+    @Positive(message = "Capacity must be positive")
+    @Size(min = 10, max = 100, message = "Capacity must be between 10 and 100")
     private int capacity;
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "Status cannot be blank")
     private BusStatus status;
 
+    @Positive(message = "Number of passengers must be positive")
     @NotBlank (message = "Number of passengers cannot be blank")
     @PositiveOrZero
     private int nrOfPassengers;
