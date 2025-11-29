@@ -8,15 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PassengerRepository extends DatabaseRepository<Passenger> {
+public class PassengerRepository extends InFileRepository<Passenger> {
 
-    public PassengerRepository(PassengerJpaRepository jpaRepository) {
-        super(jpaRepository);
+    protected PassengerRepository(ObjectMapper objectMapper, @Value("${repository.filepath.passenger}") String filePath ) {
+        super(filePath, objectMapper,  Passenger.class);
     }
-
-//    protected PassengerRepository(ObjectMapper objectMapper, @Value("${repository.filepath.passenger}") String filePath ) {
-//        super(filePath, objectMapper,  Passenger.class);
-//    }
 
     @Override
     protected String getIdFromEntity(Passenger entity) {

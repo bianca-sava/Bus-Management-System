@@ -98,3 +98,24 @@ input[type="number"]:focus {
     border-color: #e4888b;
     color: white;
 }
+
+.input-error {
+    border: 2px solid red !important;
+    background-color: #fff8f8;
+    color: #721c24;
+}
+
+.alert-danger.alert{
+    color: red;
+    background: #f8d7da;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}

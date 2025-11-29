@@ -4,9 +4,8 @@ import com.example.busmanagementsystem.model.BusTrip;
 import com.example.busmanagementsystem.model.BusTripStatus;
 import com.example.busmanagementsystem.model.Ticket;
 import com.example.busmanagementsystem.model.DutyAssignment;
-import com.example.busmanagementsystem.service.*;
-import com.example.busmanagementsystem.service.RouteService;
-import com.example.busmanagementsystem.service.BusService;
+import com.example.busmanagementsystem.service.databaseServices.*;
+import com.example.busmanagementsystem.service.inFileServices.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,24 +15,40 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bus-trip")
 public class BusTripController {
 
-    private final BusTripService busTripService;
-    private final TicketService ticketService;
-    private final DutyAssignmentsService dutyAssignmentService;
-
-    private final RouteService routeService;
-    private final BusService busService;
+//    private final BusTripService busTripService;
+//    private final TicketService ticketService;
+//    private final DutyAssignmentsService dutyAssignmentService;
+//    private final RouteService routeService;
+//    private final BusService busService;
+    private final BusTripDatabaseService busTripService;
+    private final TicketDatabaseService ticketService;
+    private final BusDatabaseService busService;
+    private final DutyAssignmentsDatabaseService dutyAssignmentService;
+    private final RouteDatabaseService routeService;
 
     @Autowired
-    public BusTripController(BusTripService busTripService,
-                             TicketService ticketService,
-                             DutyAssignmentsService dutyAssignmentService,
-                             RouteService routeService, BusService busService) {
+    public BusTripController(BusTripDatabaseService busTripService,
+                             TicketDatabaseService ticketService,
+                             DutyAssignmentsDatabaseService dutyAssignmentService,
+                             RouteDatabaseService routeService, BusDatabaseService busService){
         this.busTripService = busTripService;
         this.ticketService = ticketService;
         this.dutyAssignmentService = dutyAssignmentService;
         this.routeService = routeService;
         this.busService = busService;
     }
+
+//    @Autowired
+//    public BusTripController(BusTripService busTripService,
+//                             TicketService ticketService,
+//                             DutyAssignmentsService dutyAssignmentService,
+//                             RouteService routeService, BusService busService) {
+//        this.busTripService = busTripService;
+//        this.ticketService = ticketService;
+//        this.dutyAssignmentService = dutyAssignmentService;
+//        this.routeService = routeService;
+//        this.busService = busService;
+//    }
 
 
 

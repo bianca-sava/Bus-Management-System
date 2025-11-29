@@ -2,9 +2,10 @@ package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.model.DutyAssignment;
-import com.example.busmanagementsystem.model.TripManager;
-import com.example.busmanagementsystem.service.DriverService;
-import com.example.busmanagementsystem.service.DutyAssignmentsService;
+import com.example.busmanagementsystem.service.databaseServices.DriverDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.DriverService;
+import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,14 +15,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/driver")
 public class DriverController {
 
-    private final DriverService driverService;
-    private final DutyAssignmentsService dutyAssignmentsService;
+//    private final DriverService driverService;
+//    private final DutyAssignmentsService dutyAssignmentsService;
+    private final DriverDatabaseService driverService;
+    private final DutyAssignmentsDatabaseService dutyAssignmentsService;
 
     @Autowired
-    public DriverController(DriverService driverService,  DutyAssignmentsService dutyAssignmentsService) {
+    public DriverController(DriverDatabaseService driverService, DutyAssignmentsDatabaseService dutyAssignmentsService) {
         this.driverService = driverService;
         this.dutyAssignmentsService = dutyAssignmentsService;
     }
+
+//    @Autowired
+//    public DriverController(DriverService driverService,  DutyAssignmentsService dutyAssignmentsService) {
+//        this.driverService = driverService;
+//        this.dutyAssignmentsService = dutyAssignmentsService;
+//    }
 
     @GetMapping
     public String getAllDrivers(Model model) {

@@ -15,6 +15,7 @@ public class TripManager extends Staff {
     private List<DutyAssignment> assignments;
 
     @NotBlank(message = "The Employee Code can't be blank")
+    @Column(unique = true)
     private String employeeCode;
 
     public TripManager() {

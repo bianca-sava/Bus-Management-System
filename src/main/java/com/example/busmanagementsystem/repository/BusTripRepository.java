@@ -8,15 +8,11 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class BusTripRepository extends DatabaseRepository<BusTrip> {
+public class BusTripRepository extends InFileRepository<BusTrip> {
 
-    protected BusTripRepository(JpaRepository<BusTrip, String> jpaRepository) {
-        super(jpaRepository);
+    protected BusTripRepository(ObjectMapper objectMapper, @Value("${repository.filepath.bustrip}") String filePath ) {
+        super(filePath, objectMapper,  BusTrip.class);
     }
-
-//    protected BusTripRepository(ObjectMapper objectMapper, @Value("${repository.filepath.bustrip}") String filePath ) {
-//        super(filePath, objectMapper,  BusTrip.class);
-//    }
 
     @Override
     protected String getIdFromEntity(BusTrip entity) {

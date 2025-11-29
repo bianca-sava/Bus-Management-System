@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TripManagerJpaRepository extends JpaRepository<TripManager, String> {
+    boolean existsByEmployeeCode(String employeeCode);
 }

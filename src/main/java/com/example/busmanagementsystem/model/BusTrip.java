@@ -15,6 +15,7 @@ public class BusTrip {
 
     //TODO Check if the routeId exists in the Route table
     @NotBlank(message = "The Route can't be blank")
+    @Column(name = "route_id", insertable = false, updatable = false)
     private String routeId;
 
     //TODO Check if the busId exists in the Bus table
@@ -25,7 +26,7 @@ public class BusTrip {
     private String startTime;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "trip_id", insertable = false, updatable = false)
     private List<Ticket> tickets;
 
     @OneToMany(cascade = CascadeType.ALL)

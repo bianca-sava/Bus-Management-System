@@ -8,15 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DriverRepository extends DatabaseRepository<Driver>{
+public class DriverRepository extends InFileRepository<Driver>{
 
-    protected DriverRepository(JpaRepository<Driver, String> jpaRepository) {
-        super(jpaRepository);
+    protected DriverRepository(ObjectMapper objectMapper, @Value("${repository.filepath.driver}") String filePath ) {
+        super(filePath, objectMapper,  Driver.class);
     }
-
-//    protected DriverRepository(ObjectMapper objectMapper, @Value("${repository.filepath.driver}") String filePath ) {
-//        super(filePath, objectMapper,  Driver.class);
-//    }
 
     @Override
     protected String getIdFromEntity(Driver entity) {

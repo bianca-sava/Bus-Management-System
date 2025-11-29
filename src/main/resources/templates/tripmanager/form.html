@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
 
-    <title th:text="${tripmanager.id == null} ? 'Create New Trip Manager' : 'Edit Trip Manager'">Trip Manager Form</title>
+    <title th:text="${isEditMode == true} ? 'Edit Trip Manager' : 'Create New Trip Manager'">Trip Manager Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
-<body style="color: #333;">
+<body>
 <div class="form-container">
 
-    <h1 th:text="${tripmanager.id == null} ? 'New Trip Manager Form' : 'Edit Trip Manager (' + ${tripmanager.id} + ')'">Trip Manager Form</h1>
+    <h1 th:text="${isEditMode == true} ? ('Edit Trip Manager (' + ${tripmanager.id} + ')') : 'New Trip Manager Form'">Trip Manager Form</h1>
 
-    <form th:action="${tripmanager.id == null} ? @{/tripmanager/create} : @{'/tripmanager/' + ${tripmanager.id}}" th:object="${tripmanager}" method="post">
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/tripmanager/' + ${tripmanager.id}} : @{/tripmanager/create}"
+          th:object="${tripmanager}" method="post">
 
         <div>
             <label for="id">ID:</label>
             <input type="text" id="id" th:field="*{id}"
-                   th:attrappend="readonly=${tripmanager.id != null} ? 'readonly'"
-                   class="readonly-field"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + (errorField == 'id' ? 'input-error' : '')}"
                    required />
         </div>
 
@@ -28,11 +33,15 @@
 
         <div>
             <label for="employeeCode">Employee Code:</label>
-            <input type="text" id="employeeCode" th:field="*{employeeCode}" required />
+            <input type="text"
+                   id="employeeCode"
+                   th:field="*{employeeCode}"
+                   th:classappend="${errorField == 'employeeCode'} ? 'input-error' : ''"
+                   required />
         </div>
 
         <div>
-            <button type="submit" th:text="${tripmanager.id == null} ? 'Create Trip Manager' : 'Update Trip Manager'">Submit</button>
+            <button type="submit" th:text="${isEditMode == true} ? 'Update Trip Manager' : 'Create Trip Manager'">Submit</button>
         </div>
     </form>
 </div>

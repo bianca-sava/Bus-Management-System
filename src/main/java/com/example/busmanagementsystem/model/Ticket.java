@@ -1,8 +1,8 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -10,20 +10,23 @@ public class Ticket {
     @Id
     @NotBlank(message = "The Id can't be blank")
     private String id;
-//TODO Check if the tripId exists in the BusTrip table
+
     @NotBlank(message = "The Trip can't be blank")
+    @Column(name = "trip_id")
     private String tripId;
-//TODO Check if the passengerId exists in the Passenger table
+
     @NotBlank(message = "The Passenger")
+    @Column(name = "passenger_id")
     private String passengerId;
 
+    @Pattern(regexp = "[1-9][0-9]?[A-C]")
     private String seatNumber;
 
-    @NotBlank(message = "The price can't be blank")
     @Positive
     private double price;
 
     boolean checkedIn;
+
 
     public Ticket() {
         checkedIn = false;

@@ -2,8 +2,10 @@ package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.model.Ticket;
-import com.example.busmanagementsystem.service.PassengerService;
-import com.example.busmanagementsystem.service.TicketService;
+import com.example.busmanagementsystem.service.databaseServices.PassengerDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.TicketDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.PassengerService;
+import com.example.busmanagementsystem.service.inFileServices.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,15 +14,24 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/passenger")
 public class PassengerController {
-    private final PassengerService passengerService;
-    private final TicketService ticketService;
+//    private final PassengerService passengerService;
+//    private final TicketService ticketService;
+    private final PassengerDatabaseService passengerService;
+    private final TicketDatabaseService ticketService;
 
     @Autowired
-    public PassengerController(PassengerService passengerService,
-                               TicketService ticketService) {
+    public PassengerController(PassengerDatabaseService passengerService,
+                               TicketDatabaseService ticketService){
         this.passengerService = passengerService;
         this.ticketService = ticketService;
     }
+
+//    @Autowired
+//    public PassengerController(PassengerService passengerService,
+//                               TicketService ticketService) {
+//        this.passengerService = passengerService;
+//        this.ticketService = ticketService;
+//    }
 
     @GetMapping
     public String getAllPassengers(Model model) {

@@ -7,15 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TripManagerRepository extends DatabaseRepository<TripManager> {
+public class TripManagerRepository extends InFileRepository<TripManager> {
 
-    public TripManagerRepository(TripManagerJpaRepository jpaRepository) {
-        super(jpaRepository);
+    protected TripManagerRepository(ObjectMapper objectMapper, @Value("${repository.filepath.tripmanager}") String filePath ) {
+        super(filePath, objectMapper,  TripManager.class);
     }
-
-//    protected TripManagerRepository(ObjectMapper objectMapper, @Value("${repository.filepath.tripmanager}") String filePath ) {
-//        super(filePath, objectMapper,  TripManager.class);
-//    }
 
     @Override
     protected String getIdFromEntity(TripManager entity) {

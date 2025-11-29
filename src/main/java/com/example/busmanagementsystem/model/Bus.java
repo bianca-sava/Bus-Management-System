@@ -18,7 +18,6 @@ public class Bus {
     @Pattern(regexp = "^[A-Z0-9-]{1,10}$", message = "Registration number must be alphanumeric and up to 10 characters")
     private String registrationNumber;
 
-    @NotBlank(message = "Capacity cannot be blank")
     @Positive(message = "Capacity must be positive")
     @Size(min = 10, max = 100, message = "Capacity must be between 10 and 100")
     private int capacity;

@@ -3,9 +3,12 @@ package com.example.busmanagementsystem.controller;
 import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.model.BusTrip; // <-- Import Adăugat
 import com.example.busmanagementsystem.model.Route;
-import com.example.busmanagementsystem.service.BusStationService;
-import com.example.busmanagementsystem.service.BusTripService; // <-- Import Adăugat
-import com.example.busmanagementsystem.service.RouteService;
+import com.example.busmanagementsystem.service.databaseServices.BusStationDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.BusTripDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.RouteDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.BusStationService;
+import com.example.busmanagementsystem.service.inFileServices.BusTripService; // <-- Import Adăugat
+import com.example.busmanagementsystem.service.inFileServices.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,18 +18,30 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/route")
 public class RouteController {
-    private final RouteService routeService;
-    private final BusStationService busStationService;
-    private final BusTripService busTripService;
+//    private final RouteService routeService;
+//    private final BusStationService busStationService;
+//    private final BusTripService busTripService;
+    private final RouteDatabaseService routeService;
+    private final BusStationDatabaseService busStationService;
+    private final BusTripDatabaseService busTripService;
 
     @Autowired
-    public RouteController(RouteService routeService,
-                           BusStationService busStationService,
-                           BusTripService busTripService) {
+    public RouteController(RouteDatabaseService routeService,
+                           BusStationDatabaseService busStationService,
+                           BusTripDatabaseService busTripService) {
         this.routeService = routeService;
         this.busStationService = busStationService;
         this.busTripService = busTripService;
     }
+
+//    @Autowired
+//    public RouteController(RouteService routeService,
+//                           BusStationService busStationService,
+//                           BusTripService busTripService) {
+//        this.routeService = routeService;
+//        this.busStationService = busStationService;
+//        this.busTripService = busTripService;
+//    }
 
 
     @GetMapping

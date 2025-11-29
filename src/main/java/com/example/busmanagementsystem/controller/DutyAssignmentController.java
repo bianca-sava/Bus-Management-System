@@ -2,7 +2,8 @@ package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.model.Role;
-import com.example.busmanagementsystem.service.DutyAssignmentsService;
+import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/duty-assignment")
 public class DutyAssignmentController {
 
-    private final DutyAssignmentsService dutyAssignmentService;
+//    private final DutyAssignmentsService dutyAssignmentService;
+    private final DutyAssignmentsDatabaseService dutyAssignmentService;
 
     @Autowired
-    public DutyAssignmentController(DutyAssignmentsService dutyAssignmentService) {
-        this.dutyAssignmentService = dutyAssignmentService;
+    public DutyAssignmentController(DutyAssignmentsDatabaseService dutyAssignmentsService) {
+        this.dutyAssignmentService = dutyAssignmentsService;
     }
+
+//    @Autowired
+//    public DutyAssignmentController(DutyAssignmentsService dutyAssignmentService) {
+//        this.dutyAssignmentService = dutyAssignmentService;
+//    }
 
     @GetMapping
     public String getAllDutyAssignments(Model model) {

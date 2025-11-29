@@ -1,25 +1,43 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.model.TripManager;
-import com.example.busmanagementsystem.service.DutyAssignmentsService;
-import com.example.busmanagementsystem.service.TripManagerService;
+import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.TripManagerDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/tripmanager")
 public class TripManagerController {
-    private final TripManagerService tripManagerService;
-    public final DutyAssignmentsService dutyAssignmentsService;
+//    private final TripManagerService tripManagerService;
+//    private final DutyAssignmentsService dutyAssignmentsService;
+    private final TripManagerDatabaseService tripManagerService;
+    private final DutyAssignmentsDatabaseService dutyAssignmentsService;
+    private final Validator validator;
 
     @Autowired
-    public TripManagerController(TripManagerService service, DutyAssignmentsService dutyAssignmentsService) {
-        this.tripManagerService = service;
+    public TripManagerController(TripManagerDatabaseService tripManagerService,
+                                 DutyAssignmentsDatabaseService dutyAssignmentsService,
+                                 Validator validator) {
+        this.tripManagerService = tripManagerService;
         this.dutyAssignmentsService = dutyAssignmentsService;
+        this.validator = validator;
     }
+
+//    @Autowired
+//    public TripManagerController(TripManagerService service, DutyAssignmentsService dutyAssignmentsService, Validator validator) {
+//        this.tripManagerService = service;
+//        this.dutyAssignmentsService = dutyAssignmentsService;
+//        this.validator = validator;
+//    }
 
     @GetMapping
     public String getAllTripManagers(Model model) {
@@ -30,6 +48,7 @@ public class TripManagerController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("tripmanager", new TripManager());
+        model.addAttribute("isEditMode", false);
         return "tripmanager/form";
     }
 
@@ -39,6 +58,7 @@ public class TripManagerController {
 
         if (existingManager != null) {
             model.addAttribute("tripmanager", existingManager);
+            model.addAttribute("isEditMode", true);
             return "tripmanager/form";
         }
         return "redirect:/tripmanager";
@@ -47,15 +67,43 @@ public class TripManagerController {
     @PostMapping("/{id}")
     public String updateTripManager(@PathVariable String id,
                                     @RequestParam String name,
-                                    @RequestParam String employeeCode) {
+                                    @RequestParam String employeeCode,
+                                    Model model) {
 
         TripManager existingManager = tripManagerService.getTripManagerById(id);
 
         if (existingManager != null) {
+            String oldName = existingManager.getName();
+            String oldCode = existingManager.getEmployeeCode();
+
             existingManager.setName(name);
             existingManager.setEmployeeCode(employeeCode);
 
-            tripManagerService.updateTripManager(id, existingManager);
+            DataBinder binder = new DataBinder(existingManager, "tripmanager");
+            binder.setValidator(validator);
+            binder.validate();
+            BindingResult bindingResult = binder.getBindingResult();
+
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.tripmanager", bindingResult);
+
+                model.addAttribute("tripmanager", existingManager);
+                model.addAttribute("isEditMode", true);
+                return "tripmanager/form";
+            }
+
+            try {
+                tripManagerService.updateTripManager(id, existingManager);
+            }
+            catch (DuplicateAttributeException e) {
+                existingManager.setName(name);
+                existingManager.setEmployeeCode(employeeCode);
+                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("errorField", e.getAttributeName());
+                model.addAttribute("tripmanager", existingManager);
+                model.addAttribute("isEditMode", true);
+                return "tripmanager/form";
+            }
         }
         return "redirect:/tripmanager";
     }
@@ -63,11 +111,34 @@ public class TripManagerController {
     @PostMapping("/create")
     public String createTripManager(@RequestParam String id,
                                     @RequestParam String name,
-                                    @RequestParam String employeeCode) {
+                                    @RequestParam String employeeCode,
+                                    Model model) {
 
         TripManager newTripManager = new TripManager(id, name, employeeCode);
 
-        tripManagerService.addTripManager(newTripManager);
+        DataBinder binder = new DataBinder(newTripManager, "tripmanager");
+        binder.setValidator(validator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("org.springframework.validation.BindingResult.tripmanager", bindingResult);
+
+            model.addAttribute("tripmanager", newTripManager);
+            model.addAttribute("isEditMode", false);
+            return "tripmanager/form";
+        }
+
+        try {
+            tripManagerService.addTripManager(newTripManager);
+        }
+        catch (DuplicateAttributeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorField", e.getAttributeName());
+            model.addAttribute("tripmanager", newTripManager);
+            model.addAttribute("isEditMode", false);
+            return "tripmanager/form";
+        }
 
         return "redirect:/tripmanager";
     }
@@ -86,6 +157,7 @@ public class TripManagerController {
             model.addAttribute("assignments", tripManager.getAssignments());
             model.addAttribute("tripManagerId", tripManager.getId());
             model.addAttribute("tripManagerName", tripManager.getName());
+            model.addAttribute("isEditMode", false);
 
             return "tripmanager/assignments";
         }

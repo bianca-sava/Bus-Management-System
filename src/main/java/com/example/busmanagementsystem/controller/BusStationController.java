@@ -2,8 +2,10 @@ package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.model.BusTrip;
-import com.example.busmanagementsystem.service.BusStationService;
-import com.example.busmanagementsystem.service.BusTripService;
+import com.example.busmanagementsystem.service.databaseServices.BusStationDatabaseService;
+import com.example.busmanagementsystem.service.databaseServices.BusTripDatabaseService;
+import com.example.busmanagementsystem.service.inFileServices.BusStationService;
+import com.example.busmanagementsystem.service.inFileServices.BusTripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +15,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bus-station")
 public class BusStationController {
 
-    private final BusStationService busStationService;
-    private final BusTripService busTripService;
+//    private final BusStationService busStationService;
+//    private final BusTripService busTripService;
+    private final BusStationDatabaseService busStationService;
+    private final BusTripDatabaseService busTripService;
 
     @Autowired
-    public BusStationController(BusStationService busStationService,  BusTripService busTripService) {
-        this.busStationService = busStationService;
+    public BusStationController(BusTripDatabaseService busTripService, BusStationDatabaseService busStationService) {
         this.busTripService = busTripService;
+        this.busStationService = busStationService;
     }
+
+//    @Autowired
+//    public BusStationController(BusStationService busStationService,  BusTripService busTripService) {
+//        this.busStationService = busStationService;
+//        this.busTripService = busTripService;
+//    }
 
     @GetMapping
     public String getAllBusStations(Model model) {

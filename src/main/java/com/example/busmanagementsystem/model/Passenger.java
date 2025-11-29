@@ -22,7 +22,7 @@ public class Passenger {
     private String currency;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "passenger_id", insertable = false, updatable = false)
     private List<Ticket> tickets;
 
     /// Constructor
