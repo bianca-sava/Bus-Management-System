@@ -3,6 +3,7 @@ package com.example.busmanagementsystem.service.databaseServices;
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.TripManager;
 import com.example.busmanagementsystem.repository.interfaces.TripManagerJpaRepository;
+import com.example.busmanagementsystem.service.Validate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TripManagerDatabaseService {
+public class TripManagerDatabaseService implements Validate<TripManager> {
 
     private final TripManagerJpaRepository tripManagerRepository;
 
@@ -21,16 +22,23 @@ public class TripManagerDatabaseService {
         this.tripManagerRepository = tripManagerRepository;
     }
 
-    @Transactional
-    public boolean addTripManager(TripManager tripManager){
-        if(tripManagerRepository.existsByEmployeeCode(tripManager.getEmployeeCode())){
+    @Override
+    public void validate(TripManager tripManager) {
+        if(tripManagerRepository.existsByEmployeeCode(tripManager.getEmployeeCode().trim())){
             throw new DuplicateAttributeException("employeeCode", "The employee code has to be unique. The code"
                     + tripManager.getEmployeeCode() + " is already used");
         }
+    }
+
+    @Transactional
+    public boolean addTripManager(TripManager tripManager){
         if(tripManagerRepository.existsById(tripManager.getId().trim())){
             throw new DuplicateAttributeException("id", "The trip manager id has to be unique. The id"
                     + tripManager.getId() + " is already used");
         }
+
+        validate(tripManager);
+
         return tripManagerRepository.save(tripManager) != null;
     }
 
@@ -50,19 +58,15 @@ public class TripManagerDatabaseService {
         Optional<TripManager> existingOpt = tripManagerRepository.findById(id);
         if(existingOpt.isPresent()){
             TripManager existingTripManager = existingOpt.get();
-            existingTripManager.setId(tripManager.getId());
+
+            if(!existingTripManager.getEmployeeCode().equals(tripManager.getEmployeeCode())){
+                validate(tripManager);
+            }
+
             existingTripManager.setName(tripManager.getName());
             existingTripManager.setEmployeeCode(tripManager.getEmployeeCode());
             existingTripManager.setAssignments(tripManager.getAssignments());
 
-            if(tripManagerRepository.existsByEmployeeCode(tripManager.getEmployeeCode())){
-                throw new DuplicateAttributeException("employeeCode", "The employee code has to be unique. The code"
-                        + tripManager.getEmployeeCode() + " is already used");
-            }
-            if(tripManagerRepository.existsById(tripManager.getId().trim())){
-                throw new DuplicateAttributeException("id", "The trip manager id has to be unique. The id"
-                        + tripManager.getId() + " is already used");
-            }
             tripManagerRepository.save(existingTripManager);
             return true;
         }

@@ -2,27 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Route Form</title>
-    <link rel="stylesheet" th:href="@{/css/formstyle.css}">
-</head>
-<body style="color: #333;">
-<div class="form-container">
-    <h1 th:text="${route.id == null} ? 'Create New Route' : 'Edit Route'">Route Form</h1>
 
-    <form th:action="${route.id == null} ? @{/route/create} : @{'/route/' + ${route.id}}"
+    <title th:text="${isEditMode == true} ? 'Edit Route' : 'Create New Route'">Route Form</title>
+    <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+
+</head>
+<body>
+<div class="form-container">
+
+    <h1 th:text="${isEditMode == true} ? ('Edit Route (' + ${route.id} + ')') : 'Create New Route'">Route Form</h1>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/route/' + ${route.id}} : @{/route/create}"
           th:object="${route}"
           method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" name="id" th:value="*{id}" th:attrappend="readonly=${route.id != null} ? 'readonly'" />
+            <input type="text" id="id" name="id" th:field="*{id}"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + ((errorField == 'id' or #fields.hasErrors('id')) ? 'input-error' : '')}"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
         </div>
 
         <div>
             <label for="originId">Origin:</label>
-
-            <select id="originId" name="originId">
-                <option value="" disabled th:selected="${route.origin == null}">-- Selectează o stație de pornire --</option>
+            <select id="originId" name="originId"
+                    th:classappend="${(#fields.hasErrors('origin') or errorField == 'origin' or errorField == 'sameStations') ? 'input-error' : ''}"
+                    required>
+                <option value="" disabled th:selected="${route.origin == null}">-- Select Start Station --</option>
 
                 <option th:if="${allBusStations != null}"
                         th:each="station : ${allBusStations}"
@@ -31,13 +43,15 @@
                         th:selected="${route.origin != null and route.origin.id == station.id}">
                 </option>
             </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('origin')}" th:errors="*{origin}"></div>
         </div>
 
         <div>
             <label for="destinationId">Destination:</label>
-
-            <select id="destinationId" name="destinationId">
-                <option value="" disabled th:selected="${route.destination == null}">-- Selectează o stație de sosire --</option>
+            <select id="destinationId" name="destinationId"
+                    th:classappend="${(#fields.hasErrors('destination') or errorField == 'destination' or errorField == 'sameStations') ? 'input-error' : ''}"
+                    required>
+                <option value="" disabled th:selected="${route.destination == null}">-- Select End Station --</option>
 
                 <option th:if="${allBusStations != null}"
                         th:each="station : ${allBusStations}"
@@ -46,20 +60,27 @@
                         th:selected="${route.destination != null and route.destination.id == station.id}">
                 </option>
             </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('destination')}" th:errors="*{destination}"></div>
         </div>
 
         <div>
             <label for="distance">Distance (km):</label>
-            <input type="number" step="0.1" id="distance" name="distance" th:value="*{distance}" />
+            <input type="number" step="0.1" id="distance" name="distance" th:field="*{distance}"
+                   th:classappend="${#fields.hasErrors('distance')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('distance')}" th:errors="*{distance}"></div>
         </div>
 
         <div>
             <label for="nrOfStations">Number of Stops:</label>
-            <input type="number" id="nrOfStations" name="nrOfStations" th:value="*{nrOfStations}" />
+            <input type="number" id="nrOfStations" name="nrOfStations" th:field="*{nrOfStations}"
+                   th:classappend="${#fields.hasErrors('nrOfStations')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('nrOfStations')}" th:errors="*{nrOfStations}"></div>
         </div>
 
         <div>
-            <button type="submit" th:text="${route.id == null} ? 'Create Route' : 'Save Changes'">Submit</button>
+            <button type="submit" th:text="${isEditMode == true} ? 'Save Changes' : 'Create Route'">Submit</button>
         </div>
     </form>
 

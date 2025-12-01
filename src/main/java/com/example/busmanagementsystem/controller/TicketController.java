@@ -176,7 +176,7 @@ public class TicketController {
         }
         catch (DuplicateAttributeException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("errorField", e.getAttributeName()); // e.g., "id"
+            model.addAttribute("errorField", e.getAttributeName());
 
             model.addAttribute("ticket", newTicket);
             model.addAttribute("isEditMode", false);

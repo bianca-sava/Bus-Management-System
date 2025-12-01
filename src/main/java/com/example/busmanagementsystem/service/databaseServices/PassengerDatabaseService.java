@@ -1,7 +1,9 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.repository.interfaces.PassengerJpaRepository;
+import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PassengerDatabaseService {
+public class PassengerDatabaseService implements Validate<Passenger> {
 
     private PassengerJpaRepository passengerRepository;
 
@@ -19,7 +21,17 @@ public class PassengerDatabaseService {
         this.passengerRepository = repository;
     }
 
+    @Override
+    public void validate(Passenger passenger) {
+        if(passengerRepository.existsById(passenger.getId().trim())){
+            throw new DuplicateAttributeException("id", "The passenger id has to be unique. The current id "
+                    + passenger.getId().trim() + " is already used.");
+        }
+    }
+
     public boolean create (Passenger passenger) {
+        validate(passenger);
+
         return passengerRepository.save(passenger) != null;
     }
 
@@ -38,7 +50,6 @@ public class PassengerDatabaseService {
         if (passengerOptional.isPresent()) {
             Passenger existingPassenger = passengerOptional.get();
 
-            existingPassenger.setId(passenger.getId());
             existingPassenger.setName(passenger.getName());
             existingPassenger.setCurrency(passenger.getCurrency());
             existingPassenger.setTickets(passenger.getTickets());
