@@ -1,30 +1,35 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.model.Role;
+import com.example.busmanagementsystem.service.databaseServices.DriverDatabaseService;
 import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
-import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
+import com.example.busmanagementsystem.service.databaseServices.BusTripDatabaseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/duty-assignment")
 public class DutyAssignmentController {
 
-//    private final DutyAssignmentsService dutyAssignmentService;
     private final DutyAssignmentsDatabaseService dutyAssignmentService;
+    private final BusTripDatabaseService busTripService;
+    private final DriverDatabaseService driverService;
 
     @Autowired
-    public DutyAssignmentController(DutyAssignmentsDatabaseService dutyAssignmentsService) {
+    public DutyAssignmentController(DutyAssignmentsDatabaseService dutyAssignmentsService,
+                                    BusTripDatabaseService busTripService,
+                                    DriverDatabaseService driverService) {
         this.dutyAssignmentService = dutyAssignmentsService;
+        this.busTripService = busTripService;
+        this.driverService = driverService;
     }
-
-//    @Autowired
-//    public DutyAssignmentController(DutyAssignmentsService dutyAssignmentService) {
-//        this.dutyAssignmentService = dutyAssignmentService;
-//    }
 
     @GetMapping
     public String getAllDutyAssignments(Model model) {
@@ -34,22 +39,19 @@ public class DutyAssignmentController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-
         model.addAttribute("dutyAssignment", new DutyAssignment());
-
-        model.addAttribute("roles", Role.values());
-
+        model.addAttribute("isEditMode", false);
+        populateDropdowns(model);
         return "dutyAssignment/form";
     }
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable String id, Model model) {
-
-        DutyAssignment existingAssignment = dutyAssignmentService.getAssignmentById(id);
-
-        if (existingAssignment != null) {
-            model.addAttribute("dutyAssignment", existingAssignment);
-            model.addAttribute("roles", Role.values());
+        DutyAssignment existing = dutyAssignmentService.getAssignmentById(id);
+        if (existing != null) {
+            model.addAttribute("dutyAssignment", existing);
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
             return "dutyAssignment/form";
         }
         return "redirect:/duty-assignment";
@@ -57,24 +59,54 @@ public class DutyAssignmentController {
 
     @PostMapping("/{id}")
     public String updateDutyAssignment(@PathVariable String id,
-                                       @RequestParam String tripId,
-                                       @RequestParam String staffId,
-                                       @RequestParam Role role) {
+                                       @Valid @ModelAttribute("dutyAssignment") DutyAssignment dutyAssignment,
+                                       BindingResult bindingResult,
+                                       Model model) {
+        dutyAssignment.setId(id);
 
-        DutyAssignment updatedAssignment = new DutyAssignment(id, tripId, staffId, role);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
+            return "dutyAssignment/form";
+        }
 
-        dutyAssignmentService.updateAssignment(id,  updatedAssignment);
+        try {
+            dutyAssignmentService.updateAssignment(id, dutyAssignment);
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
+            return "dutyAssignment/form";
+        }
 
         return "redirect:/duty-assignment";
     }
 
     @PostMapping("/create")
-    public String createDutyAssignment(@RequestParam String id,
-                                       @RequestParam String tripId,
-                                       @RequestParam String staffId,
-                                       @RequestParam Role role) {
+    public String createDutyAssignment(@Valid @ModelAttribute("dutyAssignment") DutyAssignment dutyAssignment,
+                                       BindingResult bindingResult,
+                                       Model model) {
 
-        dutyAssignmentService.addAssignment(new DutyAssignment(id, tripId, staffId, role));
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "dutyAssignment/form";
+        }
+
+        try {
+            dutyAssignmentService.addAssignment(dutyAssignment);
+        } catch (DuplicateAttributeException e) {
+            bindingResult.rejectValue("id", "error.dutyAssignment", e.getMessage());
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "dutyAssignment/form";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "dutyAssignment/form";
+        }
+
         return "redirect:/duty-assignment";
     }
 
@@ -82,5 +114,11 @@ public class DutyAssignmentController {
     public String deleteDutyAssignment(@PathVariable String id) {
         dutyAssignmentService.deleteAssignment(id);
         return "redirect:/duty-assignment";
+    }
+
+    private void populateDropdowns(Model model) {
+        model.addAttribute("roles", Role.values());
+        model.addAttribute("availableTrips", busTripService.findAll().values());
+        model.addAttribute("availableStaff", driverService.findAllDrivers().values());
     }
 }

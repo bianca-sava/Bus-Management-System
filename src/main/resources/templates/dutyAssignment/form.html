@@ -4,26 +4,57 @@
     <meta charset="UTF-8">
     <title>Duty Assignment Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+    <style>
+        .input-error { border: 2px solid red !important; }
+        .text-danger { color: red; font-size: 0.8em; margin-top: 2px; display: block; }
+    </style>
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1 th:text="${dutyAssignment.id == null} ? 'Create New Duty Assignment' : 'Edit Duty Assignment'">Duty Assignment Form</h1>
+    <h1 th:text="${isEditMode} ? 'Edit Duty Assignment' : 'Create New Duty Assignment'">Duty Assignment Form</h1>
 
-    <form th:action="${dutyAssignment.id == null} ? @{/duty-assignment/create} : @{'/duty-assignment/' + ${dutyAssignment.id}}" th:object="${dutyAssignment}" method="post">
+    <div th:if="${errorMessage}" class="text-danger" style="margin-bottom: 10px; font-weight: bold;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode} ? @{'/duty-assignment/' + ${dutyAssignment.id}} : @{/duty-assignment/create}"
+          th:object="${dutyAssignment}"
+          method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${dutyAssignment.id != null} ? 'readonly'" />
+            <input type="text" id="id" th:field="*{id}"
+                   th:readonly="${isEditMode}"
+                   th:attrappend="readonly=${isEditMode} ? 'readonly'"
+                   th:classappend="${#fields.hasErrors('id')} ? 'input-error' : ''"
+                   required />
+            <span class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
         </div>
 
         <div>
-            <label for="tripId">Trip ID:</label>
-            <input type="text" id="tripId" th:field="*{tripId}" />
+            <label for="tripId">Trip:</label>
+            <select id="tripId" th:field="*{tripId}"
+                    th:classappend="${#fields.hasErrors('tripId')} ? 'input-error' : ''" required>
+                <option value="" disabled>-- Select Trip --</option>
+                <option th:each="trip : ${availableTrips}"
+                        th:value="${trip.id}"
+                        th:text="${trip.id} + ' (' + ${trip.startTime} + ')'">
+                </option>
+            </select>
+            <span class="text-danger" th:if="${#fields.hasErrors('tripId')}" th:errors="*{tripId}"></span>
         </div>
 
         <div>
-            <label for="staffId">Staff ID:</label>
-            <input type="text" id="staffId" th:field="*{staffId}" />
+            <label for="staffId">Driver / Staff:</label>
+            <select id="staffId" th:field="*{staffId}"
+                    th:classappend="${#fields.hasErrors('staffId')} ? 'input-error' : ''" required>
+                <option value="" disabled>-- Select Staff --</option>
+                <option th:each="driver : ${availableStaff}"
+                        th:value="${driver.id}"
+                        th:text="${driver.name} + ' (ID: ' + ${driver.id} + ')'">
+                </option>
+            </select>
+            <span class="text-danger" th:if="${#fields.hasErrors('staffId')}" th:errors="*{staffId}"></span>
         </div>
 
         <div>
@@ -32,13 +63,12 @@
                 <option th:each="r : ${roles}"
                         th:value="${r}"
                         th:text="${r}">
-                    DRIVER
                 </option>
             </select>
         </div>
 
         <div>
-            <button type="submit" th:text="${dutyAssignment.id == null} ? 'Create Duty Assignment' : 'Save Changes'">Submit</button>
+            <button type="submit" th:text="${isEditMode} ? 'Save Changes' : 'Create Assignment'">Submit</button>
         </div>
     </form>
 </div>
