@@ -1,25 +1,23 @@
 package com.example.busmanagementsystem.controller;
 
+
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.BusTrip;
 import com.example.busmanagementsystem.model.BusTripStatus;
 import com.example.busmanagementsystem.model.Ticket;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.service.databaseServices.*;
-import com.example.busmanagementsystem.service.inFileServices.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/bus-trip")
 public class BusTripController {
 
-//    private final BusTripService busTripService;
-//    private final TicketService ticketService;
-//    private final DutyAssignmentsService dutyAssignmentService;
-//    private final RouteService routeService;
-//    private final BusService busService;
     private final BusTripDatabaseService busTripService;
     private final TicketDatabaseService ticketService;
     private final BusDatabaseService busService;
@@ -30,27 +28,14 @@ public class BusTripController {
     public BusTripController(BusTripDatabaseService busTripService,
                              TicketDatabaseService ticketService,
                              DutyAssignmentsDatabaseService dutyAssignmentService,
-                             RouteDatabaseService routeService, BusDatabaseService busService){
+                             RouteDatabaseService routeService,
+                             BusDatabaseService busService){
         this.busTripService = busTripService;
         this.ticketService = ticketService;
         this.dutyAssignmentService = dutyAssignmentService;
         this.routeService = routeService;
         this.busService = busService;
     }
-
-//    @Autowired
-//    public BusTripController(BusTripService busTripService,
-//                             TicketService ticketService,
-//                             DutyAssignmentsService dutyAssignmentService,
-//                             RouteService routeService, BusService busService) {
-//        this.busTripService = busTripService;
-//        this.ticketService = ticketService;
-//        this.dutyAssignmentService = dutyAssignmentService;
-//        this.routeService = routeService;
-//        this.busService = busService;
-//    }
-
-
 
     @GetMapping
     public String getAllBusTrips(Model model) {
@@ -61,8 +46,8 @@ public class BusTripController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("busTrip", new BusTrip());
-        model.addAttribute("availableRoutes", routeService.findAll().values());
-        model.addAttribute("availableBuses", busService.findAll().values());
+        model.addAttribute("isEditMode", false);
+        populateDropdowns(model); // Helper pentru cod curat
         return "busTrip/form";
     }
 
@@ -72,38 +57,51 @@ public class BusTripController {
 
         if (existingBusTrip != null) {
             model.addAttribute("busTrip", existingBusTrip);
-            model.addAttribute("statusOptions", BusTripStatus.values());
-            model.addAttribute("availableRoutes", routeService.findAll().values());
-            model.addAttribute("availableBuses", busService.findAll().values());
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
             return "busTrip/form";
         }
-
         return "redirect:/bus-trip";
     }
 
     @PostMapping("/{id}")
     public String updateBusTrip(@PathVariable String id,
-                                @RequestParam String routeId,
-                                @RequestParam String busId,
-                                @RequestParam String startTime,
-                                @RequestParam BusTripStatus status) {
+                                @Valid @ModelAttribute("busTrip") BusTrip busTrip,
+                                BindingResult bindingResult,
+                                Model model) {
 
-        BusTrip existingBusTrip = busTripService.findById(id);
-        if (existingBusTrip != null) {
-            existingBusTrip.setRouteId(routeId);
-            existingBusTrip.setBusId(busId);
-            existingBusTrip.setStartTime(startTime);
-            existingBusTrip.setStatus(status);
+        busTrip.setId(id);
 
-            busTripService.update(id, existingBusTrip);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
+            return "busTrip/form";
         }
 
+        busTripService.update(id, busTrip);
         return "redirect:/bus-trip";
     }
 
     @PostMapping("/create")
-    public String createBusTrip(@RequestParam String id, @RequestParam String routeId, @RequestParam String busId, @RequestParam String startTime) {
-        busTripService.create(new BusTrip(id, routeId, busId, startTime));
+    public String createBusTrip(@Valid @ModelAttribute("busTrip") BusTrip busTrip,
+                                BindingResult bindingResult,
+                                Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "busTrip/form";
+        }
+
+        try {
+            busTripService.create(busTrip);
+        } catch (DuplicateAttributeException e) {
+            bindingResult.rejectValue("id", "error.busTrip", e.getMessage());
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "busTrip/form";
+        }
+
         return "redirect:/bus-trip";
     }
 
@@ -113,6 +111,11 @@ public class BusTripController {
         return "redirect:/bus-trip";
     }
 
+    private void populateDropdowns(Model model) {
+        model.addAttribute("availableRoutes", routeService.findAll().values());
+        model.addAttribute("availableBuses", busService.findAll().values());
+        model.addAttribute("statusOptions", BusTripStatus.values());
+    }
 
     @GetMapping("/{id}/tickets")
     public String getTripTickets(@PathVariable String id, Model model) {

@@ -2,31 +2,33 @@ package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 public class BusTrip {
+
     @Id
     @Column(unique = true, nullable = false)
-    @NotBlank(message = "The ID can't be blank")
+    @NotBlank(message = "ID-ul este obligatoriu")
+    @Size(min = 3, max = 20, message = "ID-ul trebuie să aibă între 3 și 20 caractere")
     private String id;
 
-    //TODO Check if the routeId exists in the Route table
-    @NotBlank(message = "The Route can't be blank")
-    @Column(name = "route_id", insertable = false, updatable = false)
+    @NotBlank(message = "Trebuie să selectați o rută")
+    @Column(name = "route_id")
     private String routeId;
 
-    //TODO Check if the busId exists in the Bus table
-    @NotBlank(message = "The Bus can't be blank")
+    @NotBlank(message = "Trebuie să selectați un autobuz")
     private String busId;
 
-    @NotBlank(message = "The Time can't be blank")
+    @NotBlank(message = "Ora de plecare este obligatorie")
     private String startTime;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "trip_id", insertable = false, updatable = false)
+    @JoinColumn(name = "trip_id")
     private List<Ticket> tickets;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -36,16 +38,8 @@ public class BusTrip {
     @Enumerated(EnumType.STRING)
     private BusTripStatus status;
 
-    public BusTrip() {}
-
-    public BusTrip(String id, String routeId, String busId, String startTime, BusTripStatus status) {
-        this.id = id;
-        this.routeId = routeId;
-        this.busId = busId;
-        this.startTime = startTime;
-        this.status = status;
-        tickets = new ArrayList<Ticket>();
-        assignments = new ArrayList<DutyAssignment>();
+    public BusTrip() {
+        this.status = BusTripStatus.PLANNED;
     }
 
     public BusTrip(String id, String routeId, String busId, String startTime) {
@@ -53,86 +47,29 @@ public class BusTrip {
         this.routeId = routeId;
         this.busId = busId;
         this.startTime = startTime;
-        status = BusTripStatus.PLANNED;
-        tickets = new ArrayList<Ticket>();
-        assignments = new ArrayList<DutyAssignment>();
+        this.status = BusTripStatus.PLANNED;
+        this.tickets = new ArrayList<>();
+        this.assignments = new ArrayList<>();
     }
 
-    /// Getters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-//region
-    public String getId() {
-        return id;
-    }
+    public String getRouteId() { return routeId; }
+    public void setRouteId(String routeId) { this.routeId = routeId; }
 
-    public String getRouteId() {
-        return routeId;
-    }
+    public String getBusId() { return busId; }
+    public void setBusId(String busId) { this.busId = busId; }
 
-    public String getBusId() {
-        return busId;
-    }
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
 
-    public String getStartTime() {
-        return startTime;
-    }
+    public List<Ticket> getTickets() { return tickets; }
+    public void setTickets(List<Ticket> tickets) { this.tickets = tickets; }
 
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
+    public BusTripStatus getStatus() { return status; }
+    public void setStatus(BusTripStatus status) { this.status = status; }
 
-    public BusTripStatus getStatus() {
-        return status;
-    }
-
-    public List<DutyAssignment> getAssignments() {
-        return assignments;
-    }
-//endregion
-
-    /// Setters
-
-//region
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setBusId(String busId) {
-        this.busId = busId;
-    }
-
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public void setAssignments(List<DutyAssignment> assignments) {
-        this.assignments = assignments;
-    }
-
-    public void setStatus(BusTripStatus status) {
-        this.status = status;
-    }
-//endregion
-
-
-    @Override
-    public String toString() {
-        return "BusTrip{" +
-                "id='" + id + '\'' +
-                ", routeId='" + routeId + '\'' +
-                ", busId='" + busId + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", tickets=" + tickets +
-                ", assignments=" + assignments +
-                ", status=" + status +
-                '}';
-    }
+    public List<DutyAssignment> getAssignments() { return assignments; }
+    public void setAssignments(List<DutyAssignment> assignments) { this.assignments = assignments; }
 }
