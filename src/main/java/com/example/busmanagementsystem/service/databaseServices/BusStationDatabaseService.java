@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.repository.interfaces.BusStationJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class BusStationDatabaseService {
     }
 
     public boolean create (BusStation busStation) {
+        if (busStationRepository.existsById(busStation.getId())) {
+            throw new DuplicateAttributeException("id", "Acest ID de stație există deja!");
+        }
         return busStationRepository.save(busStation) != null;
     }
 
@@ -34,13 +38,12 @@ public class BusStationDatabaseService {
 
     public boolean update (String id, BusStation busStation) {
         Optional<BusStation> busStationOpt = busStationRepository.findById(id);
+
         if (busStationOpt.isPresent()) {
             BusStation existingStation = busStationOpt.get();
-
-            existingStation.setId(busStation.getId());
             existingStation.setName(busStation.getName());
             existingStation.setCity(busStation.getCity());
-            existingStation.setTrips(busStation.getTrips());
+            existingStation.setTrips(busStation.getTrips().isEmpty() ? existingStation.getTrips() : busStation.getTrips());
 
             busStationRepository.save(existingStation);
             return true;

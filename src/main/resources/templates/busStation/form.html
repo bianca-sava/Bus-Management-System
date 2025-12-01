@@ -4,30 +4,47 @@
     <meta charset="UTF-8">
     <title>Bus Station Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+    <style>
+        .input-error { border: 2px solid red !important; }
+        .text-danger { color: red; font-size: 0.8em; margin-top: 2px; display: block; }
+    </style>
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1 th:text="${busStation.id == null} ? 'Create New Bus Station' : 'Edit Bus Station'">Bus Station Form</h1>
+    <h1 th:text="${isEditMode} ? 'Edit Bus Station' : 'Create New Bus Station'">Bus Station Form</h1>
 
-    <form th:action="${busStation.id == null} ? @{/bus-station/create} : @{'/bus-station/' + ${busStation.id}}" th:object="${busStation}" method="post">
+    <form th:action="${isEditMode} ? @{'/bus-station/' + ${busStation.id}} : @{/bus-station/create}"
+          th:object="${busStation}"
+          method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busStation.id != null} ? 'readonly'" />
+            <input type="text" id="id" th:field="*{id}"
+                   th:readonly="${isEditMode}"
+                   th:classappend="${#fields.hasErrors('id')} ? 'input-error' : ''"
+                   th:attrappend="readonly=${isEditMode} ? 'readonly'"
+                   required />
+            <span class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
         </div>
 
         <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" th:field="*{name}" />
+            <input type="text" id="name" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? 'input-error' : ''"
+                   required />
+            <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
         </div>
 
         <div>
             <label for="city">City:</label>
-            <input type="text" id="city" th:field="*{city}" />
+            <input type="text" id="city" th:field="*{city}"
+                   th:classappend="${#fields.hasErrors('city')} ? 'input-error' : ''"
+                   required />
+            <span class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></span>
         </div>
 
         <div>
-            <button type="submit" th:text="${busStation.id == null} ? 'Create Bus Station' : 'Save Changes'">Submit</button>
+            <button type="submit" th:text="${isEditMode} ? 'Save Changes' : 'Create Bus Station'">Submit</button>
         </div>
     </form>
 </div>
