@@ -30,17 +30,13 @@ public class BusDatabaseService {
         return busRepository.findById(id).orElse(null);
     }
 
-    // Metoda principala de salvare cu validari
     public void save(Bus bus) {
-        // VALIDARE 1: Pasageri vs Capacitate
         if (bus.getNrOfPassengers() > bus.getCapacity()) {
             throw new IllegalArgumentException("Number of passengers cannot exceed capacity!");
         }
 
-        // VALIDARE 2: Duplicate Registration Number
         Optional<Bus> existing = busRepository.findByRegistrationNumber(bus.getRegistrationNumber());
         if (existing.isPresent()) {
-            // Daca gasim unul cu acelasi numar, dar ID diferit, e duplicat
             if (bus.getId() == null || !existing.get().getId().equals(bus.getId())) {
                 throw new DuplicateAttributeException("registrationNumber", "Registration number already exists!");
             }
