@@ -1,53 +1,73 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.exceptions.EntityNotFoundException; // Asigură-te că ai excepția asta
 import com.example.busmanagementsystem.model.DutyAssignment;
-import com.example.busmanagementsystem.repository.DutyAssignmentRepository;
+import com.example.busmanagementsystem.repository.interfaces.DriverJpaRepository; // Sau StaffJpaRepository
+import com.example.busmanagementsystem.repository.interfaces.BusTripJpaRepository;
 import com.example.busmanagementsystem.repository.interfaces.DutyAssignmentJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class DutyAssignmentsDatabaseService {
 
-    private DutyAssignmentJpaRepository assignmentRepository;
+    private final DutyAssignmentJpaRepository assignmentRepository;
+    private final BusTripJpaRepository tripRepository;
+    private final DriverJpaRepository driverRepository;
 
     @Autowired
-    public  DutyAssignmentsDatabaseService(DutyAssignmentJpaRepository assignmentRepository){
+    public DutyAssignmentsDatabaseService(DutyAssignmentJpaRepository assignmentRepository,
+                                          BusTripJpaRepository tripRepository,
+                                          DriverJpaRepository driverRepository) {
         this.assignmentRepository = assignmentRepository;
+        this.tripRepository = tripRepository;
+        this.driverRepository = driverRepository;
     }
 
     public boolean addAssignment(DutyAssignment assignment){
+        if (assignmentRepository.existsById(assignment.getId())) {
+            throw new DuplicateAttributeException("id", "Acest ID de asignare există deja!");
+        }
+
+        if (!tripRepository.existsById(assignment.getTripId())) {
+            throw new EntityNotFoundException("tripId", "Călătoria cu acest ID nu există!");
+        }
+
+        if (!driverRepository.existsById(assignment.getStaffId())) {
+            throw new EntityNotFoundException("staffId", "Șoferul cu acest ID nu există!");
+        }
+
         return assignmentRepository.save(assignment) != null;
     }
 
-    public DutyAssignment getAssignmentById (String id){
+    public boolean updateAssignment(String id, DutyAssignment assignment){
+        if (!tripRepository.existsById(assignment.getTripId())) {
+            throw new EntityNotFoundException("tripId", "Călătoria selectată nu există!");
+        }
+        if (!driverRepository.existsById(assignment.getStaffId())) {
+            throw new EntityNotFoundException("staffId", "Șoferul selectat nu există!");
+        }
+
+        return assignmentRepository.findById(id).map(existing -> {
+            existing.setRole(assignment.getRole());
+            existing.setTripId(assignment.getTripId());
+            existing.setStaffId(assignment.getStaffId());
+            assignmentRepository.save(existing);
+            return true;
+        }).orElse(false);
+    }
+
+    public DutyAssignment getAssignmentById(String id){
         return assignmentRepository.findById(id).orElse(null);
     }
 
     public Map<String, DutyAssignment> getAllAssignments(){
         return assignmentRepository.findAll().stream()
-                .collect(Collectors.toMap(DutyAssignment::getId,
-                assignment -> assignment));
-    }
-
-    public boolean updateAssignment(String id, DutyAssignment assignment){
-        Optional<DutyAssignment> optionalDutyAssignment = assignmentRepository.findById(id);
-        if(optionalDutyAssignment.isPresent()){
-            DutyAssignment existingDutyAssignment = optionalDutyAssignment.get();
-
-            existingDutyAssignment.setId(assignment.getId());
-            existingDutyAssignment.setRole(assignment.getRole());
-            existingDutyAssignment.setTripId(assignment.getTripId());
-            existingDutyAssignment.setStaffId(assignment.getStaffId());
-
-            assignmentRepository.save(existingDutyAssignment);
-            return true;
-        }
-        return false;
+                .collect(Collectors.toMap(DutyAssignment::getId, a -> a));
     }
 
     public boolean deleteAssignment(String id){

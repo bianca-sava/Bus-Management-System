@@ -1,46 +1,36 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.MessageInterpolator;
 import jakarta.validation.constraints.*;
 
-
 @Entity
+@Table(name = "bus")
 public class Bus {
-    // TODO id unic in serivce
+
     @Id
-    @Column(unique = true, nullable = false)
-    @NotBlank(message = "Bus ID cannot be blank")
+    @NotBlank(message = "The Id can't be blank")
     private String id;
 
-
     @NotBlank(message = "Registration number cannot be blank")
-    @Pattern(regexp = "^[A-Z0-9-]{1,10}$", message = "Registration number must be alphanumeric and up to 10 characters")
+    @Pattern(regexp = "^[A-Z0-9-]{1,10}$", message = "Max 10 chars, alphanumeric only")
+    @Column(unique = true)
     private String registrationNumber;
 
     @Positive(message = "Capacity must be positive")
-    @Size(min = 10, max = 100, message = "Capacity must be between 10 and 100")
+    @Min(value = 10, message = "Capacity must be at least 10")
+    @Max(value = 100, message = "Capacity must be at most 100")
     private int capacity;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Status cannot be blank")
+    @NotNull(message = "Status is required")
     private BusStatus status;
 
-    // TODO nrOfPassengers <= capacity
-    @Positive(message = "Number of passengers must be positive")
-    @NotBlank (message = "Number of passengers cannot be blank")
+    @PositiveOrZero(message = "Passengers cannot be negative")
     private int nrOfPassengers;
 
     public Bus(){
-        status = BusStatus.DOWN;
-        nrOfPassengers = 0;
-    }
-    public Bus(String id, String registrationNumber, int capacity) {
-        this.id = id;
-        this.registrationNumber = registrationNumber;
-        this.capacity = capacity;
-        status = BusStatus.DOWN;
-        nrOfPassengers = 0;
+        this.status = BusStatus.DOWN;
+        this.nrOfPassengers = 0;
     }
 
     public Bus(String id, String registrationNumber, int capacity,  BusStatus status, int  nrOfPassengers) {
@@ -51,64 +41,24 @@ public class Bus {
         this.nrOfPassengers = nrOfPassengers;
     }
 
-    /// Getters
-
-//region
-    public String getId() {
-        return id;
-    }
-
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public BusStatus getStatus() {
-        return status;
-    }
-
-    public int getNrOfPassengers() {
-        return nrOfPassengers;
-    }
-    //endregion
-
-    /// Setters
-
-//region
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setRegistrationNumber(String registrationNumber) {
+    public Bus(String registrationNumber, int capacity) {
         this.registrationNumber = registrationNumber;
-    }
-
-    public void setCapacity(int capacity) {
         this.capacity = capacity;
+        this.status = BusStatus.DOWN;
+        this.nrOfPassengers = 0;
     }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setStatus(BusStatus status) {
-        this.status = status;
-    }
+    public String getRegistrationNumber() { return registrationNumber; }
+    public void setRegistrationNumber(String registrationNumber) { this.registrationNumber = registrationNumber; }
 
-    public void setNrOfPassengers(int nrOfPassengers) {
-        this.nrOfPassengers = nrOfPassengers;
-    }
-    //endregion
+    public int getCapacity() { return capacity; }
+    public void setCapacity(int capacity) { this.capacity = capacity; }
 
+    public BusStatus getStatus() { return status; }
+    public void setStatus(BusStatus status) { this.status = status; }
 
-    @Override
-    public String toString() {
-        return "Bus{" +
-                "id='" + id + '\'' +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", capacity=" + capacity +
-                ", status=" + status +
-                '}';
-    }
-
-
+    public int getNrOfPassengers() { return nrOfPassengers; }
+    public void setNrOfPassengers(int nrOfPassengers) { this.nrOfPassengers = nrOfPassengers; }
 }

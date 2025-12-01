@@ -4,23 +4,33 @@
     <meta charset="UTF-8">
     <title>Bus Trip Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+    <style>
+        .input-error { border: 2px solid red !important; }
+        .text-danger { color: red; font-size: 0.8em; margin-top: 2px; display: block; }
+    </style>
 </head>
 <body style="color: #333;">
 <div class="form-container">
-    <h1 th:text="${busTrip.id == null} ? 'Create New Bus Trip' : 'Edit Bus Trip'">Bus Trip Form</h1>
+    <h1 th:text="${isEditMode} ? 'Edit Bus Trip' : 'Create New Bus Trip'">Bus Trip Form</h1>
 
-    <form th:action="${busTrip.id == null} ? @{/bus-trip/create} : @{'/bus-trip/' + ${busTrip.id}}"
+    <form th:action="${isEditMode} ? @{'/bus-trip/' + ${busTrip.id}} : @{/bus-trip/create}"
           th:object="${busTrip}"
           method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${busTrip.id != null} ? 'readonly'" />
+            <input type="text" id="id" th:field="*{id}"
+                   th:readonly="${isEditMode}"
+                   th:attrappend="readonly=${isEditMode} ? 'readonly'"
+                   th:classappend="${#fields.hasErrors('id')} ? 'input-error' : ''"
+                   required />
+            <span class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
         </div>
 
         <div>
             <label for="routeId">Route:</label>
-            <select id="routeId" th:field="*{routeId}">
+            <select id="routeId" th:field="*{routeId}"
+                    th:classappend="${#fields.hasErrors('routeId')} ? 'input-error' : ''" required>
                 <option value="" disabled>-- Selectează o rută --</option>
                 <option th:if="${availableRoutes != null}"
                         th:each="route : ${availableRoutes}"
@@ -28,11 +38,13 @@
                         th:text="${route.origin.name} + ' - ' + ${route.destination.name}">
                 </option>
             </select>
+            <span class="text-danger" th:if="${#fields.hasErrors('routeId')}" th:errors="*{routeId}"></span>
         </div>
 
         <div>
             <label for="busId">Bus:</label>
-            <select id="busId" th:field="*{busId}">
+            <select id="busId" th:field="*{busId}"
+                    th:classappend="${#fields.hasErrors('busId')} ? 'input-error' : ''" required>
                 <option value="" disabled>-- Selectează un autobuz --</option>
                 <option th:if="${availableBuses != null}"
                         th:each="bus : ${availableBuses}"
@@ -40,32 +52,37 @@
                         th:text="${bus.registrationNumber} + ' (Cap: ' + ${bus.capacity} + ')'">
                 </option>
             </select>
+            <span class="text-danger" th:if="${#fields.hasErrors('busId')}" th:errors="*{busId}"></span>
         </div>
 
         <div>
             <label for="startTime">Start Time:</label>
-            <input type="datetime-local" id="startTime" name="startTime"
-                   th:value="${busTrip.startTime}" />
+            <input type="datetime-local" id="startTime" th:field="*{startTime}"
+                   th:classappend="${#fields.hasErrors('startTime')} ? 'input-error' : ''" required />
+            <span class="text-danger" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
         </div>
 
-        <div th:if="${busTrip.id != null}">
+        <div th:if="${isEditMode}">
             <label for="status">Status:</label>
-            <select id="status" name="status">
+            <select id="status" th:field="*{status}">
                 <option th:each="s : ${statusOptions}"
                         th:value="${s}"
-                        th:text="${s}"
-                        th:selected="${s == busTrip.status}">
+                        th:text="${s}">
                 </option>
             </select>
         </div>
 
+        <div th:unless="${isEditMode}">
+            <input type="hidden" name="status" value="PLANNED"/>
+        </div>
+
         <div>
-            <button type="submit" th:text="${busTrip.id == null} ? 'Create Bus Trip' : 'Save Changes'">Submit</button>
+            <button type="submit" th:text="${isEditMode} ? 'Save Changes' : 'Create Bus Trip'">Submit</button>
         </div>
     </form>
 
     <div style="margin-top: 15px; text-align: center;">
-        <a th:href="@{/bus-trip}" class="btn-cancel">Cancel</a>
+        <a th:href="@{/bus-trip}" class="btn-cancel" style="text-decoration: none; color: grey;">Cancel</a>
     </div>
 </div>
 </body>
