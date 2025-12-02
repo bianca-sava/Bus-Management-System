@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface BusJpaRepository extends JpaRepository<Bus, String> {
-    Optional<Bus> findByRegistrationNumber(String registrationNumber);
+    boolean existsByRegistrationNumber(String registrationNumber);
 }

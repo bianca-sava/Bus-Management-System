@@ -1,12 +1,12 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
-import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
 import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.repository.interfaces.BusJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,13 +27,6 @@ public class BusDatabaseService implements Validate<Bus> {
         if (bus.getNrOfPassengers() > bus.getCapacity()) {
             throw new IllegalArgumentException("Number of passengers cannot exceed capacity!");
         }
-
-        Optional<Bus> existing = busRepository.findByRegistrationNumber(bus.getRegistrationNumber());
-        if (existing.isPresent()) {
-            if (bus.getId() == null || !existing.get().getId().equals(bus.getId())) {
-                throw new DuplicateAttributeException("registrationNumber", "Registration number already exists!");
-            }
-        }
     }
 
     public Map<String, Bus> findAll() {
@@ -45,10 +38,45 @@ public class BusDatabaseService implements Validate<Bus> {
         return busRepository.findById(id).orElse(null);
     }
 
-    public void save(Bus bus) {
+    @Transactional
+    public boolean create(Bus bus){
+        if(busRepository.existsById(bus.getId().trim())){
+            throw new DuplicateAttributeException("id", "The id already exists!");
+        }
+
+        if(busRepository.existsByRegistrationNumber(bus.getRegistrationNumber().trim())){
+            throw new DuplicateAttributeException("registrationNumber", "The registration number already exists!");
+        }
+
         validate(bus);
 
-        busRepository.save(bus);
+        return busRepository.save(bus) != null;
+    }
+
+    @Transactional
+    public boolean update(String id, Bus bus){
+        Optional<Bus> busOptional = busRepository.findById(id);
+        if(busOptional.isPresent()){
+            Bus existingBus = busOptional.get();
+
+            String newRegNum = bus.getRegistrationNumber().trim();
+            if (!existingBus.getRegistrationNumber().equals(newRegNum)) {
+                if (busRepository.existsByRegistrationNumber(newRegNum)) {
+                    throw new DuplicateAttributeException("registrationNumber", "The registration number already exists!");
+                }
+            }
+
+            existingBus.setRegistrationNumber(newRegNum);
+            existingBus.setCapacity(bus.getCapacity());
+            existingBus.setStatus(bus.getStatus());
+            existingBus.setNrOfPassengers(bus.getNrOfPassengers());
+
+            validate(bus);
+
+            busRepository.save(existingBus);
+            return true;
+        }
+        return false;
     }
 
     public void delete(String id) {

@@ -4,11 +4,11 @@ import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.model.BusStatus;
 import com.example.busmanagementsystem.service.databaseServices.BusDatabaseService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class BusController {
     private final Validator validator;
 
     @Autowired
-    public BusController(BusDatabaseService busService,  Validator validator) {
+    public BusController(BusDatabaseService busService, Validator validator) {
         this.busService = busService;
         this.validator = validator;
     }
@@ -36,7 +36,6 @@ public class BusController {
         model.addAttribute("bus", new Bus());
         model.addAttribute("statusOptions", BusStatus.values());
         model.addAttribute("isEditMode", false);
-
         return "bus/form";
     }
 
@@ -52,32 +51,96 @@ public class BusController {
         return "redirect:/bus";
     }
 
+    @PostMapping("/{id}")
+    public String updateBus(@PathVariable String id,
+                            @RequestParam String registrationNumber,
+                            @RequestParam int capacity,
+                            @RequestParam BusStatus status,
+                            @RequestParam int nrOfPassengers,
+                            Model model) {
 
-    @PostMapping("/save")
-    public String saveBus(@Valid @ModelAttribute("bus") Bus bus,
-                          BindingResult bindingResult,
-                          Model model,
-                          @RequestParam(defaultValue = "false") boolean isEditMode) {
+        Bus existingBus = busService.findById(id);
+
+        if (existingBus != null) {
+            existingBus.setNrOfPassengers(nrOfPassengers);
+            existingBus.setCapacity(capacity);
+            existingBus.setStatus(status);
+            existingBus.setRegistrationNumber(registrationNumber);
+
+            DataBinder binder = new DataBinder(existingBus, "bus");
+            binder.setValidator(validator);
+            binder.validate();
+            BindingResult bindingResult = binder.getBindingResult();
+
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.bus", bindingResult);
+                model.addAttribute("bus", existingBus);
+                model.addAttribute("isEditMode", true);
+
+                model.addAttribute("statusOptions", BusStatus.values());
+
+                return "bus/form";
+            }
+
+            try {
+                busService.update(id, existingBus);
+            }
+            catch (DuplicateAttributeException | IllegalArgumentException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+                if (e instanceof DuplicateAttributeException) {
+                    model.addAttribute("errorField", ((DuplicateAttributeException) e).getAttributeName());
+                }
+
+                model.addAttribute("bus", existingBus);
+                model.addAttribute("isEditMode", true);
+
+                model.addAttribute("statusOptions", BusStatus.values());
+
+                return "bus/form";
+            }
+        }
+        return "redirect:/bus";
+    }
+
+    @PostMapping("/create")
+    public String createBus(@RequestParam String id,
+                            @RequestParam String registrationNumber,
+                            @RequestParam int capacity,
+                            @RequestParam BusStatus status,
+                            @RequestParam int nrOfPassengers,
+                            Model model) {
+
+        Bus newBus = new Bus(id, registrationNumber, capacity, status, nrOfPassengers);
+
+        DataBinder binder = new DataBinder(newBus, "bus");
+        binder.setValidator(validator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("org.springframework.validation.BindingResult.bus", bindingResult);
+            model.addAttribute("bus", newBus);
+            model.addAttribute("isEditMode", false);
+
             model.addAttribute("statusOptions", BusStatus.values());
-            model.addAttribute("isEditMode", isEditMode);
+
             return "bus/form";
         }
-        if (!isEditMode && busService.findById(bus.getId()) != null) {
-            bindingResult.rejectValue("id", "error.bus", "Acest ID există deja în baza de date!");
-        }
-
 
         try {
-            busService.save(bus);
-        } catch (DuplicateAttributeException e) {
-            bindingResult.rejectValue("registrationNumber", "error.bus", e.getMessage());
-            model.addAttribute("statusOptions", BusStatus.values());
-            return "bus/form";
-        } catch (IllegalArgumentException e) {
+            busService.create(newBus);
+        }
+        catch (DuplicateAttributeException | IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            if (e instanceof DuplicateAttributeException) {
+                model.addAttribute("errorField", ((DuplicateAttributeException) e).getAttributeName());
+            }
+
+            model.addAttribute("bus", newBus);
+            model.addAttribute("isEditMode", false);
+
             model.addAttribute("statusOptions", BusStatus.values());
+
             return "bus/form";
         }
 
