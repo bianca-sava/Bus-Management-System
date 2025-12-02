@@ -3,6 +3,7 @@ package com.example.busmanagementsystem.service.databaseServices;
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.repository.interfaces.BusStationJpaRepository;
+import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BusStationDatabaseService {
+public class BusStationDatabaseService implements Validate<BusStation> {
     private BusStationJpaRepository busStationRepository;
 
     @Autowired
@@ -19,10 +20,16 @@ public class BusStationDatabaseService {
         this.busStationRepository = repository;
     }
 
-    public boolean create (BusStation busStation) {
+    @Override
+    public void validate(BusStation busStation) {
         if (busStationRepository.existsById(busStation.getId())) {
             throw new DuplicateAttributeException("id", "Acest ID de stație există deja!");
         }
+    }
+
+    public boolean create (BusStation busStation) {
+        validate(busStation);
+
         return busStationRepository.save(busStation) != null;
     }
 

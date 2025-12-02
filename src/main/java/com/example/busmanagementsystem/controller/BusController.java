@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class BusController {
 
     private final BusDatabaseService busService;
+    private final Validator validator;
 
     @Autowired
-    public BusController(BusDatabaseService busService) {
+    public BusController(BusDatabaseService busService,  Validator validator) {
         this.busService = busService;
+        this.validator = validator;
     }
 
     @GetMapping
@@ -32,6 +35,8 @@ public class BusController {
     public String showCreateForm(Model model) {
         model.addAttribute("bus", new Bus());
         model.addAttribute("statusOptions", BusStatus.values());
+        model.addAttribute("isEditMode", false);
+
         return "bus/form";
     }
 
@@ -41,6 +46,7 @@ public class BusController {
         if (existingBus != null) {
             model.addAttribute("bus", existingBus);
             model.addAttribute("statusOptions", BusStatus.values());
+            model.addAttribute("isEditMode", true);
             return "bus/form";
         }
         return "redirect:/bus";

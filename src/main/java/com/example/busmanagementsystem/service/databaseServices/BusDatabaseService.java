@@ -4,6 +4,7 @@ import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
 import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.repository.interfaces.BusJpaRepository;
+import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BusDatabaseService {
+public class BusDatabaseService implements Validate<Bus> {
 
     private final BusJpaRepository busRepository;
 
     @Autowired
     public BusDatabaseService(BusJpaRepository repository) {
         this.busRepository = repository;
+    }
+
+    @Override
+    public void validate(Bus bus) throws RuntimeException {
+        if (bus.getNrOfPassengers() > bus.getCapacity()) {
+            throw new IllegalArgumentException("Number of passengers cannot exceed capacity!");
+        }
+
+        Optional<Bus> existing = busRepository.findByRegistrationNumber(bus.getRegistrationNumber());
+        if (existing.isPresent()) {
+            if (bus.getId() == null || !existing.get().getId().equals(bus.getId())) {
+                throw new DuplicateAttributeException("registrationNumber", "Registration number already exists!");
+            }
+        }
     }
 
     public Map<String, Bus> findAll() {
@@ -31,16 +46,7 @@ public class BusDatabaseService {
     }
 
     public void save(Bus bus) {
-        if (bus.getNrOfPassengers() > bus.getCapacity()) {
-            throw new IllegalArgumentException("Number of passengers cannot exceed capacity!");
-        }
-
-        Optional<Bus> existing = busRepository.findByRegistrationNumber(bus.getRegistrationNumber());
-        if (existing.isPresent()) {
-            if (bus.getId() == null || !existing.get().getId().equals(bus.getId())) {
-                throw new DuplicateAttributeException("registrationNumber", "Registration number already exists!");
-            }
-        }
+        validate(bus);
 
         busRepository.save(bus);
     }

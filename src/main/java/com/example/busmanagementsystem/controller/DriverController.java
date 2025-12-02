@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.service.databaseServices.DriverDatabaseService;
@@ -9,6 +10,9 @@ import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsSer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -19,17 +23,22 @@ public class DriverController {
 //    private final DutyAssignmentsService dutyAssignmentsService;
     private final DriverDatabaseService driverService;
     private final DutyAssignmentsDatabaseService dutyAssignmentsService;
+    private final Validator validator;
 
     @Autowired
-    public DriverController(DriverDatabaseService driverService, DutyAssignmentsDatabaseService dutyAssignmentsService) {
+    public DriverController(DriverDatabaseService driverService, DutyAssignmentsDatabaseService dutyAssignmentsService,
+                            Validator validator) {
         this.driverService = driverService;
         this.dutyAssignmentsService = dutyAssignmentsService;
+        this.validator = validator;
     }
 
 //    @Autowired
-//    public DriverController(DriverService driverService,  DutyAssignmentsService dutyAssignmentsService) {
+//    public DriverController(DriverService driverService, DutyAssignmentsService dutyAssignmentsService,
+//                              Validator validator) {
 //        this.driverService = driverService;
 //        this.dutyAssignmentsService = dutyAssignmentsService;
+//        this.validator = validator;
 //    }
 
     @GetMapping
@@ -43,6 +52,8 @@ public class DriverController {
     public String showCreateForm(Model model) {
 
         model.addAttribute("driver", new Driver());
+        model.addAttribute("isEditMode", false);
+
         return "driver/form";
     }
 
@@ -51,6 +62,8 @@ public class DriverController {
         Driver existingDriver = driverService.getDriverById(id);
         if (existingDriver != null) {
             model.addAttribute("driver", existingDriver);
+            model.addAttribute("isEditMode", true);
+
             return "driver/form";
         }
 
@@ -60,7 +73,8 @@ public class DriverController {
     @PostMapping("/{id}")
     public String updateDriver(@PathVariable String id,
                                @RequestParam String name,
-                               @RequestParam String yearsOfExperience){
+                               @RequestParam String yearsOfExperience,
+                               Model model){
 
         Driver existingDriver = driverService.getDriverById(id);
 
@@ -68,6 +82,18 @@ public class DriverController {
             existingDriver.setName(name);
             existingDriver.setYearsOfExperience(yearsOfExperience);
 
+            DataBinder binder = new DataBinder(existingDriver, "dirver");
+            binder.setValidator(validator);
+            binder.validate();
+            BindingResult bindingResult = binder.getBindingResult();
+
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
+
+                model.addAttribute("driver", existingDriver);
+                model.addAttribute("isEditMode", true);
+                return "driver/form";
+            }
             driverService.updateDriver(id,  existingDriver);
         }
 
@@ -75,9 +101,35 @@ public class DriverController {
     }
 
     @PostMapping("/create")
-    public String createDriver(@RequestParam String id, @RequestParam String name, @RequestParam String yearsOfExperience) {
+    public String createDriver(@RequestParam String id, @RequestParam String name, @RequestParam String yearsOfExperience,
+                               Model model) {
 
-        driverService.addDriver(new Driver(id, name, yearsOfExperience));
+        Driver newdriver = new Driver(id, name, yearsOfExperience);
+
+        DataBinder binder = new DataBinder(newdriver, "dirver");
+        binder.setValidator(validator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
+
+            model.addAttribute("driver", newdriver);
+            model.addAttribute("isEditMode", false);
+            return "driver/form";
+        }
+
+        try{
+            driverService.addDriver(newdriver);
+        }
+        catch (DuplicateAttributeException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorField", e.getAttributeName());
+
+            model.addAttribute("ticket", newdriver);
+            model.addAttribute("isEditMode", false);
+            return "driver/form";
+        }
         return "redirect:/driver";
     }
 
