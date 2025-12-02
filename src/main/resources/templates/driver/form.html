@@ -2,31 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Driver Form</title>
+
+    <title th:text="${isEditMode == true} ? 'Edit Driver' : 'Create New Driver'">Driver Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
-<body style="color: #333;">
+<body>
 <div class="form-container">
-    <h1 th:text="${driver.id == null} ? 'Create New Driver' : 'Edit Driver'">Driver Form</h1>
 
-    <form th:action="${driver.id == null} ? @{/driver/create} : @{'/driver/' + ${driver.id}}" th:object="${driver}" method="post">
+    <h1 th:text="${isEditMode == true} ? ('Edit Driver (' + ${driver.id} + ')') : 'New Driver Form'">Driver Form</h1>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/driver/' + ${driver.id}} : @{/driver/create}"
+          th:object="${driver}"
+          method="post">
+
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${driver.id != null} ? 'readonly'" />
-        </div>
-        <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" th:field="*{name}" />
-        </div>
-        <div>
-            <label for="yearsOfExperience">Years of Experience:</label>
-            <input type="text" id="yearsOfExperience" th:field="*{yearsOfExperience}" />
+            <input type="text" id="id" name="id" th:field="*{id}"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + ((errorField == 'id' or #fields.hasErrors('id')) ? 'input-error' : '')}"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
         </div>
 
         <div>
-            <button type="submit" th:text="${driver.id == null} ? 'Create Driver' : 'Save Changes'">Submit</button>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div>
+            <label for="yearsOfExperience">Years of Experience:</label>
+            <input type="number" id="yearsOfExperience" name="yearsOfExperience" th:field="*{yearsOfExperience}"
+                   th:classappend="${#fields.hasErrors('yearsOfExperience')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('yearsOfExperience')}" th:errors="*{yearsOfExperience}"></div>
+        </div>
+
+        <div>
+            <button type="submit" th:text="${isEditMode == true} ? 'Save Changes' : 'Create Driver'">Submit</button>
         </div>
     </form>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <a th:href="@{/driver}" class="btn-cancel">Cancel</a>
+    </div>
 </div>
 </body>
 </html>
