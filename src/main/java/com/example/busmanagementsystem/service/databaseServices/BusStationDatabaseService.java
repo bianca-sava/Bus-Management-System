@@ -21,7 +21,7 @@ public class BusStationDatabaseService {
 
     public boolean create (BusStation busStation) {
         if (busStationRepository.existsById(busStation.getId())) {
-            throw new DuplicateAttributeException("id", "Acest ID de stație există deja!");
+            throw new DuplicateAttributeException("id", "This ID already exists!");
         }
         return busStationRepository.save(busStation) != null;
     }
