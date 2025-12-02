@@ -126,7 +126,7 @@ public class DriverController {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("errorField", e.getAttributeName());
 
-            model.addAttribute("ticket", newdriver);
+            model.addAttribute("driver", newdriver);
             model.addAttribute("isEditMode", false);
             return "driver/form";
         }
