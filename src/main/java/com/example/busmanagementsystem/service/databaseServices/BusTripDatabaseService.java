@@ -1,8 +1,11 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
 import com.example.busmanagementsystem.model.BusTrip;
+import com.example.busmanagementsystem.repository.interfaces.BusJpaRepository;
 import com.example.busmanagementsystem.repository.interfaces.BusTripJpaRepository;
+import com.example.busmanagementsystem.repository.interfaces.RouteJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +17,43 @@ import java.util.stream.Collectors;
 public class BusTripDatabaseService {
 
     private final BusTripJpaRepository busTripRepository;
+    private final BusJpaRepository busJpaRepository;
+    private final RouteJpaRepository routeJpaRepository;
 
     @Autowired
-    public BusTripDatabaseService(BusTripJpaRepository repository) {
+    public BusTripDatabaseService(BusTripJpaRepository repository, BusJpaRepository busJpaRepository, RouteJpaRepository routeJpaRepository) {
         this.busTripRepository = repository;
+        this.busJpaRepository = busJpaRepository;
+        this.routeJpaRepository = routeJpaRepository;
     }
 
     public boolean create(BusTrip busTrip) {
         if (busTripRepository.existsById(busTrip.getId())) {
             throw new DuplicateAttributeException("id", "This ID already exists!");
         }
+
+        if (!busJpaRepository.existsById(busTrip.getBusId())) {
+            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
+        }
+
+        if (!routeJpaRepository.existsById(busTrip.getRouteId())) {
+            throw new EntityNotFoundException("routeId", "The Route with this ID does not exist!");
+        }
+
         return busTripRepository.save(busTrip) != null;
     }
 
     public boolean update(String id, BusTrip busTrip) {
         Optional<BusTrip> busTripOptional = busTripRepository.findById(id);
+
+        if (!busJpaRepository.existsById(busTrip.getBusId())) {
+            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
+        }
+
+        if (!routeJpaRepository.existsById(busTrip.getRouteId())) {
+            throw new EntityNotFoundException("routeId", "The Route with this ID does not exist!");
+        }
+
 
         if (busTripOptional.isPresent()) {
             BusTrip existing = busTripOptional.get();
