@@ -5,55 +5,36 @@ import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.service.databaseServices.DriverDatabaseService;
 import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
-import com.example.busmanagementsystem.service.inFileServices.DriverService;
-import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
+import jakarta.validation.Valid; // Asigură-te că ai importul acesta
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/driver")
 public class DriverController {
 
-//    private final DriverService driverService;
-//    private final DutyAssignmentsService dutyAssignmentsService;
     private final DriverDatabaseService driverService;
     private final DutyAssignmentsDatabaseService dutyAssignmentsService;
-    private final Validator validator;
 
     @Autowired
-    public DriverController(DriverDatabaseService driverService, DutyAssignmentsDatabaseService dutyAssignmentsService,
-                            Validator validator) {
+    public DriverController(DriverDatabaseService driverService, DutyAssignmentsDatabaseService dutyAssignmentsService) {
         this.driverService = driverService;
         this.dutyAssignmentsService = dutyAssignmentsService;
-        this.validator = validator;
     }
-
-//    @Autowired
-//    public DriverController(DriverService driverService, DutyAssignmentsService dutyAssignmentsService,
-//                              Validator validator) {
-//        this.driverService = driverService;
-//        this.dutyAssignmentsService = dutyAssignmentsService;
-//        this.validator = validator;
-//    }
 
     @GetMapping
     public String getAllDrivers(Model model) {
-
         model.addAttribute("drivers", driverService.findAllDrivers().values());
         return "driver/index";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-
         model.addAttribute("driver", new Driver());
         model.addAttribute("isEditMode", false);
-
         return "driver/form";
     }
 
@@ -63,73 +44,52 @@ public class DriverController {
         if (existingDriver != null) {
             model.addAttribute("driver", existingDriver);
             model.addAttribute("isEditMode", true);
-
             return "driver/form";
         }
-
         return "redirect:/driver";
     }
 
     @PostMapping("/{id}")
     public String updateDriver(@PathVariable String id,
-                               @RequestParam String name,
-                               @RequestParam String yearsOfExperience,
-                               Model model){
+                               @Valid @ModelAttribute("driver") Driver driver,
+                               BindingResult bindingResult,
+                               Model model) {
+
+        driver.setId(id);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", true);
+            return "driver/form";
+        }
 
         Driver existingDriver = driverService.getDriverById(id);
-
         if (existingDriver != null) {
-            existingDriver.setName(name);
-            existingDriver.setYearsOfExperience(yearsOfExperience);
-
-            DataBinder binder = new DataBinder(existingDriver, "dirver");
-            binder.setValidator(validator);
-            binder.validate();
-            BindingResult bindingResult = binder.getBindingResult();
-
-            if (bindingResult.hasErrors()) {
-                model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
-
-                model.addAttribute("driver", existingDriver);
-                model.addAttribute("isEditMode", true);
-                return "driver/form";
-            }
-            driverService.updateDriver(id,  existingDriver);
+            driver.setAssignments(existingDriver.getAssignments()); // Păstrăm asignările existente
+            driverService.updateDriver(id, driver);
         }
 
         return "redirect:/driver";
     }
 
     @PostMapping("/create")
-    public String createDriver(@RequestParam String id, @RequestParam String name, @RequestParam String yearsOfExperience,
+    public String createDriver(@Valid @ModelAttribute("driver") Driver driver,
+                               BindingResult bindingResult,
                                Model model) {
 
-        Driver newdriver = new Driver(id, name, yearsOfExperience);
-
-        DataBinder binder = new DataBinder(newdriver, "dirver");
-        binder.setValidator(validator);
-        binder.validate();
-        BindingResult bindingResult = binder.getBindingResult();
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
-
-            model.addAttribute("driver", newdriver);
             model.addAttribute("isEditMode", false);
             return "driver/form";
         }
 
-        try{
-            driverService.addDriver(newdriver);
-        }
-        catch (DuplicateAttributeException e){
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("errorField", e.getAttributeName());
+        try {
+            driverService.addDriver(driver);
+        } catch (DuplicateAttributeException e) {
+            bindingResult.rejectValue("id", "error.driver", e.getMessage());
 
-            model.addAttribute("ticket", newdriver);
             model.addAttribute("isEditMode", false);
             return "driver/form";
         }
+
         return "redirect:/driver";
     }
 
@@ -145,12 +105,10 @@ public class DriverController {
 
         if(driver != null) {
             model.addAttribute("assignments", driver.getAssignments());
-            model.addAttribute("drivarId", driver.getId());
+            model.addAttribute("driverId", driver.getId());
             model.addAttribute("driverName", driver.getName());
-
             return "driver/assignments";
         }
-
         return "redirect:/driver";
     }
 
