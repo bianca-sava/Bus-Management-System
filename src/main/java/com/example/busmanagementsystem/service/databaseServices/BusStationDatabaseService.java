@@ -23,7 +23,7 @@ public class BusStationDatabaseService implements Validate<BusStation> {
     @Override
     public void validate(BusStation busStation) {
         if (busStationRepository.existsById(busStation.getId())) {
-            throw new DuplicateAttributeException("id", "Acest ID de stație există deja!");
+            throw new DuplicateAttributeException("id", "This ID already exists!");
         }
     }
 

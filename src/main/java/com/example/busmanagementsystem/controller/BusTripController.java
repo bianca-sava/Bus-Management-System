@@ -2,6 +2,7 @@ package com.example.busmanagementsystem.controller;
 
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
 import com.example.busmanagementsystem.model.BusTrip;
 import com.example.busmanagementsystem.model.BusTripStatus;
 import com.example.busmanagementsystem.model.Ticket;
@@ -47,7 +48,7 @@ public class BusTripController {
     public String showCreateForm(Model model) {
         model.addAttribute("busTrip", new BusTrip());
         model.addAttribute("isEditMode", false);
-        populateDropdowns(model); // Helper pentru cod curat
+        populateDropdowns(model);
         return "busTrip/form";
     }
 
@@ -77,8 +78,14 @@ public class BusTripController {
             populateDropdowns(model);
             return "busTrip/form";
         }
-
-        busTripService.update(id, busTrip);
+        try {
+            busTripService.update(id, busTrip);
+        } catch (EntityNotFoundException e) {
+            bindingResult.rejectValue("id", "error.busTrip", e.getMessage());
+            model.addAttribute("isEditMode", true);
+            populateDropdowns(model);
+            return "busTrip/form";
+        }
         return "redirect:/bus-trip";
     }
 
@@ -97,6 +104,11 @@ public class BusTripController {
             busTripService.create(busTrip);
         } catch (DuplicateAttributeException e) {
             bindingResult.rejectValue("id", "error.busTrip", e.getMessage());
+            model.addAttribute("isEditMode", false);
+            populateDropdowns(model);
+            return "busTrip/form";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("isEditMode", false);
             populateDropdowns(model);
             return "busTrip/form";
@@ -170,7 +182,7 @@ public class BusTripController {
             model.addAttribute("assignments", trip.getAssignments());
             model.addAttribute("tripId", trip.getId());
             model.addAttribute("tripName", "Trip " + trip.getId());
-            return "busTrip/assignments"; // Pagină HTML nouă
+            return "busTrip/assignments";
         }
         return "redirect:/bus-trip";
     }
