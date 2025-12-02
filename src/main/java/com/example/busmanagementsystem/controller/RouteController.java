@@ -1,5 +1,8 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.exceptions.EntityNotFoundException;
+import com.example.busmanagementsystem.exceptions.InvalidRouteException;
 import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.model.BusTrip; // <-- Import Adăugat
 import com.example.busmanagementsystem.model.Route;
@@ -12,6 +15,9 @@ import com.example.busmanagementsystem.service.inFileServices.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,23 +30,28 @@ public class RouteController {
     private final RouteDatabaseService routeService;
     private final BusStationDatabaseService busStationService;
     private final BusTripDatabaseService busTripService;
+    private final Validator validator;
 
     @Autowired
     public RouteController(RouteDatabaseService routeService,
                            BusStationDatabaseService busStationService,
-                           BusTripDatabaseService busTripService) {
+                           BusTripDatabaseService busTripService,
+                           Validator validator) {
         this.routeService = routeService;
         this.busStationService = busStationService;
         this.busTripService = busTripService;
+        this.validator = validator;
     }
 
 //    @Autowired
 //    public RouteController(RouteService routeService,
 //                           BusStationService busStationService,
-//                           BusTripService busTripService) {
+//                           BusTripService busTripService,
+//                           Validator validator) {
 //        this.routeService = routeService;
 //        this.busStationService = busStationService;
 //        this.busTripService = busTripService;
+//        this.validator = validator;
 //    }
 
 
@@ -54,6 +65,7 @@ public class RouteController {
     public String showCreateForm(Model model) {
         model.addAttribute("route", new Route());
         model.addAttribute("allBusStations", busStationService.findAll().values());
+        model.addAttribute("isEditMode", false);
         return "route/form";
     }
 
@@ -63,6 +75,7 @@ public class RouteController {
         if (existingRoute != null) {
             model.addAttribute("route", existingRoute);
             model.addAttribute("allBusStations", busStationService.findAll().values());
+            model.addAttribute("isEditMode", true);
             return "route/form";
         }
         return "redirect:/route";
@@ -73,16 +86,59 @@ public class RouteController {
                               @RequestParam String originId,
                               @RequestParam String destinationId,
                               @RequestParam double distance,
-                              @RequestParam int nrOfStations) {
+                              @RequestParam int nrOfStations,
+                              Model model) {
+
         Route existingRoute = routeService.findById(id);
+
         if (existingRoute != null) {
             BusStation origin = busStationService.findById(originId);
             BusStation destination = busStationService.findById(destinationId);
+
             existingRoute.setOrigin(origin);
             existingRoute.setDestination(destination);
             existingRoute.setDistance(distance);
             existingRoute.setNrOfStations(nrOfStations);
-            routeService.update(id, existingRoute);
+
+            DataBinder binder = new DataBinder(existingRoute, "route");
+            binder.setValidator(validator);
+            binder.validate();
+            BindingResult bindingResult = binder.getBindingResult();
+
+            if(bindingResult.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.route", bindingResult);
+                model.addAttribute("route", existingRoute);
+                model.addAttribute("isEditMode", true);
+                model.addAttribute("allBusStations", busStationService.findAll().values());
+                return "route/form";
+            }
+
+            try {
+                routeService.update(id, existingRoute);
+            }
+            catch (DuplicateAttributeException e){
+                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("errorField", e.getAttributeName());
+                model.addAttribute("route", existingRoute);
+                model.addAttribute("isEditMode", true);
+                model.addAttribute("allBusStations", busStationService.findAll().values());
+                return "route/form";
+            }
+            catch (InvalidRouteException e){
+                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("route", existingRoute);
+                model.addAttribute("isEditMode", true);
+                model.addAttribute("allBusStations", busStationService.findAll().values());
+                return "route/form";
+            }
+            catch (EntityNotFoundException e){
+                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("errorField", e.getFieldName());
+                model.addAttribute("route", existingRoute);
+                model.addAttribute("isEditMode", true);
+                model.addAttribute("allBusStations", busStationService.findAll().values());
+                return "route/form";
+            }
         }
         return "redirect:/route";
     }
@@ -93,11 +149,52 @@ public class RouteController {
                               @RequestParam String originId,
                               @RequestParam String destinationId,
                               @RequestParam double distance,
-                              @RequestParam int nrOfStations) {
+                              @RequestParam int nrOfStations,
+                              Model model) {
+
         BusStation origin = busStationService.findById(originId);
         BusStation destination = busStationService.findById(destinationId);
+
         Route newRoute = new Route(id, origin, destination, distance, nrOfStations);
-        routeService.create(newRoute);
+
+        DataBinder binder = new DataBinder(newRoute, "route");
+        binder.setValidator(validator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
+
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("org.springframework.validation.BindingResult.route", bindingResult);
+            model.addAttribute("route", newRoute);
+            model.addAttribute("isEditMode", false);
+            model.addAttribute("allBusStations", busStationService.findAll().values());
+            return "route/form";
+        }
+
+        try {
+            routeService.create(newRoute);
+        }
+        catch (DuplicateAttributeException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorField", e.getAttributeName());
+            model.addAttribute("route", newRoute);
+            model.addAttribute("isEditMode", false);
+            model.addAttribute("allBusStations", busStationService.findAll().values());
+            return "route/form";
+        }
+        catch (InvalidRouteException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("route", newRoute);
+            model.addAttribute("isEditMode", false);
+            model.addAttribute("allBusStations", busStationService.findAll().values());
+        }
+        catch (EntityNotFoundException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorField", e.getFieldName());
+            model.addAttribute("route", newRoute);
+            model.addAttribute("isEditMode", false);
+            model.addAttribute("allBusStations", busStationService.findAll().values());
+        }
+
         return "redirect:/route";
     }
 

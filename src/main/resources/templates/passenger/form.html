@@ -2,38 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Passenger Form</title>
+
+    <title th:text="${isEditMode == true} ? 'Edit Passenger' : 'Create New Passenger'">Passenger Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
-<body style="color: #333;">
+<body>
 <div class="form-container">
-    <h1 th:text="${passenger.id == null} ? 'Create New Passenger' : 'Edit Passenger'">Passenger Form</h1>
 
-    <form th:action="${passenger.id == null} ? @{/passenger/create} : @{'/passenger/' + ${passenger.id}}"
+    <h1 th:text="${isEditMode == true} ? ('Edit Passenger (' + ${passenger.id} + ')') : 'New Passenger Form'">Passenger Form</h1>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/passenger/' + ${passenger.id}} : @{/passenger/create}"
           th:object="${passenger}"
           method="post">
 
         <div>
             <label for="id">ID:</label>
-            <input type="text" id="id" th:field="*{id}" th:attrappend="readonly=${passenger.id != null} ? 'readonly'" />
+            <input type="text" id="id" name="id" th:field="*{id}"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + ((errorField == 'id' or #fields.hasErrors('id')) ? 'input-error' : '')}"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
         </div>
 
         <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" th:field="*{name}" />
+            <input type="text" id="name" name="name" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
         <div>
             <label for="currency">Currency:</label>
-            <input type="text" id="currency" th:field="*{currency}" />
+            <select id="currency" name="currency"
+                    th:classappend="${#fields.hasErrors('currency')} ? 'input-error' : ''"
+                    required>
+                <option value="" disabled th:selected="${passenger.currency == null}">-- Select Currency --</option>
+
+                <option value="RON" th:selected="${passenger.currency == 'RON'}">RON</option>
+                <option value="EUR" th:selected="${passenger.currency == 'EUR'}">EUR</option>
+                <option value="USD" th:selected="${passenger.currency == 'USD'}">USD</option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}"></div>
         </div>
 
         <div>
-            <button type="submit" th:text="${passenger.id == null} ? 'Create Passenger' : 'Save Changes'">Submit</button>
+            <button type="submit" th:text="${isEditMode == true} ? 'Save Changes' : 'Create Passenger'">Submit</button>
         </div>
     </form>
 
-    <div style="margin-top: 15px; text-align: center;">
+    <div>
         <a th:href="@{/passenger}" class="btn-cancel">Cancel</a>
     </div>
 </div>

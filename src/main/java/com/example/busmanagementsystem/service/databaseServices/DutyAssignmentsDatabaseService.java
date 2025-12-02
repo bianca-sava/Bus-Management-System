@@ -6,6 +6,7 @@ import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.repository.interfaces.DriverJpaRepository; // Sau StaffJpaRepository
 import com.example.busmanagementsystem.repository.interfaces.BusTripJpaRepository;
 import com.example.busmanagementsystem.repository.interfaces.DutyAssignmentJpaRepository;
+import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DutyAssignmentsDatabaseService {
+public class DutyAssignmentsDatabaseService implements Validate<DutyAssignment> {
 
     private final DutyAssignmentJpaRepository assignmentRepository;
     private final BusTripJpaRepository tripRepository;
@@ -28,29 +29,29 @@ public class DutyAssignmentsDatabaseService {
         this.driverRepository = driverRepository;
     }
 
-    public boolean addAssignment(DutyAssignment assignment){
-        if (assignmentRepository.existsById(assignment.getId())) {
-            throw new DuplicateAttributeException("id", "This ID already exists!");
-        }
-
+    @Override
+    public void validate(DutyAssignment assignment) throws RuntimeException {
         if (!tripRepository.existsById(assignment.getTripId())) {
-            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
+            throw new EntityNotFoundException("tripId", "Călătoria cu acest ID nu există!");
         }
 
         if (!driverRepository.existsById(assignment.getStaffId())) {
-            throw new EntityNotFoundException("staffId", "The Driver with this ID does not exist!");
+            throw new EntityNotFoundException("staffId", "Șoferul cu acest ID nu există!");
         }
+    }
+
+    public boolean addAssignment(DutyAssignment assignment){
+        if (assignmentRepository.existsById(assignment.getId())) {
+            throw new DuplicateAttributeException("id", "Acest ID de asignare există deja!");
+        }
+
+        validate(assignment);
 
         return assignmentRepository.save(assignment) != null;
     }
 
     public boolean updateAssignment(String id, DutyAssignment assignment){
-        if (!tripRepository.existsById(assignment.getTripId())) {
-            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
-        }
-        if (!driverRepository.existsById(assignment.getStaffId())) {
-            throw new EntityNotFoundException("staffId", "The Driver with this ID does not exist!");
-        }
+        validate(assignment);
 
         return assignmentRepository.findById(id).map(existing -> {
             existing.setRole(assignment.getRole());

@@ -1,5 +1,6 @@
 package com.example.busmanagementsystem.controller;
 
+import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.model.Ticket;
 import com.example.busmanagementsystem.service.databaseServices.PassengerDatabaseService;
@@ -9,6 +10,9 @@ import com.example.busmanagementsystem.service.inFileServices.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -18,19 +22,24 @@ public class PassengerController {
 //    private final TicketService ticketService;
     private final PassengerDatabaseService passengerService;
     private final TicketDatabaseService ticketService;
+    private final Validator validator;
 
     @Autowired
     public PassengerController(PassengerDatabaseService passengerService,
-                               TicketDatabaseService ticketService){
+                               TicketDatabaseService ticketService,
+                               Validator validator) {
         this.passengerService = passengerService;
         this.ticketService = ticketService;
+        this.validator = validator;
     }
 
 //    @Autowired
 //    public PassengerController(PassengerService passengerService,
-//                               TicketService ticketService) {
+//                               TicketService ticketService,
+//                               Validator validator) {
 //        this.passengerService = passengerService;
 //        this.ticketService = ticketService;
+//        this.validator = validator;
 //    }
 
     @GetMapping
@@ -42,6 +51,7 @@ public class PassengerController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("passenger", new Passenger());
+        model.addAttribute("isEditMode", false);
         return "passenger/form";
     }
 
@@ -50,6 +60,8 @@ public class PassengerController {
         Passenger existingPassenger = passengerService.findById(id);
         if (existingPassenger != null) {
             model.addAttribute("passenger", existingPassenger);
+            model.addAttribute("isEditMode", true);
+
             return "passenger/form";
         }
         return "redirect:/passenger";
@@ -58,12 +70,37 @@ public class PassengerController {
     @PostMapping("/{id}")
     public String updatePassenger(@PathVariable String id,
                                   @RequestParam String name,
-                                  @RequestParam String currency) {
+                                  @RequestParam String currency,
+                                  Model model) {
+
         Passenger existingPassenger = passengerService.findById(id);
+
         if (existingPassenger != null) {
+
             existingPassenger.setName(name);
             existingPassenger.setCurrency(currency);
-            passengerService.update(id, existingPassenger);
+
+            DataBinder binder = new DataBinder(existingPassenger, "passenger");
+            binder.setValidator(validator);
+            binder.validate();
+            BindingResult bindingResult = binder.getBindingResult();
+
+            if(bindingResult.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.passenger", bindingResult);
+                model.addAttribute("passenger", existingPassenger);
+                model.addAttribute("isEditMode", true);
+                return  "passenger/form";
+            }
+
+            try {
+                passengerService.update(id, existingPassenger);
+            }
+            catch (DuplicateAttributeException e){
+                model.addAttribute("errorMessage", e.getMessage());
+                model.addAttribute("errorField", e.getAttributeName());
+                model.addAttribute("passenger", existingPassenger);
+                model.addAttribute("isEditMode", true);
+            }
         }
         return "redirect:/passenger";
     }
@@ -71,9 +108,31 @@ public class PassengerController {
     @PostMapping("/create")
     public String createPassenger(@RequestParam String id,
                                   @RequestParam String name,
-                                  @RequestParam String currency) {
+                                  @RequestParam String currency,
+                                  Model model) {
         Passenger newPassenger = new Passenger(id, name, currency);
-        passengerService.create(newPassenger);
+
+        DataBinder binder = new DataBinder(newPassenger, "passenger");
+        binder.setValidator(validator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
+
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("org.springframework.validation.BindingResult.passenger", bindingResult);
+            model.addAttribute("passenger", newPassenger);
+            model.addAttribute("isEditMode", false);
+            return  "passenger/form";
+        }
+
+        try {
+            passengerService.create(newPassenger);
+        }
+        catch (DuplicateAttributeException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorField", e.getAttributeName());
+            model.addAttribute("passenger", newPassenger);
+            model.addAttribute("isEditMode", false);
+        }
         return "redirect:/passenger";
     }
 
