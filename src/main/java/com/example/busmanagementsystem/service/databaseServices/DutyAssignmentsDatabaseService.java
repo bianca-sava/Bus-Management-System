@@ -30,15 +30,15 @@ public class DutyAssignmentsDatabaseService {
 
     public boolean addAssignment(DutyAssignment assignment){
         if (assignmentRepository.existsById(assignment.getId())) {
-            throw new DuplicateAttributeException("id", "Acest ID de asignare există deja!");
+            throw new DuplicateAttributeException("id", "This ID already exists!");
         }
 
         if (!tripRepository.existsById(assignment.getTripId())) {
-            throw new EntityNotFoundException("tripId", "Călătoria cu acest ID nu există!");
+            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
         }
 
         if (!driverRepository.existsById(assignment.getStaffId())) {
-            throw new EntityNotFoundException("staffId", "Șoferul cu acest ID nu există!");
+            throw new EntityNotFoundException("staffId", "The Driver with this ID does not exist!");
         }
 
         return assignmentRepository.save(assignment) != null;
@@ -46,10 +46,10 @@ public class DutyAssignmentsDatabaseService {
 
     public boolean updateAssignment(String id, DutyAssignment assignment){
         if (!tripRepository.existsById(assignment.getTripId())) {
-            throw new EntityNotFoundException("tripId", "Călătoria selectată nu există!");
+            throw new EntityNotFoundException("tripId", "The Trip with this ID does not exist!");
         }
         if (!driverRepository.existsById(assignment.getStaffId())) {
-            throw new EntityNotFoundException("staffId", "Șoferul selectat nu există!");
+            throw new EntityNotFoundException("staffId", "The Driver with this ID does not exist!");
         }
 
         return assignmentRepository.findById(id).map(existing -> {

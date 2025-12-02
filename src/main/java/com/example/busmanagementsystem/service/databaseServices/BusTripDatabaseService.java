@@ -22,7 +22,7 @@ public class BusTripDatabaseService {
 
     public boolean create(BusTrip busTrip) {
         if (busTripRepository.existsById(busTrip.getId())) {
-            throw new DuplicateAttributeException("id", "Acest ID de călătorie există deja!");
+            throw new DuplicateAttributeException("id", "This ID already exists!");
         }
         return busTripRepository.save(busTrip) != null;
     }
