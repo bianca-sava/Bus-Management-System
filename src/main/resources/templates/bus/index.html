@@ -6,37 +6,86 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
+        // Funcție generică pentru Dual Slider
+        function updateDualSlider(groupId) {
+            const container = document.getElementById(groupId);
+            if(!container) return;
+
+            const rangeMin = container.querySelector('.range-min');
+            const rangeMax = container.querySelector('.range-max');
+            const inputMin = container.querySelector('.input-min');
+            const inputMax = container.querySelector('.input-max');
+
+            function syncInputs() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+
+                if (val1 > val2) {
+                    rangeMin.value = val2;
+                    return;
+                }
+                inputMin.value = rangeMin.value;
+                inputMax.value = rangeMax.value;
+            }
+
+            function syncRanges() {
+                rangeMin.value = inputMin.value;
+                rangeMax.value = inputMax.value;
+            }
+
+            rangeMin.addEventListener('input', syncInputs);
+            rangeMax.addEventListener('input', function() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+                if (val2 < val1) {
+                    rangeMax.value = val1;
+                    return;
+                }
+                inputMax.value = rangeMax.value;
+            });
+
+            inputMin.addEventListener('change', syncRanges);
+            inputMax.addEventListener('change', syncRanges);
+        }
+
+        window.onload = function() {
+            // Inițializăm sliderul pentru Capacitate
+            updateDualSlider('capacity-slider');
+            // Inițializăm sliderul pentru Pasageri
+            updateDualSlider('passengers-slider');
+        };
+
         function goToNewBusPage() {
             window.location.href = '/bus/new';
         }
     </script>
 </head>
 <body>
+
 <div class="back-button-container">
     <a th:href="@{/home}" class="btn btn-primary">
         🏠 Go to Home Page
     </a>
 </div>
 
-<h1>Bus List</h1>
+<h1>Bus Management</h1>
 
-<div class="filter-container">
-    <form th:action="@{/bus}" method="get">
-        <div class="filter-row">
+<div class="main-container">
+
+    <aside class="sidebar">
+        <form th:action="@{/bus}" method="get">
+            <h3>Filtrează Autobuze</h3>
+
             <div class="filter-group">
-                <label for="idFilter">ID</label>
-                <input type="text" id="idFilter" name="id" th:value="${filterId}" placeholder="Search ID...">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Bus ID..." style="margin-bottom: 10px;">
+                <input type="text" name="registrationNumber" th:value="${filterRegNum}" placeholder="Registration No...">
             </div>
 
             <div class="filter-group">
-                <label for="regFilter">Registration No.</label>
-                <input type="text" id="regFilter" name="registrationNumber" th:value="${filterRegNum}" placeholder="Search Reg...">
-            </div>
-
-            <div class="filter-group">
-                <label for="statusFilter">Status</label>
-                <select id="statusFilter" name="status" style="padding: 5px;">
-                    <option value="">-- All Statuses --</option>
+                <label class="group-title">Status</label>
+                <select name="status" class="form-control" style="width: 100%;">
+                    <option value="">-- Toate --</option>
                     <option th:each="opt : ${statusOptions}"
                             th:value="${opt}"
                             th:text="${opt}"
@@ -44,216 +93,167 @@
                     </option>
                 </select>
             </div>
-        </div>
 
-        <div class="filter-row">
-            <div class="filter-group">
-                <label>Capacity Range</label>
-                <div class="range-group">
-                    <input type="number" name="minCapacity" th:value="${filterMinCap}" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" name="maxCapacity" th:value="${filterMaxCap}" placeholder="Max">
+            <div class="filter-group" id="capacity-slider">
+                <label class="group-title">Capacitate (Locuri)</label>
+
+                <div class="price-inputs">
+                    <input type="number" name="minCapacity" class="input-min"
+                           th:value="${filterMinCap != null ? filterMinCap : 0}" min="0" max="100">
+                    <input type="number" name="maxCapacity" class="input-max"
+                           th:value="${filterMaxCap != null ? filterMaxCap : 100}" min="0" max="100">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="100" step="1"
+                           th:value="${filterMinCap != null ? filterMinCap : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="100" step="1"
+                           th:value="${filterMaxCap != null ? filterMaxCap : 100}">
                 </div>
             </div>
 
-            <div class="filter-group">
-                <label>Passengers Range</label>
-                <div class="range-group">
-                    <input type="number" name="minPassengers" th:value="${filterMinPass}" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" name="maxPassengers" th:value="${filterMaxPass}" placeholder="Max">
+            <div class="filter-group" id="passengers-slider">
+                <label class="group-title">Pasageri Activi</label>
+
+                <div class="price-inputs">
+                    <input type="number" name="minPassengers" class="input-min"
+                           th:value="${filterMinPass != null ? filterMinPass : 0}" min="0" max="100">
+                    <input type="number" name="maxPassengers" class="input-max"
+                           th:value="${filterMaxPass != null ? filterMaxPass : 100}" min="0" max="100">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="100" step="1"
+                           th:value="${filterMinPass != null ? filterMinPass : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="100" step="1"
+                           th:value="${filterMaxPass != null ? filterMaxPass : 100}">
                 </div>
             </div>
 
-            <div class="filter-group" style="justify-content: flex-end; flex-direction: row; gap: 10px; align-items: flex-end;">
-                <button type="submit" class="btn btn-primary">🔍 Filter</button>
-                <a th:href="@{/bus}" class="btn-warning" style="text-decoration: none; padding: 6px 12px; border-radius: 4px;">Reset</a>
-            </div>
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/bus}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
+
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <button type="button" class="btn btn-success" onclick="goToNewBusPage()">Add New Bus</button>
         </div>
-    </form>
-</div>
 
-<table>
-    <thead>
-    <tr>
-        <th>
-            <th:block th:with="sortField='id',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/bus(
+                        page=${busPage.number},
+                        sort='id,' + (${busPage.sort.getOrderFor('id') != null && busPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                        id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                        minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                        minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+                      )}">
+                        ID <span th:if="${busPage.sort.getOrderFor('id') != null}" th:text="${busPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-                <a th:href="@{/bus(
-                    page=${busPage.number},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId},
-                    registrationNumber=${filterRegNum},
-                    status=${filterStatus},
-                    minCapacity=${filterMinCap},
-                    maxCapacity=${filterMaxCap},
-                    minPassengers=${filterMinPass},
-                    maxPassengers=${filterMaxPass}
-                  )}">
-                    ID
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
+                <th>
+                    <a th:href="@{/bus(
+                        page=${busPage.number},
+                        sort='registrationNumber,' + (${busPage.sort.getOrderFor('registrationNumber') != null && busPage.sort.getOrderFor('registrationNumber').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                        id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                        minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                        minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+                      )}">
+                        Reg. Number <span th:if="${busPage.sort.getOrderFor('registrationNumber') != null}" th:text="${busPage.sort.getOrderFor('registrationNumber').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-        <th>
-            <th:block th:with="sortField='registrationNumber',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+                <th>
+                    <a th:href="@{/bus(
+                        page=${busPage.number},
+                        sort='capacity,' + (${busPage.sort.getOrderFor('capacity') != null && busPage.sort.getOrderFor('capacity').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                        id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                        minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                        minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+                      )}">
+                        Capacity <span th:if="${busPage.sort.getOrderFor('capacity') != null}" th:text="${busPage.sort.getOrderFor('capacity').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-                <a th:href="@{/bus(
-                    page=${busPage.number},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId},
-                    registrationNumber=${filterRegNum},
-                    status=${filterStatus},
-                    minCapacity=${filterMinCap},
-                    maxCapacity=${filterMaxCap},
-                    minPassengers=${filterMinPass},
-                    maxPassengers=${filterMaxPass}
-                  )}">
-                    Registration Number
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
+                <th>
+                    <a th:href="@{/bus(
+                        page=${busPage.number},
+                        sort='status,' + (${busPage.sort.getOrderFor('status') != null && busPage.sort.getOrderFor('status').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                        id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                        minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                        minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+                      )}">
+                        Status <span th:if="${busPage.sort.getOrderFor('status') != null}" th:text="${busPage.sort.getOrderFor('status').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-        <th>
-            <th:block th:with="sortField='capacity',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+                <th>
+                    <a th:href="@{/bus(
+                        page=${busPage.number},
+                        sort='nrOfPassengers,' + (${busPage.sort.getOrderFor('nrOfPassengers') != null && busPage.sort.getOrderFor('nrOfPassengers').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                        id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                        minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                        minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+                      )}">
+                        Passengers <span th:if="${busPage.sort.getOrderFor('nrOfPassengers') != null}" th:text="${busPage.sort.getOrderFor('nrOfPassengers').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-                <a th:href="@{/bus(
-                    page=${busPage.number},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId},
-                    registrationNumber=${filterRegNum},
-                    status=${filterStatus},
-                    minCapacity=${filterMinCap},
-                    maxCapacity=${filterMaxCap},
-                    minPassengers=${filterMinPass},
-                    maxPassengers=${filterMaxPass}
-                  )}">
-                    Capacity
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${buses}">
+                <td th:text="${item.id}">0</td>
+                <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
+                <td th:text="${item.capacity}">0</td>
+                <td th:text="${item.status}">Down</td>
+                <td th:text="${item.nrOfPassengers}">0</td>
+                <td class="action-cell">
+                    <a th:href="@{'/bus/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(buses)}">
+                <td colspan="6" style="text-align:center; padding: 20px;">No buses found matching your criteria.</td>
+            </tr>
+            </tbody>
+        </table>
 
-        <th>
-            <th:block th:with="sortField='status',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+        <div th:if="${busPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${busPage.hasPrevious()}"
+               th:href="@{/bus(
+                   page=${busPage.number - 1},
+                   sort=${busPage.sort.toString().replace(': ', ',')},
+                   id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                   minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                   minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+               )}"
+               class="btn btn-primary">⬅ Previous</a>
 
-                <a th:href="@{/bus(
-                    page=${busPage.number},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId},
-                    registrationNumber=${filterRegNum},
-                    status=${filterStatus},
-                    minCapacity=${filterMinCap},
-                    maxCapacity=${filterMaxCap},
-                    minPassengers=${filterMinPass},
-                    maxPassengers=${filterMaxPass}
-                  )}">
-                    Status
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
+            <span th:text="'Page ' + ${busPage.number + 1} + ' of ' + ${busPage.totalPages}" style="font-weight: bold;"></span>
 
-        <th>
-            <th:block th:with="sortField='nrOfPassengers',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+            <a th:if="${busPage.hasNext()}"
+               th:href="@{/bus(
+                   page=${busPage.number + 1},
+                   sort=${busPage.sort.toString().replace(': ', ',')},
+                   id=${filterId}, registrationNumber=${filterRegNum}, status=${filterStatus},
+                   minCapacity=${filterMinCap}, maxCapacity=${filterMaxCap},
+                   minPassengers=${filterMinPass}, maxPassengers=${filterMaxPass}
+               )}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
 
-                <a th:href="@{/bus(
-                    page=${busPage.number},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId},
-                    registrationNumber=${filterRegNum},
-                    status=${filterStatus},
-                    minCapacity=${filterMinCap},
-                    maxCapacity=${filterMaxCap},
-                    minPassengers=${filterMinPass},
-                    maxPassengers=${filterMaxPass}
-                  )}">
-                    Passengers
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${buses}">
-        <td th:text="${item.id}">0</td>
-        <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
-        <td th:text="${item.capacity}">0</td>
-        <td th:text="${item.status}">Down</td>
-        <td th:text="${item.nrOfPassengers}">0</td>
-        <td class="action-cell">
-            <a th:href="@{'/bus/' + ${item.id} + '/edit'}" class="btn-warning">
-                Edit
-            </a>
-
-            <form th:action="@{'/bus/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(buses)}">
-        <td colspan="6" style="text-align:center; padding: 20px;">No buses found matching your criteria.</td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:if="${busPage.totalPages > 1}" class="pagination-container">
-
-    <a th:if="${busPage.hasPrevious()}"
-       th:href="@{/bus(
-           page=${busPage.number - 1},
-           sort=${busPage.sort.toString().replace(': ', ',')},
-           id=${filterId},
-           registrationNumber=${filterRegNum},
-           status=${filterStatus},
-           minCapacity=${filterMinCap},
-           maxCapacity=${filterMaxCap},
-           minPassengers=${filterMinPass},
-           maxPassengers=${filterMaxPass}
-       )}"
-       class="btn btn-primary">⬅ Previous</a>
-
-    <span th:text="'Page ' + ${busPage.number + 1} + ' of ' + ${busPage.totalPages}" style="font-weight: bold;"></span>
-
-    <a th:if="${busPage.hasNext()}"
-       th:href="@{/bus(
-           page=${busPage.number + 1},
-           sort=${busPage.sort.toString().replace(': ', ',')},
-           id=${filterId},
-           registrationNumber=${filterRegNum},
-           status=${filterStatus},
-           minCapacity=${filterMinCap},
-           maxCapacity=${filterMaxCap},
-           minPassengers=${filterMinPass},
-           maxPassengers=${filterMaxPass}
-       )}"
-       class="btn btn-primary">Next ➡</a>
-</div>
-
-<div style="height: 40px;"></div>
-
-<div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewBusPage()">Add New Bus</button>
+    </main>
 </div>
 
 </body>
