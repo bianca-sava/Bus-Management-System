@@ -171,6 +171,9 @@ public class PassengerController {
         Ticket ticketToAdd = ticketService.findById(selectedTicketId);
 
         if (passenger != null && ticketToAdd != null) {
+            ticketToAdd.setPassengerId(passengerId);
+
+            ticketService.update(selectedTicketId, ticketToAdd);
             passenger.getTickets().add(ticketToAdd);
             passengerService.update(passengerId, passenger);
         }
@@ -179,11 +182,7 @@ public class PassengerController {
 
     @PostMapping("/{passengerId}/tickets/{ticketId}/delete")
     public String deleteTicketFromPassenger(@PathVariable String passengerId, @PathVariable String ticketId) {
-        Passenger passenger = passengerService.findById(passengerId);
-        if (passenger != null) {
-            passenger.getTickets().removeIf(ticket -> ticket.getId().equals(ticketId));
-            passengerService.update(passengerId, passenger);
-        }
+        ticketService.delete(ticketId);
         return "redirect:/passenger/" + passengerId + "/tickets";
     }
 }
