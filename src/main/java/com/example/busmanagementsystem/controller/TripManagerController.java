@@ -7,6 +7,10 @@ import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsD
 import com.example.busmanagementsystem.service.databaseServices.TripManagerDatabaseService;
 import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,8 +44,14 @@ public class TripManagerController {
 //    }
 
     @GetMapping
-    public String getAllTripManagers(Model model) {
-        model.addAttribute("tripmanagers", tripManagerService.findAllTripManagers().values());
+    public String getAllTripManagers(
+            @PageableDefault(size = 10, sort = "employeeCode", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+        Page<TripManager> tripManagerPage = tripManagerService.findAllPageable(pageable);
+        model.addAttribute("tripManagerPage", tripManagerPage);
+        model.addAttribute("tripmanagers", tripManagerPage.getContent());
+        model.addAttribute("pageable", pageable);
         return "tripmanager/index";
     }
 

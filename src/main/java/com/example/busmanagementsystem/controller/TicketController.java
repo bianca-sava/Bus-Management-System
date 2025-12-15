@@ -9,6 +9,10 @@ import com.example.busmanagementsystem.service.databaseServices.TicketDatabaseSe
 import com.example.busmanagementsystem.service.inFileServices.BusTripService;
 import com.example.busmanagementsystem.service.inFileServices.PassengerService;
 import com.example.busmanagementsystem.service.inFileServices.TicketService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
@@ -52,8 +56,17 @@ public class TicketController {
 //    }
 
     @GetMapping
-    public String getAllTickets(Model model) {
-        model.addAttribute("tickets", ticketService.findAll().values());
+    public String getAllTickets(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Ticket> ticketPage = ticketService.findAllPageable(pageable);
+
+        model.addAttribute("ticketPage", ticketPage);
+        model.addAttribute("tickets", ticketPage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "ticket/index";
     }
 

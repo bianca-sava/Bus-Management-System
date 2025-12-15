@@ -4,9 +4,11 @@ import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.repository.interfaces.PassengerJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
+import org.springframework.data.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +60,30 @@ public class PassengerDatabaseService implements Validate<Passenger> {
             return true;
         }
         return false;
+    }
+
+    public Page<Passenger> findAllPage(Pageable pageable) {
+        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfTickets");
+
+        if (tripCountOrder != null) {
+
+            String sortExpression = "ticketCount";
+
+            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
+
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> tripCountResult = passengerRepository.findAllSortedByTicketCount(customPageable);
+
+            List<Passenger> content = tripCountResult.getContent().stream()
+                    .map(obj -> (Passenger) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
+
+        } else {
+            return passengerRepository.findAll(pageable);
+        }
     }
 
     public boolean delete (String id) {

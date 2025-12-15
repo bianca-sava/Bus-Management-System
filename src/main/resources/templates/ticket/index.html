@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -23,12 +23,43 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Trip ID</th>
-        <th>Passenger ID</th>
-        <th>Seat Number</th>
-        <th>Price</th>
-        <th>Checked In</th> <th>Action</th>
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='id,' + (${ticketPage.sort.getOrderFor('id') != null && ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                ID <span th:if="${ticketPage.sort.getOrderFor('id') != null}" th:text="${ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='tripId,' + (${ticketPage.sort.getOrderFor('tripId') != null && ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Trip ID <span th:if="${ticketPage.sort.getOrderFor('tripId') != null}" th:text="${ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='passengerId,' + (${ticketPage.sort.getOrderFor('passengerId') != null && ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Passenger ID <span th:if="${ticketPage.sort.getOrderFor('passengerId') != null}" th:text="${ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='seatNumber,' + (${ticketPage.sort.getOrderFor('seatNumber') != null && ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Seat Number <span th:if="${ticketPage.sort.getOrderFor('seatNumber') != null}" th:text="${ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='price,' + (${ticketPage.sort.getOrderFor('price') != null && ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Price <span th:if="${ticketPage.sort.getOrderFor('price') != null}" th:text="${ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/ticket(page=${ticketPage.number}, sort='checkedIn,' + (${ticketPage.sort.getOrderFor('checkedIn') != null && ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Checked In <span th:if="${ticketPage.sort.getOrderFor('checkedIn') != null}" th:text="${ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -52,6 +83,19 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${ticketPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${ticketPage.hasPrevious()}"
+       th:href="@{/ticket(page=${ticketPage.number - 1}, sort=${ticketPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${ticketPage.number + 1} + ' of ' + ${ticketPage.totalPages}"
+          style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${ticketPage.hasNext()}"
+       th:href="@{/ticket(page=${ticketPage.number + 1}, sort=${ticketPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 
