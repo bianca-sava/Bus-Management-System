@@ -38,16 +38,42 @@ public class DutyAssignmentController {
 
     @GetMapping
     public String getAllDutyAssignments(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String tripId,
+            @RequestParam(required = false) String staffId,
+            @RequestParam(required = false) Role role,
             @PageableDefault(size = 10, sort = "tripId", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
-        Page<DutyAssignment> assignmentPage = dutyAssignmentService.findAllAssignmentsPageable(pageable);
+
+        Page<DutyAssignment> assignmentPage = dutyAssignmentService.findAllAssignmentsPageable(
+                check(id),
+                check(tripId),
+                check(staffId),
+                role,
+                pageable
+        );
+
         model.addAttribute("assignmentPage", assignmentPage);
         model.addAttribute("dutyAssignments", assignmentPage.getContent());
         model.addAttribute("pageable", pageable);
 
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterTripId", tripId);
+        model.addAttribute("filterStaffId", staffId);
+        model.addAttribute("filterRole", role);
+
+        model.addAttribute("roleOptions", Role.values());
         return "dutyAssignment/index";
     }
+
+    private String check(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        return s.trim();
+    }
+
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
