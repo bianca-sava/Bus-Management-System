@@ -8,9 +8,11 @@ import java.util.List;
 @Entity
 @Table(name = "drivers")
 public class Driver extends Staff {
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     private List<DutyAssignment> assignments;
+
     private String yearsOfExperience;
 
     public Driver() {

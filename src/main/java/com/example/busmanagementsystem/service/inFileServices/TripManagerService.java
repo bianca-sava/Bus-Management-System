@@ -1,4 +1,4 @@
-package com.example.busmanagementsystem.service;
+package com.example.busmanagementsystem.service.inFileServices;
 
 import com.example.busmanagementsystem.model.TripManager;
 import com.example.busmanagementsystem.repository.TripManagerRepository;

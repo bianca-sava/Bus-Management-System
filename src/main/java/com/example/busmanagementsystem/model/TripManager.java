@@ -1,6 +1,7 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,13 @@ import java.util.List;
 @Entity
 @Table(name = "trip_managers")
 public class TripManager extends Staff {
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_manager_id")
     private List<DutyAssignment> assignments;
+
+    @NotBlank(message = "The Employee Code can't be blank")
+    @Column(unique = true)
     private String employeeCode;
 
     public TripManager() {

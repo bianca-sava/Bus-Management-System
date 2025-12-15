@@ -1,17 +1,32 @@
 package com.example.busmanagementsystem.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 public class Ticket {
     @Id
+    @NotBlank(message = "The Id can't be blank")
     private String id;
+
+    @NotBlank(message = "The Trip can't be blank")
+    @Column(name = "trip_id")
     private String tripId;
+
+    @NotBlank(message = "The Passenger")
+    @Column(name = "passenger_id")
     private String passengerId;
+
+    @Pattern(regexp = "[1-9][0-9]?[A-C]")
     private String seatNumber;
+
+    @Positive
     private double price;
+
     boolean checkedIn;
+
 
     public Ticket() {
         checkedIn = false;

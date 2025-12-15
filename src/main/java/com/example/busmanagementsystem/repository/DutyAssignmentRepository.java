@@ -10,20 +10,15 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class DutyAssignmentRepository extends DatabaseRepository<DutyAssignment> {
+public class DutyAssignmentRepository extends InFileRepository<DutyAssignment> {
 
-    protected DutyAssignmentRepository(JpaRepository<DutyAssignment, String> jpaRepository) {
-        super(jpaRepository);
+    @Autowired
+    public DutyAssignmentRepository(
+            ObjectMapper objectMapper,
+            @Value("${repository.filepath.dutyassignment}") String filePath
+    ) {
+        super(filePath, objectMapper, DutyAssignment.class);
     }
-
-
-//    @Autowired
-//    public DutyAssignmentRepository(
-//            ObjectMapper objectMapper,
-//            @Value("${repository.filepath.dutyassignment}") String filePath
-//    ) {
-//        super(filePath, objectMapper, DutyAssignment.class);
-//    }
 
     @Override
     protected String getIdFromEntity(DutyAssignment entity) {

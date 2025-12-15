@@ -2,50 +2,82 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${bus.id == null} ? 'Create New Bus' : 'Edit Bus'">Bus Form</title>
+
+    <title th:text="${isEditMode == true} ? 'Edit Bus' : 'Create New Bus'">Bus Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
 </head>
-<body style="color: #333;">
+<body>
 <div class="form-container">
-    <h1 th:text="${bus.id == null} ? 'New Bus Form' : 'Edit Bus (' + ${bus.id} + ')'">Bus Form</h1>
 
-    <form th:action="${bus.id == null} ? @{/bus/create} : @{'/bus/' + ${bus.id}}" th:object="${bus}" method="post"> <div>
+    <h1 th:text="${isEditMode == true} ? ('Edit Bus (' + ${bus.id} + ')') : 'New Bus Form'">Bus Form</h1>
+
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/bus/' + ${bus.id}} : @{/bus/create}"
+          th:object="${bus}"
+          method="post">
+
+        <div>
             <label for="id">ID:</label>
             <input type="text" id="id" th:field="*{id}"
-                   th:attrappend="readonly=${bus.id != null} ? 'readonly'"
-                   class="readonly-field"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + ((errorField == 'id' or #fields.hasErrors('id')) ? 'input-error' : '')}"
                    required />
+            <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
         </div>
 
         <div>
             <label for="registrationNumber">Registration Number:</label>
-            <input type="text" id="registrationNumber" th:field="*{registrationNumber}" required />
+            <input type="text" id="registrationNumber" th:field="*{registrationNumber}"
+                   th:classappend="${(errorField == 'registrationNumber' or #fields.hasErrors('registrationNumber')) ? 'input-error' : ''}"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('registrationNumber')}" th:errors="*{registrationNumber}"></div>
         </div>
 
         <div>
             <label for="capacity">Capacity:</label>
-            <input type="number" id="capacity" th:field="*{capacity}" required />
+            <input type="number" id="capacity" th:field="*{capacity}"
+                   th:classappend="${#fields.hasErrors('capacity')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></div>
         </div>
 
-        <div th:if="${bus.id != null}">
+        <div th:if="${isEditMode == true}">
             <div>
                 <label for="status">Status:</label>
-
                 <select id="status" th:field="*{status}" required>
-                    <option th:each="status : ${statusOptions}"
-                            th:value="${status.name()}"  th:text="${status.name()}">Down</option>
+                    <option th:each="opt : ${statusOptions}"
+                            th:value="${opt}"
+                            th:text="${opt}"
+                            th:selected="${bus.status == opt}">
+                    </option>
                 </select>
             </div>
-            <div>
+
+            <div style="margin-top: 15px;">
                 <label for="nrOfPassengers">Number of Passengers:</label>
-                <input type="number" id="nrOfPassengers" th:field="*{nrOfPassengers}" required />
+                <input type="number" id="nrOfPassengers" th:field="*{nrOfPassengers}"
+                       th:classappend="${#fields.hasErrors('nrOfPassengers')} ? 'input-error' : ''"
+                       required />
+                <div class="text-danger" th:if="${#fields.hasErrors('nrOfPassengers')}" th:errors="*{nrOfPassengers}"></div>
             </div>
+        </div>
+
+        <div th:if="${isEditMode == false}">
+            <input type="hidden" name="nrOfPassengers" value="0"/>
+            <input type="hidden" name="status" value="DOWN"/>
         </div>
 
         <div>
-            <button type="submit" th:text="${bus.id == null} ? 'Create Bus' : 'Update Bus'">Submit</button>
+            <button type="submit" th:text="${isEditMode == true} ? 'Save Changes' : 'Create Bus'">Submit</button>
         </div>
     </form>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <a th:href="@{/bus}" class="btn-cancel">Cancel</a>
+    </div>
 </div>
 </body>
 </html>

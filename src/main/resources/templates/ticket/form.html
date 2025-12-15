@@ -3,27 +3,37 @@
 <head>
     <meta charset="UTF-8">
 
-    <title th:text="${ticket.id == null} ? 'Create New Ticket' : 'Edit Ticket'">Ticket Form</title>
+    <title th:text="${isEditMode == true} ? 'Edit Ticket' : 'Create New Ticket'">Ticket Form</title>
     <link rel="stylesheet" th:href="@{/css/formstyle.css}">
+
 </head>
-<body style="color: #333;">
+<body>
 <div class="form-container">
 
-    <h1 th:text="${ticket.id == null} ? 'New Ticket Form' : 'Edit Ticket (' + ${ticket.id} + ')'">Ticket Form</h1>
+    <h1 th:text="${isEditMode == true} ? ('Edit Ticket (' + ${ticket.id} + ')') : 'New Ticket Form'">Ticket Form</h1>
 
-    <form th:action="${ticket.id == null} ? @{/ticket/create} : @{'/ticket/' + ${ticket.id}}" th:object="${ticket}" method="post">
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="${isEditMode == true} ? @{'/ticket/' + ${ticket.id}} : @{/ticket/create}"
+          th:object="${ticket}" method="post">
 
         <div>
             <label for="id">ID:</label>
             <input type="text" id="id" th:field="*{id}"
-                   th:attrappend="readonly=${ticket.id != null} ? 'readonly'"
-                   class="readonly-field"
+                   th:readonly="${isEditMode == true}"
+                   th:classappend="${(isEditMode == true ? 'readonly-field ' : '') + ((errorField == 'id' or #fields.hasErrors('id')) ? 'input-error' : '')}"
                    required />
+
+            <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
         </div>
 
         <div>
             <label for="tripId">Trip:</label>
-            <select id="tripId" name="tripId" required>
+            <select id="tripId" name="tripId"
+                    th:classappend="${(errorField == 'tripId' or #fields.hasErrors('tripId')) ? 'input-error' : ''}"
+                    required>
                 <option value="">-- Select Trip --</option>
                 <option th:each="trip : ${allTrips}"
                         th:value="${trip.id}"
@@ -31,11 +41,14 @@
                         th:selected="${ticket.tripId != null and ticket.tripId == trip.id}">
                 </option>
             </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('tripId')}" th:errors="*{tripId}"></div>
         </div>
 
         <div>
             <label for="passengerId">Passenger:</label>
-            <select id="passengerId" name="passengerId" required>
+            <select id="passengerId" name="passengerId"
+                    th:classappend="${#fields.hasErrors('passengerId')} ? 'input-error' : ''"
+                    required>
                 <option value="">-- Select Passenger --</option>
                 <option th:each="pass : ${allPassengers}"
                         th:value="${pass.id}"
@@ -43,19 +56,26 @@
                         th:selected="${ticket.passengerId != null and ticket.passengerId == pass.id}">
                 </option>
             </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('passengerId')}" th:errors="*{passengerId}"></div>
         </div>
 
         <div>
             <label for="seatNumber">Seat Number:</label>
-            <input type="text" id="seatNumber" th:field="*{seatNumber}" required />
+            <input type="text" id="seatNumber" th:field="*{seatNumber}"
+                   th:classappend="${#fields.hasErrors('seatNumber')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('seatNumber')}" th:errors="*{seatNumber}"></div>
         </div>
 
         <div>
             <label for="price">Price:</label>
-            <input type="number" step="0.01" id="price" th:field="*{price}" required />
+            <input type="number" step="0.01" id="price" th:field="*{price}"
+                   th:classappend="${#fields.hasErrors('price')} ? 'input-error' : ''"
+                   required />
+            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
         </div>
 
-        <div th:if="${ticket.id != null}">
+        <div th:if="${isEditMode == true}">
             <label for="checkedIn">Status:</label>
 
             <select id="checkedIn" th:field="*{checkedIn}">
@@ -65,7 +85,7 @@
         </div>
 
         <div>
-            <button type="submit" th:text="${ticket.id == null} ? 'Create Ticket' : 'Update Ticket'">Submit</button>
+            <button type="submit" th:text="${isEditMode == true} ? 'Update Ticket' : 'Create Ticket'">Submit</button>
         </div>
     </form>
 </div>

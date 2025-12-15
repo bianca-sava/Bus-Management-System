@@ -2,47 +2,202 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Passenger Management</title>
+    <title>Passenger List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function updateDualSlider(groupId) {
+            const container = document.getElementById(groupId);
+            if(!container) return;
+
+            const rangeMin = container.querySelector('.range-min');
+            const rangeMax = container.querySelector('.range-max');
+            const inputMin = container.querySelector('.input-min');
+            const inputMax = container.querySelector('.input-max');
+
+            function syncInputs() {
+                const val1 = parseInt(rangeMin.value);
+                const val2 = parseInt(rangeMax.value);
+
+                if (val1 > val2) {
+                    rangeMin.value = val2;
+                    return;
+                }
+                inputMin.value = rangeMin.value;
+                inputMax.value = rangeMax.value;
+            }
+
+            function syncRanges() {
+                rangeMin.value = inputMin.value;
+                rangeMax.value = inputMax.value;
+            }
+
+            rangeMin.addEventListener('input', syncInputs);
+            rangeMax.addEventListener('input', function() {
+                const val1 = parseInt(rangeMin.value);
+                const val2 = parseInt(rangeMax.value);
+                if (val2 < val1) {
+                    rangeMax.value = val1;
+                    return;
+                }
+                inputMax.value = rangeMax.value;
+            });
+
+            inputMin.addEventListener('change', syncRanges);
+            inputMax.addEventListener('change', syncRanges);
+        }
+
+        window.onload = function() {
+            // Inițializăm slider-ul pentru Tickets
+            updateDualSlider('tickets-slider');
+        };
+    </script>
 </head>
 <body>
+
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Home</a>
 </div>
 
 <h1>Passenger List</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Currency</th>
-        <th>Tickets</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${passengers}">
-        <td th:text="${item.id}">P1</td>
-        <td th:text="${item.name}">John Doe</td>
-        <td th:text="${item.currency}">RON</td>
-        <td th:text="${item.tickets.size}">0</td>
+<div class="main-container">
 
-        <td class="action-cell">
-            <a th:href="@{'/passenger/' + ${item.id} + '/tickets'}" class="btn-warning">View Tickets</a>
-            <a th:href="@{'/passenger/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-            <form th:action="@{'/passenger/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <aside class="sidebar">
+        <form th:action="@{/passenger}" method="get">
+            <h3>Filtrează Pasageri</h3>
 
-<div style="height: 40px;"></div>
-<div class="action-button-right">
-    <a th:href="@{/passenger/new}" class="btn btn-success">Add New Passenger</a>
+            <div class="filter-group">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Passenger ID..." style="margin-bottom: 10px;">
+                <input type="text" name="name" th:value="${filterName}" placeholder="Passenger Name...">
+            </div>
+
+            <div class="filter-group">
+                <label class="group-title">Monedă (Currency)</label>
+
+                <div class="checkbox-item">
+                    <input type="radio" name="currency" value="" id="curr-all" th:checked="${filterCurrency == null || filterCurrency == ''}">
+                    <label for="curr-all">Toate</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="radio" name="currency" value="EUR" id="curr-eur" th:checked="${filterCurrency == 'EUR'}">
+                    <label for="curr-eur">EUR</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="radio" name="currency" value="USD" id="curr-usd" th:checked="${filterCurrency == 'USD'}">
+                    <label for="curr-usd">USD</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="radio" name="currency" value="RON" id="curr-ron" th:checked="${filterCurrency == 'RON'}">
+                    <label for="curr-ron">RON</label>
+                </div>
+            </div>
+
+            <div class="filter-group" id="tickets-slider">
+                <label class="group-title">Număr Bilete (Tickets)</label>
+
+                <div class="price-inputs">
+                    <input type="number" name="minTickets" class="input-min" th:value="${filterMinTickets != null ? filterMinTickets : 0}" min="0" max="50">
+                    <input type="number" name="maxTickets" class="input-max" th:value="${filterMaxTickets != null ? filterMaxTickets : 50}" min="0" max="50">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="50" step="1"
+                           th:value="${filterMinTickets != null ? filterMinTickets : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="50" step="1"
+                           th:value="${filterMaxTickets != null ? filterMaxTickets : 50}">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/passenger}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
+
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <a th:href="@{/passenger/new}" class="btn btn-success">Add New Passenger</a>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/passenger(page=${passengerPage.number}, sort='id,' + (${passengerPage.sort.getOrderFor('id') != null && passengerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, currency=${filterCurrency}, minTickets=${filterMinTickets}, maxTickets=${filterMaxTickets})}">
+                        ID <span th:if="${passengerPage.sort.getOrderFor('id') != null}" th:text="${passengerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/passenger(page=${passengerPage.number}, sort='name,' + (${passengerPage.sort.getOrderFor('name') != null && passengerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, currency=${filterCurrency}, minTickets=${filterMinTickets}, maxTickets=${filterMaxTickets})}">
+                        Name <span th:if="${passengerPage.sort.getOrderFor('name') != null}" th:text="${passengerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/passenger(page=${passengerPage.number}, sort='currency,' + (${passengerPage.sort.getOrderFor('currency') != null && passengerPage.sort.getOrderFor('currency').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, currency=${filterCurrency}, minTickets=${filterMinTickets}, maxTickets=${filterMaxTickets})}">
+                        Currency <span th:if="${passengerPage.sort.getOrderFor('currency') != null}" th:text="${passengerPage.sort.getOrderFor('currency').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/passenger(
+                       page=${passengerPage.number},
+                       sort='ticketCount,' + (${passengerPage.sort.getOrderFor('ticketCount') != null && passengerPage.sort.getOrderFor('ticketCount').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId},
+                       name=${filterName},
+                       currency=${filterCurrency},
+                       minTickets=${filterMinTickets},
+                       maxTickets=${filterMaxTickets}
+                       )}">
+                        Tickets <span th:if="${passengerPage.sort.getOrderFor('ticketCount') != null}" th:text="${passengerPage.sort.getOrderFor('ticketCount').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="passenger : ${passengers}">
+                <td th:text="${passenger.id}">P1</td>
+                <td th:text="${passenger.name}">John Doe</td>
+                <td th:text="${passenger.currency}">USD</td>
+
+                <td th:text="${passenger.tickets.size()}">0</td>
+
+                <td class="action-cell">
+                    <a th:href="@{'/passenger/' + ${passenger.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/passenger/' + ${passenger.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                    <a th:href="@{'/passenger/' + ${passenger.id} + '/tickets'}" class="btn btn-success" style="margin-top: 5px; display:inline-block;">View Tickets</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(passengers)}">
+                <td colspan="5" style="text-align:center;">No passengers found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${passengerPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${passengerPage.hasPrevious()}"
+               th:href="@{/passenger(page=${passengerPage.number - 1}, sort=${passengerPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, name=${filterName}, currency=${filterCurrency}, minTickets=${filterMinTickets}, maxTickets=${filterMaxTickets})}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${passengerPage.number + 1} + ' of ' + ${passengerPage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${passengerPage.hasNext()}"
+               th:href="@{/passenger(page=${passengerPage.number + 1}, sort=${passengerPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, name=${filterName}, currency=${filterCurrency}, minTickets=${filterMinTickets}, maxTickets=${filterMaxTickets})}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
+
+    </main>
 </div>
+
 </body>
 </html>

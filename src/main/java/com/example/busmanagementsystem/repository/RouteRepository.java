@@ -7,15 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RouteRepository extends DatabaseRepository<Route> {
+public class RouteRepository extends InFileRepository<Route> {
 
-    public RouteRepository(RouteJpaRepository jpaRepository) {
-        super(jpaRepository);
+    protected RouteRepository(ObjectMapper objectMapper, @Value("${repository.filepath.route}") String filePath ) {
+        super(filePath, objectMapper,  Route.class);
     }
-
-//    protected RouteRepository(ObjectMapper objectMapper, @Value("${repository.filepath.route}") String filePath ) {
-//        super(filePath, objectMapper,  Route.class);
-//    }
 
     @Override
     protected String getIdFromEntity(Route entity) {

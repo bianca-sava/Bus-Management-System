@@ -1,6 +1,7 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 
 import java.util.ArrayList;
@@ -10,17 +11,29 @@ import java.util.List;
 @Table(name = "routes")
 public class Route {
     @Id
+    @NotBlank(message= "The Id can't be blank")
+    @Column(unique = true)
     private String id;
+
     @ManyToOne
     @JoinColumn(name = "origin_station_id", nullable = false)
+    @NotNull(message = "The Beginning of the route can't be blank")
     private BusStation origin;
+
     @ManyToOne
     @JoinColumn(name = "destination_station_id", nullable = false)
+    @NotNull(message = "The Destination of te route can't be blank")
     private BusStation destination;
+
+
+    @Min(value = 1, message = "Distance must be at least 1km")
     private double distance;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "route_id")
     private List<BusTrip> trips;
+
+    @Min(value = 2, message = "A route must have at least 2 stations")
     private int nrOfStations;
 
     public Route() {}

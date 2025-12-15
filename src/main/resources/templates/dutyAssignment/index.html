@@ -5,52 +5,125 @@
     <title>Duty Assignment Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
-    <script>
-        function goToNewDutyAssignmentPage() {
-            window.location.href = '/duty-assignment/new';
-        }
-    </script>
 </head>
 <body>
+
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Home</a>
 </div>
 
 <h1>Duty Assignment List</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Trip ID</th>
-        <th>Staff ID</th>
-        <th>Role</th>
-        <th>Actions</th> </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${dutyAssignments}">
-        <td th:text="${item.id}">DA-01</td>
-        <td th:text="${item.tripId}">TR-01</td>
-        <td th:text="${item.staffId}">D-01</td>
-        <td th:text="${item.role}">DRIVER</td>
+<div class="main-container">
 
-        <td class="action-cell">
-            <a th:href="@{'/duty-assignment/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+    <aside class="sidebar">
+        <form th:action="@{/duty-assignment}" method="get">
+            <h3>Filtrează Atribuiri</h3>
 
-            <form th:action="@{'/duty-assignment/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <div class="filter-group">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Duty ID..." style="margin-bottom: 10px;">
+                <input type="text" name="tripId" th:value="${filterTripId}" placeholder="Trip ID..." style="margin-bottom: 10px;">
+                <input type="text" name="staffId" th:value="${filterStaffId}" placeholder="Staff ID...">
+            </div>
 
-<div style="height: 40px;"></div>
+            <div class="filter-group">
+                <label class="group-title">Rol (Role)</label>
 
-<div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewDutyAssignmentPage()">Add New Duty Assignment</button>
+                <div class="checkbox-item">
+                    <input type="radio" name="role" value="" id="role-all" th:checked="${filterRole == null}">
+                    <label for="role-all">Toate</label>
+                </div>
+
+                <div th:each="r : ${roleOptions}" class="checkbox-item">
+                    <input type="radio" name="role" th:value="${r}"
+                           th:id="${'role-' + r}"
+                           th:checked="${filterRole == r}">
+                    <label th:for="${'role-' + r}" th:text="${r}">DRIVER</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/duty-assignment}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
+
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <button type="button" class="btn btn-success" onclick="window.location.href='/duty-assignment/new'">Add New Assignment</button>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/duty-assignment(page=${dutyAssignmentPage.number}, sort='id,' + (${dutyAssignmentPage.sort.getOrderFor('id') != null && dutyAssignmentPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}">
+                        ID <span th:if="${dutyAssignmentPage.sort.getOrderFor('id') != null}" th:text="${dutyAssignmentPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/duty-assignment(page=${dutyAssignmentPage.number}, sort='tripId,' + (${dutyAssignmentPage.sort.getOrderFor('tripId') != null && dutyAssignmentPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}">
+                        Trip ID <span th:if="${dutyAssignmentPage.sort.getOrderFor('tripId') != null}" th:text="${dutyAssignmentPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/duty-assignment(page=${dutyAssignmentPage.number}, sort='staffId,' + (${dutyAssignmentPage.sort.getOrderFor('staffId') != null && dutyAssignmentPage.sort.getOrderFor('staffId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}">
+                        Staff ID <span th:if="${dutyAssignmentPage.sort.getOrderFor('staffId') != null}" th:text="${dutyAssignmentPage.sort.getOrderFor('staffId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/duty-assignment(page=${dutyAssignmentPage.number}, sort='role,' + (${dutyAssignmentPage.sort.getOrderFor('role') != null && dutyAssignmentPage.sort.getOrderFor('role').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}">
+                        Role <span th:if="${dutyAssignmentPage.sort.getOrderFor('role') != null}" th:text="${dutyAssignmentPage.sort.getOrderFor('role').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${dutyAssignments}">
+                <td th:text="${item.id}">DA-01</td>
+                <td th:text="${item.tripId}">TR-01</td>
+                <td th:text="${item.staffId}">D-01</td>
+                <td th:text="${item.role}">DRIVER</td>
+
+                <td class="action-cell">
+                    <a th:href="@{'/duty-assignment/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/duty-assignment/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(dutyAssignments)}">
+                <td colspan="5" style="text-align:center;">No assignments found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${dutyAssignmentPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${dutyAssignmentPage.hasPrevious()}"
+               th:href="@{/duty-assignment(page=${dutyAssignmentPage.number - 1}, sort=${dutyAssignmentPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${dutyAssignmentPage.number + 1} + ' of ' + ${dutyAssignmentPage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${dutyAssignmentPage.hasNext()}"
+               th:href="@{/duty-assignment(page=${dutyAssignmentPage.number + 1}, sort=${dutyAssignmentPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, tripId=${filterTripId}, staffId=${filterStaffId}, role=${filterRole})}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
+
+    </main>
 </div>
+
 </body>
 </html>

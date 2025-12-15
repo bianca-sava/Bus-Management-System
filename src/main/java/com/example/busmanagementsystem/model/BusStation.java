@@ -1,6 +1,9 @@
 package com.example.busmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +11,20 @@ import java.util.List;
 @Entity
 public class BusStation {
     @Id
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Bus Station ID cannot be blank")
     private String id;
+
+    @NotBlank(message = "Bus Station name cannot be blank")
     private String name;
+
+    @Pattern(regexp = "^[a-zA-Z\\s-]+$", message = "City name can only contain letters, spaces, and hyphens")
+    @NotBlank(message = "City cannot be blank")
     private String city;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "station_trips_link", // Se va crea un tabel nou de legătură
+            name = "station_trips_link",
             joinColumns = @JoinColumn(name = "station_id"),
             inverseJoinColumns = @JoinColumn(name = "trip_id")
     )
