@@ -2,6 +2,7 @@ package com.example.busmanagementsystem.service.databaseServices;
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.model.Bus;
+import com.example.busmanagementsystem.model.BusStatus;
 import com.example.busmanagementsystem.repository.interfaces.BusJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +82,26 @@ public class BusDatabaseService implements Validate<Bus> {
         return false;
     }
 
-    public Page<Bus> findAllPageable(Pageable pageable) {
-        return busRepository.findAll(pageable);
+    public Page<Bus> findBusesByCriteria(
+            String id,
+            String registrationNumber,
+            BusStatus status,
+            Integer minCapacity,
+            Integer maxCapacity,
+            Integer minPassengers,
+            Integer maxPassengers,
+            Pageable pageable) {
+
+        return busRepository.findByFilters(
+                id,
+                registrationNumber,
+                status,
+                minCapacity,
+                maxCapacity,
+                minPassengers,
+                maxPassengers,
+                pageable
+        );
     }
 
     public void delete(String id) {
