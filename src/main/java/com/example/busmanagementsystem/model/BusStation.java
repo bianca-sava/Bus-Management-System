@@ -24,7 +24,7 @@ public class BusStation {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "station_trips_link", // Se va crea un tabel nou de legătură
+            name = "station_trips_link",
             joinColumns = @JoinColumn(name = "station_id"),
             inverseJoinColumns = @JoinColumn(name = "trip_id")
     )

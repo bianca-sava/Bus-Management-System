@@ -3,6 +3,7 @@ package com.example.busmanagementsystem.service.databaseServices;
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
 import com.example.busmanagementsystem.exceptions.EntityNotFoundException; // Asigură-te că ai excepția asta
 import com.example.busmanagementsystem.model.DutyAssignment;
+import com.example.busmanagementsystem.model.Role;
 import com.example.busmanagementsystem.repository.interfaces.DriverJpaRepository; // Sau StaffJpaRepository
 import com.example.busmanagementsystem.repository.interfaces.BusTripJpaRepository;
 import com.example.busmanagementsystem.repository.interfaces.DutyAssignmentJpaRepository;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DutyAssignmentsDatabaseService implements Validate<DutyAssignment> {
@@ -64,6 +68,14 @@ public class DutyAssignmentsDatabaseService implements Validate<DutyAssignment> 
 
     public DutyAssignment getAssignmentById(String id){
         return assignmentRepository.findById(id).orElse(null);
+    }
+
+    public Page<DutyAssignment> findAllAssignmentsPageable(String id,
+                                                           String tripId,
+                                                           String staffId,
+                                                           Role role,
+                                                           Pageable pageable){
+        return assignmentRepository.findByFilters(id, tripId, staffId, role, pageable);
     }
 
     public Map<String, DutyAssignment> getAllAssignments(){

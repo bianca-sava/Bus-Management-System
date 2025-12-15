@@ -35,7 +35,11 @@ public class BusStationDatabaseService implements Validate<BusStation> {
         return busStationRepository.save(busStation) != null;
     }
 
-    public Page<BusStation> findAllPageable(Pageable pageable) {
+    public Page<BusStation> findAllPageable(
+            String id,
+            String name,
+            String city,
+            Pageable pageable) {
 
         Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfTrips");
 
@@ -56,7 +60,7 @@ public class BusStationDatabaseService implements Validate<BusStation> {
             return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
 
         } else {
-            return busStationRepository.findAll(pageable);
+            return busStationRepository.findByFilters(id, name, city, pageable);
         }
     }
 

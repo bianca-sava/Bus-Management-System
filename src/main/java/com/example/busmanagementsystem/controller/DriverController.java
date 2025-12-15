@@ -14,6 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 @Controller
 @RequestMapping("/driver")
@@ -42,10 +46,41 @@ public class DriverController {
 //    }
 
     @GetMapping
-    public String getAllDrivers(Model model) {
+    public String getAllDrivers(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String minYears,
+            @RequestParam(required = false) String maxYears,
 
-        model.addAttribute("drivers", driverService.findAllDrivers().values());
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Driver> driverPage = driverService.findAllDriversPageable(
+                check(id),
+                check(name),
+                check(minYears),
+                check(maxYears),
+                pageable
+        );
+
+        model.addAttribute("driverPage", driverPage);
+        model.addAttribute("drivers", driverPage.getContent());
+        model.addAttribute("pageable", pageable);
+
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterName", name);
+        model.addAttribute("filterMinYears", minYears);
+        model.addAttribute("filterMaxYears", maxYears);
+
         return "driver/index";
+    }
+
+    private String check(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        return s.trim();
     }
 
     @GetMapping("/new")

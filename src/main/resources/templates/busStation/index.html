@@ -4,21 +4,41 @@
     <meta charset="UTF-8">
     <title>Bus Station Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        function goToNewBusStationPage() {
-            window.location.href = '/bus-station/new';
-        }
-    </script>
 </head>
 <body>
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
 </div>
 
 <h1>Bus Station List</h1>
+
+<div class="filter-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; max-width: 900px; margin: 0 auto 20px auto;">
+    <h3>Filter Stations</h3>
+    <form th:action="@{/bus-station}" method="get">
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+
+            <div style="flex: 1; min-width: 150px;">
+                <label>ID:</label>
+                <input type="text" name="id" th:value="${filterId}" class="form-control" placeholder="Search ID...">
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label>Name:</label>
+                <input type="text" name="name" th:value="${filterName}" class="form-control" placeholder="Search Name...">
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label>City:</label>
+                <input type="text" name="city" th:value="${filterCity}" class="form-control" placeholder="Search City...">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a th:href="@{/bus-station}" class="btn btn-secondary" style="margin-left: 10px; border: 1px solid #ccc; background: #eee; color: #333; text-decoration: none; padding: 5px 10px;">Reset</a>
+            </div>
+        </div>
+    </form>
+</div>
 
 <table>
     <thead>
@@ -32,7 +52,8 @@
                 <a class="sort-link" th:href="@{/bus-station(
                     page=${busStationPage.number},
                     size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, city=${filterCity}
                   )}">
                     ID
                 </a>
@@ -49,7 +70,8 @@
                 <a class="sort-link" th:href="@{/bus-station(
                     page=${busStationPage.number},
                     size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, city=${filterCity}
                   )}">
                     Name
                 </a>
@@ -66,7 +88,8 @@
                 <a class="sort-link" th:href="@{/bus-station(
                     page=${busStationPage.number},
                     size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, city=${filterCity}
                   )}">
                     City
                 </a>
@@ -83,9 +106,10 @@
                 <a class="sort-link" th:href="@{/bus-station(
                     page=${busStationPage.number},
                     size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, city=${filterCity}
                   )}">
-                    Trips
+                    Connected Trips
                 </a>
                 <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
             </th:block>
@@ -96,16 +120,14 @@
     </thead>
     <tbody>
     <tr th:each="item : ${busStations}">
-        <td th:text="${item.id}">1</td>
+        <td th:text="${item.id}">ST01</td>
         <td th:text="${item.name}">Central Station</td>
-        <td th:text="${item.city}">Metropolis</td>
-        <td th:text="${item.trips.size}">0</td>
+        <td th:text="${item.city}">New York</td>
+        <td th:text="${item.trips.size}">5</td>
 
         <td class="action-cell">
-            <a th:href="@{'/bus-station/' + ${item.id} + '/trips'}" class="btn-warning" style="margin-right: 5px;">View Trips</a>
-
+            <a th:href="@{'/bus-station/' + ${item.id} + '/trips'}" class="btn-warning">View Trips</a>
             <a th:href="@{'/bus-station/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-
             <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
@@ -114,10 +136,31 @@
     </tbody>
 </table>
 
-<div style="height: 40px;"></div>
+<div th:if="${busStationPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${busStationPage.hasPrevious()}"
+       th:href="@{/bus-station(
+           page=${busStationPage.number - 1},
+           size=${busStationPage.size},
+           sort=${busStationPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, name=${filterName}, city=${filterCity}
+       )}"
+       class="btn btn-primary">⬅ Previous</a>
 
+    <span th:text="'Page ' + ${busStationPage.number + 1} + ' of ' + ${busStationPage.totalPages}" style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${busStationPage.hasNext()}"
+       th:href="@{/bus-station(
+           page=${busStationPage.number + 1},
+           size=${busStationPage.size},
+           sort=${busStationPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, name=${filterName}, city=${filterCity}
+       )}"
+       class="btn btn-primary">Next ➡</a>
+</div>
+
+<div style="height: 40px;"></div>
 <div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewBusStationPage()">Add New Bus Station</button>
+    <a th:href="@{/bus-station/new}" class="btn btn-success">Add New Bus Station</a>
 </div>
 </body>
 </html>

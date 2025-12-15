@@ -33,4 +33,5 @@ public interface BusJpaRepository extends JpaRepository<Bus, String> {
             @Param("maxPass") Integer maxPassengers,
             Pageable pageable
     );
+
 }

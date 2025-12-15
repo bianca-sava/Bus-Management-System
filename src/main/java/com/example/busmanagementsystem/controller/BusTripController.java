@@ -14,6 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 @Controller
 @RequestMapping("/bus-trip")
@@ -39,8 +43,40 @@ public class BusTripController {
     }
 
     @GetMapping
-    public String getAllBusTrips(Model model) {
-        model.addAttribute("busTrips", busTripService.findAll().values());
+    public String getAllBusTrips(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String routeId,
+            @RequestParam(required = false) String busId,
+            @RequestParam(required = false) BusTripStatus status,
+            @RequestParam(required = false) String minTime,
+            @RequestParam(required = false) String maxTime,
+            @PageableDefault(size = 10, sort = "startTime", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<BusTrip> busTripPage = busTripService.findAllPageable(
+                check(id),
+                check(routeId),
+                check(busId),
+                status,
+                check(minTime),
+                check(maxTime),
+                pageable
+        );
+
+        model.addAttribute("busTripPage", busTripPage);
+        model.addAttribute("busTrips", busTripPage.getContent());
+        model.addAttribute("pageable", pageable);
+
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterRouteId", routeId);
+        model.addAttribute("filterBusId", busId);
+        model.addAttribute("filterStatus", status);
+        model.addAttribute("filterMinTime", minTime);
+        model.addAttribute("filterMaxTime", maxTime);
+
+        model.addAttribute("statusOptions", BusTripStatus.values());
+
         return "busTrip/index";
     }
 
@@ -218,5 +254,12 @@ public class BusTripController {
             busTripService.update(tripId, trip);
         }
         return "redirect:/bus-trip/" + tripId + "/assignments";
+    }
+
+    private String check(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        return s.trim();
     }
 }
