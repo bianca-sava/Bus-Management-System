@@ -4,149 +4,226 @@
     <meta charset="UTF-8">
     <title>Routes List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function updateDualSlider(groupId) {
+            const container = document.getElementById(groupId);
+            if(!container) return;
+
+            const rangeMin = container.querySelector('.range-min');
+            const rangeMax = container.querySelector('.range-max');
+            const inputMin = container.querySelector('.input-min');
+            const inputMax = container.querySelector('.input-max');
+
+            function syncInputs() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+
+                if (val1 > val2) {
+                    rangeMin.value = val2;
+                    return;
+                }
+                inputMin.value = rangeMin.value;
+                inputMax.value = rangeMax.value;
+            }
+
+            function syncRanges() {
+                rangeMin.value = inputMin.value;
+                rangeMax.value = inputMax.value;
+            }
+
+            rangeMin.addEventListener('input', syncInputs);
+            rangeMax.addEventListener('input', function() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+                if (val2 < val1) {
+                    rangeMax.value = val1;
+                    return;
+                }
+                inputMax.value = rangeMax.value;
+            });
+
+            inputMin.addEventListener('change', syncRanges);
+            inputMax.addEventListener('change', syncRanges);
+        }
+
+        window.onload = function() {
+            // Inițializăm cele 3 slidere
+            updateDualSlider('distance-slider');
+            updateDualSlider('stops-slider');
+            updateDualSlider('trips-slider');
+        };
+    </script>
 </head>
 <body>
+
 <div class="back-button-container">
     <a th:href="@{/home}" class="btn btn-primary">🏠 Home</a>
 </div>
 
 <h1>Routes List</h1>
 
-<div class="filter-container">
-    <form th:action="@{/route}" method="get">
-        <div class="filter-row">
+<div class="main-container">
+
+    <aside class="sidebar">
+        <form th:action="@{/route}" method="get">
+            <h3>Filtrează Rute</h3>
+
             <div class="filter-group">
-                <label>Route ID</label>
-                <input type="text" name="id" th:value="${filterId}" placeholder="Search ID...">
+                <label class="group-title">Căutare Rapidă</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Route ID..." style="margin-bottom: 10px;">
+                <input type="text" name="origin" th:value="${filterOrigin}" placeholder="Origin Name..." style="margin-bottom: 10px;">
+                <input type="text" name="destination" th:value="${filterDest}" placeholder="Destination Name...">
             </div>
-            <div class="filter-group">
-                <label>Origin Name</label>
-                <input type="text" name="origin" th:value="${filterOrigin}" placeholder="Station Name...">
+
+            <div class="filter-group" id="distance-slider">
+                <label class="group-title">Distanță (km)</label>
+
+                <div class="price-inputs">
+                    <input type="number" step="1" name="minDistance" class="input-min" th:value="${filterMinDist != null ? filterMinDist : 0}" min="0" max="1000">
+                    <input type="number" step="1" name="maxDistance" class="input-max" th:value="${filterMaxDist != null ? filterMaxDist : 1000}" min="0" max="1000">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="1000" step="10"
+                           th:value="${filterMinDist != null ? filterMinDist : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="1000" step="10"
+                           th:value="${filterMaxDist != null ? filterMaxDist : 1000}">
+                </div>
             </div>
-            <div class="filter-group">
-                <label>Destination Name</label>
-                <input type="text" name="destination" th:value="${filterDest}" placeholder="Station Name...">
+
+            <div class="filter-group" id="stops-slider">
+                <label class="group-title">Nr. Stații (Stops)</label>
+
+                <div class="price-inputs">
+                    <input type="number" name="minStations" class="input-min" th:value="${filterMinStations != null ? filterMinStations : 0}" min="0" max="50">
+                    <input type="number" name="maxStations" class="input-max" th:value="${filterMaxStations != null ? filterMaxStations : 50}" min="0" max="50">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="50" step="1"
+                           th:value="${filterMinStations != null ? filterMinStations : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="50" step="1"
+                           th:value="${filterMaxStations != null ? filterMaxStations : 50}">
+                </div>
             </div>
+
+            <div class="filter-group" id="trips-slider">
+                <label class="group-title">Nr. Curse (Trips)</label>
+
+                <div class="price-inputs">
+                    <input type="number" name="minTrips" class="input-min" th:value="${filterMinTrips != null ? filterMinTrips : 0}" min="0" max="50">
+                    <input type="number" name="maxTrips" class="input-max" th:value="${filterMaxTrips != null ? filterMaxTrips : 50}" min="0" max="50">
+                </div>
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="50" step="1"
+                           th:value="${filterMinTrips != null ? filterMinTrips : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="50" step="1"
+                           th:value="${filterMaxTrips != null ? filterMaxTrips : 50}">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/route}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
+
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <a th:href="@{/route/new}" class="btn btn-success">Add New Route</a>
         </div>
-        <div class="filter-row">
-            <div class="filter-group">
-                <label>Distance (km)</label>
-                <div class="range-group">
-                    <input type="number" step="0.1" name="minDistance" th:value="${filterMinDist}" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" step="0.1" name="maxDistance" th:value="${filterMaxDist}" placeholder="Max">
-                </div>
-            </div>
 
-            <div class="filter-group">
-                <label>Stops (Stations)</label>
-                <div class="range-group">
-                    <input type="number" name="minStations" th:value="${filterMinStations}" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" name="maxStations" th:value="${filterMaxStations}" placeholder="Max">
-                </div>
-            </div>
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='id,' + (${routePage.sort.getOrderFor('id') != null && routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        ID <span th:if="${routePage.sort.getOrderFor('id') != null}" th:text="${routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-            <div class="filter-group">
-                <label>Trips Count</label>
-                <div class="range-group">
-                    <input type="number" name="minTrips" th:value="${filterMinTrips}" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" name="maxTrips" th:value="${filterMaxTrips}" placeholder="Max">
-                </div>
-            </div>
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='origin.name,' + (${routePage.sort.getOrderFor('origin.name') != null && routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        Origin <span th:if="${routePage.sort.getOrderFor('origin.name') != null}" th:text="${routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
 
-            <div class="filter-group" style="justify-content: flex-end; flex-direction: row; gap: 10px;">
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a th:href="@{/route}" class="btn-warning" style="text-decoration:none; padding:6px 12px; border-radius:4px;">Reset</a>
-            </div>
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='destination.name,' + (${routePage.sort.getOrderFor('destination.name') != null && routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        Destination <span th:if="${routePage.sort.getOrderFor('destination.name') != null}" th:text="${routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='distance,' + (${routePage.sort.getOrderFor('distance') != null && routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        Distance <span th:if="${routePage.sort.getOrderFor('distance') != null}" th:text="${routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='nrOfStations,' + (${routePage.sort.getOrderFor('nrOfStations') != null && routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        Stops <span th:if="${routePage.sort.getOrderFor('nrOfStations') != null}" th:text="${routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/route(page=${routePage.number}, sort='nrOfTrips,' + (${routePage.sort.getOrderFor('nrOfTrips') != null && routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
+                        Trips <span th:if="${routePage.sort.getOrderFor('nrOfTrips') != null}" th:text="${routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="route : ${routes}">
+                <td th:text="${route.id}">R1</td>
+                <td th:text="${route.origin.name}">Station A</td>
+                <td th:text="${route.destination.name}">Station B</td>
+                <td th:text="${route.distance} + ' km'">100 km</td>
+                <td th:text="${route.nrOfStations}">5</td>
+                <td th:text="${route.trips.size()}">5</td>
+                <td class="action-cell">
+                    <a th:href="@{'/route/' + ${route.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/route/' + ${route.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                    <a th:href="@{'/route/' + ${route.id} + '/trips'}" class="btn btn-warning" style="margin-top: 5px; display:inline-block;">View Trips</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(routes)}">
+                <td colspan="7" style="text-align:center;">No routes found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${routePage.totalPages > 1}" class="pagination-container">
+            <a th:if="${routePage.hasPrevious()}"
+               th:href="@{/route(page=${routePage.number - 1}, sort=${routePage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${routePage.number + 1} + ' of ' + ${routePage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${routePage.hasNext()}"
+               th:href="@{/route(page=${routePage.number + 1}, sort=${routePage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}"
+               class="btn btn-primary">Next ➡</a>
         </div>
-    </form>
+
+    </main>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='id,' + (${routePage.sort.getOrderFor('id') != null && routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                ID <span th:if="${routePage.sort.getOrderFor('id') != null}" th:text="${routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='origin.name,' + (${routePage.sort.getOrderFor('origin.name') != null && routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                Origin <span th:if="${routePage.sort.getOrderFor('origin.name') != null}" th:text="${routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='destination.name,' + (${routePage.sort.getOrderFor('destination.name') != null && routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                Destination <span th:if="${routePage.sort.getOrderFor('destination.name') != null}" th:text="${routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='distance,' + (${routePage.sort.getOrderFor('distance') != null && routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                Distance <span th:if="${routePage.sort.getOrderFor('distance') != null}" th:text="${routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='nrOfStations,' + (${routePage.sort.getOrderFor('nrOfStations') != null && routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                Stops <span th:if="${routePage.sort.getOrderFor('nrOfStations') != null}" th:text="${routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/route(page=${routePage.number}, sort='nrOfTrips,' + (${routePage.sort.getOrderFor('nrOfTrips') != null && routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
-               id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}">
-                Trips <span th:if="${routePage.sort.getOrderFor('nrOfTrips') != null}" th:text="${routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
-
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="route : ${routes}">
-        <td th:text="${route.id}">R1</td>
-        <td th:text="${route.origin.name}">Station A</td>
-        <td th:text="${route.destination.name}">Station B</td>
-        <td th:text="${route.distance} + ' km'">100 km</td>
-        <td th:text="${route.nrOfStations}">5</td> <td th:text="${route.trips.size()}">5</td>
-        <td class="action-cell">
-            <a th:href="@{'/route/' + ${route.id} + '/edit'}" class="btn-warning">Edit</a>
-            <form th:action="@{'/route/' + ${route.id} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-            <a th:href="@{'/route/' + ${route.id} + '/trips'}" class="btn btn-success">View Trips</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:if="${routePage.totalPages > 1}" class="pagination-container">
-    <a th:if="${routePage.hasPrevious()}"
-       th:href="@{/route(page=${routePage.number - 1}, sort=${routePage.sort.toString().replace(': ', ',')},
-         id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}"
-       class="btn btn-primary">⬅ Previous</a>
-
-    <span th:text="'Page ' + ${routePage.number + 1} + ' of ' + ${routePage.totalPages}" style="margin:0 15px; font-weight:bold;"></span>
-
-    <a th:if="${routePage.hasNext()}"
-       th:href="@{/route(page=${routePage.number + 1}, sort=${routePage.sort.toString().replace(': ', ',')},
-         id=${filterId}, origin=${filterOrigin}, destination=${filterDest}, minDistance=${filterMinDist}, maxDistance=${filterMaxDist}, minStations=${filterMinStations}, maxStations=${filterMaxStations}, minTrips=${filterMinTrips}, maxTrips=${filterMaxTrips})}"
-       class="btn btn-primary">Next ➡</a>
-</div>
-
-<div style="height: 40px;"></div>
-<div class="action-button-right">
-    <a th:href="@{/route/new}" class="btn btn-success">Add New Route</a>
-</div>
 </body>
 </html>
