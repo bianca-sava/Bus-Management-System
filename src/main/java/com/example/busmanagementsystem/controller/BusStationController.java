@@ -31,19 +31,37 @@ public class BusStationController {
 
     @GetMapping
     public String getAllBusStations(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String city,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
 
-        Page<BusStation> busStationPage = busStationService.findAllPageable(pageable);
+        Page<BusStation> busStationPage = busStationService.findAllPageable(
+                check(id),
+                check(name),
+                check(city),
+                pageable
+        );
 
         model.addAttribute("busStationPage", busStationPage);
         model.addAttribute("busStations", busStationPage.getContent());
         model.addAttribute("pageable", pageable);
 
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterName", name);
+        model.addAttribute("filterCity", city);
+
         return "busStation/index";
     }
 
+    private String check(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        return s.trim();
+    }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
