@@ -20,6 +20,59 @@
 
 <h1>Bus List</h1>
 
+<div class="filter-container">
+    <form th:action="@{/bus}" method="get">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="idFilter">ID</label>
+                <input type="text" id="idFilter" name="id" th:value="${filterId}" placeholder="Search ID...">
+            </div>
+
+            <div class="filter-group">
+                <label for="regFilter">Registration No.</label>
+                <input type="text" id="regFilter" name="registrationNumber" th:value="${filterRegNum}" placeholder="Search Reg...">
+            </div>
+
+            <div class="filter-group">
+                <label for="statusFilter">Status</label>
+                <select id="statusFilter" name="status" style="padding: 5px;">
+                    <option value="">-- All Statuses --</option>
+                    <option th:each="opt : ${statusOptions}"
+                            th:value="${opt}"
+                            th:text="${opt}"
+                            th:selected="${filterStatus == opt}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>Capacity Range</label>
+                <div class="range-group">
+                    <input type="number" name="minCapacity" th:value="${filterMinCap}" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" name="maxCapacity" th:value="${filterMaxCap}" placeholder="Max">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Passengers Range</label>
+                <div class="range-group">
+                    <input type="number" name="minPassengers" th:value="${filterMinPass}" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" name="maxPassengers" th:value="${filterMaxPass}" placeholder="Max">
+                </div>
+            </div>
+
+            <div class="filter-group" style="justify-content: flex-end; flex-direction: row; gap: 10px; align-items: flex-end;">
+                <button type="submit" class="btn btn-primary">🔍 Filter</button>
+                <a th:href="@{/bus}" class="btn-warning" style="text-decoration: none; padding: 6px 12px; border-radius: 4px;">Reset</a>
+            </div>
+        </div>
+    </form>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -31,8 +84,14 @@
 
                 <a th:href="@{/bus(
                     page=${busPage.number},
-                    size=${busPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId},
+                    registrationNumber=${filterRegNum},
+                    status=${filterStatus},
+                    minCapacity=${filterMinCap},
+                    maxCapacity=${filterMaxCap},
+                    minPassengers=${filterMinPass},
+                    maxPassengers=${filterMaxPass}
                   )}">
                     ID
                 </a>
@@ -48,8 +107,14 @@
 
                 <a th:href="@{/bus(
                     page=${busPage.number},
-                    size=${busPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId},
+                    registrationNumber=${filterRegNum},
+                    status=${filterStatus},
+                    minCapacity=${filterMinCap},
+                    maxCapacity=${filterMaxCap},
+                    minPassengers=${filterMinPass},
+                    maxPassengers=${filterMaxPass}
                   )}">
                     Registration Number
                 </a>
@@ -65,8 +130,14 @@
 
                 <a th:href="@{/bus(
                     page=${busPage.number},
-                    size=${busPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId},
+                    registrationNumber=${filterRegNum},
+                    status=${filterStatus},
+                    minCapacity=${filterMinCap},
+                    maxCapacity=${filterMaxCap},
+                    minPassengers=${filterMinPass},
+                    maxPassengers=${filterMaxPass}
                   )}">
                     Capacity
                 </a>
@@ -82,8 +153,14 @@
 
                 <a th:href="@{/bus(
                     page=${busPage.number},
-                    size=${busPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId},
+                    registrationNumber=${filterRegNum},
+                    status=${filterStatus},
+                    minCapacity=${filterMinCap},
+                    maxCapacity=${filterMaxCap},
+                    minPassengers=${filterMinPass},
+                    maxPassengers=${filterMaxPass}
                   )}">
                     Status
                 </a>
@@ -99,8 +176,14 @@
 
                 <a th:href="@{/bus(
                     page=${busPage.number},
-                    size=${busPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId},
+                    registrationNumber=${filterRegNum},
+                    status=${filterStatus},
+                    minCapacity=${filterMinCap},
+                    maxCapacity=${filterMaxCap},
+                    minPassengers=${filterMinPass},
+                    maxPassengers=${filterMaxPass}
                   )}">
                     Passengers
                 </a>
@@ -116,7 +199,7 @@
         <td th:text="${item.id}">0</td>
         <td th:text="${item.registrationNumber}">SV-01-XYZ</td>
         <td th:text="${item.capacity}">0</td>
-        <td th:text="${item.status.description}">Down</td>
+        <td th:text="${item.status}">Down</td>
         <td th:text="${item.nrOfPassengers}">0</td>
         <td class="action-cell">
             <a th:href="@{'/bus/' + ${item.id} + '/edit'}" class="btn-warning">
@@ -128,13 +211,50 @@
             </form>
         </td>
     </tr>
+    <tr th:if="${#lists.isEmpty(buses)}">
+        <td colspan="6" style="text-align:center; padding: 20px;">No buses found matching your criteria.</td>
+    </tr>
     </tbody>
 </table>
+
+<div th:if="${busPage.totalPages > 1}" class="pagination-container">
+
+    <a th:if="${busPage.hasPrevious()}"
+       th:href="@{/bus(
+           page=${busPage.number - 1},
+           sort=${busPage.sort.toString().replace(': ', ',')},
+           id=${filterId},
+           registrationNumber=${filterRegNum},
+           status=${filterStatus},
+           minCapacity=${filterMinCap},
+           maxCapacity=${filterMaxCap},
+           minPassengers=${filterMinPass},
+           maxPassengers=${filterMaxPass}
+       )}"
+       class="btn btn-primary">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${busPage.number + 1} + ' of ' + ${busPage.totalPages}" style="font-weight: bold;"></span>
+
+    <a th:if="${busPage.hasNext()}"
+       th:href="@{/bus(
+           page=${busPage.number + 1},
+           sort=${busPage.sort.toString().replace(': ', ',')},
+           id=${filterId},
+           registrationNumber=${filterRegNum},
+           status=${filterStatus},
+           minCapacity=${filterMinCap},
+           maxCapacity=${filterMaxCap},
+           minPassengers=${filterMinPass},
+           maxPassengers=${filterMaxPass}
+       )}"
+       class="btn btn-primary">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 
 <div class="action-button-right">
     <button type="button" class="btn btn-success" onclick="goToNewBusPage()">Add New Bus</button>
 </div>
+
 </body>
 </html>

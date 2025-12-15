@@ -31,15 +31,32 @@ public class BusController {
 
     @GetMapping
     public String getAllBuses(
-            @PageableDefault(size = 10, sort = "registrationNumber", direction = Sort.Direction.ASC)
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String registrationNumber,
+            @RequestParam(required = false) BusStatus status,
+            @RequestParam(required = false) Integer minCapacity,
+            @RequestParam(required = false) Integer maxCapacity,
+            @RequestParam(required = false) Integer minPassengers,
+            @RequestParam(required = false) Integer maxPassengers,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
 
-        Page<Bus> busPage = busService.findAllPageable(pageable);
+        Page<Bus> busPage = busService.findBusesByCriteria(
+                id, registrationNumber, status, minCapacity, maxCapacity, minPassengers, maxPassengers, pageable
+        );
 
         model.addAttribute("busPage", busPage);
         model.addAttribute("buses", busPage.getContent());
         model.addAttribute("pageable", pageable);
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterRegNum", registrationNumber);
+        model.addAttribute("filterStatus", status);
+        model.addAttribute("filterMinCap", minCapacity);
+        model.addAttribute("filterMaxCap", maxCapacity);
+        model.addAttribute("filterMinPass", minPassengers);
+        model.addAttribute("filterMaxPass", maxPassengers);
+        model.addAttribute("statusOptions", BusStatus.values());
 
         return "bus/index";
     }

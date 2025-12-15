@@ -7,10 +7,10 @@ import com.example.busmanagementsystem.repository.interfaces.TripManagerJpaRepos
 import com.example.busmanagementsystem.service.Validate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,7 +77,27 @@ public class TripManagerDatabaseService implements Validate<TripManager> {
     }
 
     public Page<TripManager> findAllPageable(Pageable pageable) {
-        return tripManagerRepository.findAll(pageable);
+        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
+
+        if (tripCountOrder != null) {
+
+            String sortExpression = "assignmentCount";
+
+            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
+
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> tripCountResult = tripManagerRepository.findAllSortedByAssignmentCount(customPageable);
+
+            List<TripManager> content = tripCountResult.getContent().stream()
+                    .map(obj -> (TripManager) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
+
+        } else {
+            return tripManagerRepository.findAll(pageable);
+        }
     }
 
     public boolean deleteTripManager(String id){

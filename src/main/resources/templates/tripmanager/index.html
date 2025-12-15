@@ -42,8 +42,11 @@
             </a>
         </th>
 
-        <th>Assignments</th>
-        <th>Action</th>
+        <th>
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='nrOfAssignments,' + (${tripManagerPage.sort.getOrderFor('nrOfAssignments') != null && tripManagerPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Assignments <span th:if="${tripManagerPage.sort.getOrderFor('nrOfAssignments') != null}" th:text="${tripManagerPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>        <th>Action</th>
     </tr>
     </thead>
     <tbody>
