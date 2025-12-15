@@ -5,8 +5,10 @@ import com.example.busmanagementsystem.model.BusStation;
 import com.example.busmanagementsystem.repository.interfaces.BusStationJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,10 +35,34 @@ public class BusStationDatabaseService implements Validate<BusStation> {
         return busStationRepository.save(busStation) != null;
     }
 
+    public Page<BusStation> findAllPageable(Pageable pageable) {
+
+        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfTrips");
+
+        if (tripCountOrder != null) {
+
+            String sortExpression = "tripCount";
+
+            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
+
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> tripCountResult = busStationRepository.findAllSortedByTripCount(customPageable);
+
+            List<BusStation> content = tripCountResult.getContent().stream()
+                    .map(obj -> (BusStation) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
+
+        } else {
+            return busStationRepository.findAll(pageable);
+        }
+    }
+
     public Map<String, BusStation> findAll() {
         return busStationRepository.findAll().stream()
-                .collect(Collectors.toMap(BusStation::getId,
-                station -> station));
+                .collect(Collectors.toMap(BusStation::getId, station -> station));
     }
 
     public BusStation findById (String id) {

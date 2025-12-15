@@ -7,6 +7,10 @@ import com.example.busmanagementsystem.service.databaseServices.BusStationDataba
 import com.example.busmanagementsystem.service.databaseServices.BusTripDatabaseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +30,17 @@ public class BusStationController {
     }
 
     @GetMapping
-    public String getAllBusStations(Model model) {
-        model.addAttribute("busStations", busStationService.findAll().values());
+    public String getAllBusStations(
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+
+        Page<BusStation> busStationPage = busStationService.findAllPageable(pageable);
+
+        model.addAttribute("busStationPage", busStationPage);
+        model.addAttribute("busStations", busStationPage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "busStation/index";
     }
 
