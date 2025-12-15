@@ -20,6 +20,41 @@
 
 <h1>Driver List</h1>
 
+<div class="filter-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; max-width: 900px; margin: 0 auto 20px auto;">
+    <h3>🔍 Filter Drivers</h3>
+    <form th:action="@{/driver}" method="get">
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+
+            <div style="flex: 1; min-width: 120px;">
+                <label>ID:</label>
+                <input type="text" name="id" th:value="${filterId}" class="form-control" placeholder="Search ID...">
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label>Name:</label>
+                <input type="text" name="name" th:value="${filterName}" class="form-control" placeholder="Search Name...">
+            </div>
+
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <div style="display: flex; flex-direction: column;">
+                    <label>Years (Min):</label>
+                    <input type="number" name="minYears" th:value="${filterMinYears}" class="form-control" style="width: 80px;">
+                </div>
+                <span style="margin-top: 20px;">-</span>
+                <div style="display: flex; flex-direction: column;">
+                    <label>Years (Max):</label>
+                    <input type="number" name="maxYears" th:value="${filterMaxYears}" class="form-control" style="width: 80px;">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a th:href="@{/driver}" class="btn btn-secondary" style="margin-left: 10px; border: 1px solid #ccc; background: #eee; color: #333; text-decoration: none; padding: 5px 10px;">Reset</a>
+            </div>
+        </div>
+    </form>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -32,7 +67,8 @@
                 <a class="sort-link" th:href="@{/driver(
                     page=${driverPage.number},
                     size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
                   )}">
                     ID
                 </a>
@@ -49,7 +85,8 @@
                 <a class="sort-link" th:href="@{/driver(
                     page=${driverPage.number},
                     size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
                   )}">
                     Name
                 </a>
@@ -66,7 +103,8 @@
                 <a class="sort-link" th:href="@{/driver(
                     page=${driverPage.number},
                     size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
                   )}">
                     Years of Experience
                 </a>
@@ -83,7 +121,8 @@
                 <a class="sort-link" th:href="@{/driver(
                     page=${driverPage.number},
                     size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
                   )}">
                     Assignments
                 </a>
@@ -104,9 +143,7 @@
 
         <td class="action-cell">
             <a th:href="@{'/driver/' + ${item.id} + '/assignments'}" class="btn-warning" style="margin-right: 5px;">View Assignments</a>
-
             <a th:href="@{'/driver/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-
             <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
@@ -114,6 +151,28 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${driverPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${driverPage.hasPrevious()}"
+       th:href="@{/driver(
+           page=${driverPage.number - 1},
+           size=${driverPage.size},
+           sort=${driverPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
+       )}"
+       class="btn btn-primary">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${driverPage.number + 1} + ' of ' + ${driverPage.totalPages}" style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${driverPage.hasNext()}"
+       th:href="@{/driver(
+           page=${driverPage.number + 1},
+           size=${driverPage.size},
+           sort=${driverPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
+       )}"
+       class="btn btn-primary">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 

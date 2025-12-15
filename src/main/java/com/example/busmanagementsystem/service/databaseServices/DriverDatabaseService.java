@@ -39,15 +39,18 @@ public class DriverDatabaseService implements Validate<Driver> {
         return driverRepository.findById(id).orElse(null);
     }
 
-    public Page<Driver> findAllDriversPageable(Pageable pageable){
+    public Page<Driver> findAllDriversPageable(
+            String id,
+            String name,
+            String minYears,
+            String maxYears,
+            Pageable pageable) {
 
         Sort.Order assignmentCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
 
         if (assignmentCountOrder != null) {
-
             String sortAlias = "assignmentCount";
             Sort newSort = Sort.by(assignmentCountOrder.getDirection(), sortAlias);
-
             Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
 
             Page<Object[]> result = driverRepository.findAllSortedByAssignmentCount(customPageable);
@@ -59,7 +62,7 @@ public class DriverDatabaseService implements Validate<Driver> {
             return new PageImpl<>(content, pageable, result.getTotalElements());
 
         } else {
-            return driverRepository.findAll(pageable);
+            return driverRepository.findByFilters(id, name, minYears, maxYears, pageable);
         }
     }
 

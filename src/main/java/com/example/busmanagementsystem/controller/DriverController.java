@@ -47,17 +47,40 @@ public class DriverController {
 
     @GetMapping
     public String getAllDrivers(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String minYears,
+            @RequestParam(required = false) String maxYears,
+
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
 
-        Page<Driver> driverPage = driverService.findAllDriversPageable(pageable);
+        Page<Driver> driverPage = driverService.findAllDriversPageable(
+                check(id),
+                check(name),
+                check(minYears),
+                check(maxYears),
+                pageable
+        );
 
         model.addAttribute("driverPage", driverPage);
         model.addAttribute("drivers", driverPage.getContent());
         model.addAttribute("pageable", pageable);
 
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterName", name);
+        model.addAttribute("filterMinYears", minYears);
+        model.addAttribute("filterMaxYears", maxYears);
+
         return "driver/index";
+    }
+
+    private String check(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        return s.trim();
     }
 
     @GetMapping("/new")
