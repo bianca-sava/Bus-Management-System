@@ -4,163 +4,174 @@
     <meta charset="UTF-8">
     <title>Bus Station Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        function goToNewStationPage() {
+            window.location.href = '/bus-station/new';
+        }
+    </script>
 </head>
 <body>
+
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">🏠 Go to Home Page</a>
+    <a th:href="@{/home}" class="btn btn-primary">
+        🏠 Go to Home Page
+    </a>
 </div>
 
 <h1>Bus Station List</h1>
 
-<div class="filter-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; max-width: 900px; margin: 0 auto 20px auto;">
-    <h3>Filter Stations</h3>
-    <form th:action="@{/bus-station}" method="get">
-        <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+<div class="main-container">
 
-            <div style="flex: 1; min-width: 150px;">
-                <label>ID:</label>
-                <input type="text" name="id" th:value="${filterId}" class="form-control" placeholder="Search ID...">
+    <aside class="sidebar">
+        <form th:action="@{/bus-station}" method="get">
+            <h3>Filtrează Stații</h3>
+
+            <div class="filter-group">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Station ID..." style="margin-bottom: 10px;">
+                <input type="text" name="name" th:value="${filterName}" placeholder="Station Name...">
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
-                <label>Name:</label>
-                <input type="text" name="name" th:value="${filterName}" class="form-control" placeholder="Search Name...">
+            <div class="filter-group">
+                <label class="group-title">Locație</label>
+                <input type="text" name="city" th:value="${filterCity}" placeholder="City...">
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
-                <label>City:</label>
-                <input type="text" name="city" th:value="${filterCity}" class="form-control" placeholder="Search City...">
-            </div>
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/bus-station}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
 
-            <div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a th:href="@{/bus-station}" class="btn btn-secondary" style="margin-left: 10px; border: 1px solid #ccc; background: #eee; color: #333; text-decoration: none; padding: 5px 10px;">Reset</a>
-            </div>
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <button type="button" class="btn btn-success" onclick="goToNewStationPage()">Add New Station</button>
         </div>
-    </form>
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <th:block th:with="sortField='id',
+                               currentSort=${pageable.getSort().getOrderFor(sortField)},
+                               currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                               newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                        <a th:href="@{/bus-station(
+                            page=${busStationPage.number},
+                            size=${busStationPage.size},
+                            sort=__${sortField}__ + ',' + __${newDirection}__,
+                            id=${filterId}, name=${filterName}, city=${filterCity}
+                          )}">
+                            ID
+                        </a>
+                        <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+                    </th:block>
+                </th>
+
+                <th>
+                    <th:block th:with="sortField='name',
+                               currentSort=${pageable.getSort().getOrderFor(sortField)},
+                               currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                               newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                        <a th:href="@{/bus-station(
+                            page=${busStationPage.number},
+                            size=${busStationPage.size},
+                            sort=__${sortField}__ + ',' + __${newDirection}__,
+                            id=${filterId}, name=${filterName}, city=${filterCity}
+                          )}">
+                            Name
+                        </a>
+                        <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+                    </th:block>
+                </th>
+
+                <th>
+                    <th:block th:with="sortField='city',
+                               currentSort=${pageable.getSort().getOrderFor(sortField)},
+                               currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                               newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                        <a th:href="@{/bus-station(
+                            page=${busStationPage.number},
+                            size=${busStationPage.size},
+                            sort=__${sortField}__ + ',' + __${newDirection}__,
+                            id=${filterId}, name=${filterName}, city=${filterCity}
+                          )}">
+                            City
+                        </a>
+                        <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+                    </th:block>
+                </th>
+
+                <th>
+                    <th:block th:with="sortField='nrOfTrips',
+                               currentSort=${pageable.getSort().getOrderFor(sortField)},
+                               currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                               newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                        <a th:href="@{/bus-station(
+                            page=${busStationPage.number},
+                            size=${busStationPage.size},
+                            sort=__${sortField}__ + ',' + __${newDirection}__,
+                            id=${filterId}, name=${filterName}, city=${filterCity}
+                          )}">
+                            Connected Trips
+                        </a>
+                        <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+                    </th:block>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${busStations}">
+                <td th:text="${item.id}">ST01</td>
+                <td th:text="${item.name}">Central Station</td>
+                <td th:text="${item.city}">New York</td>
+                <td th:text="${item.trips.size}">5</td>
+
+                <td class="action-cell">
+                    <a th:href="@{'/bus-station/' + ${item.id} + '/trips'}" class="btn-warning">View Trips</a>
+                    <a th:href="@{'/bus-station/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(busStations)}">
+                <td colspan="5" style="text-align:center; padding: 20px;">No stations found matching your criteria.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${busStationPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${busStationPage.hasPrevious()}"
+               th:href="@{/bus-station(
+                   page=${busStationPage.number - 1},
+                   size=${busStationPage.size},
+                   sort=${busStationPage.sort.toString().replace(': ', ',')},
+                   id=${filterId}, name=${filterName}, city=${filterCity}
+               )}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${busStationPage.number + 1} + ' of ' + ${busStationPage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${busStationPage.hasNext()}"
+               th:href="@{/bus-station(
+                   page=${busStationPage.number + 1},
+                   size=${busStationPage.size},
+                   sort=${busStationPage.sort.toString().replace(': ', ',')},
+                   id=${filterId}, name=${filterName}, city=${filterCity}
+               )}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
+
+    </main>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>
-            <th:block th:with="sortField='id',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/bus-station(
-                    page=${busStationPage.number},
-                    size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, city=${filterCity}
-                  )}">
-                    ID
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='name',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/bus-station(
-                    page=${busStationPage.number},
-                    size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, city=${filterCity}
-                  )}">
-                    Name
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='city',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/bus-station(
-                    page=${busStationPage.number},
-                    size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, city=${filterCity}
-                  )}">
-                    City
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='nrOfTrips',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/bus-station(
-                    page=${busStationPage.number},
-                    size=${busStationPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, city=${filterCity}
-                  )}">
-                    Connected Trips
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${busStations}">
-        <td th:text="${item.id}">ST01</td>
-        <td th:text="${item.name}">Central Station</td>
-        <td th:text="${item.city}">New York</td>
-        <td th:text="${item.trips.size}">5</td>
-
-        <td class="action-cell">
-            <a th:href="@{'/bus-station/' + ${item.id} + '/trips'}" class="btn-warning">View Trips</a>
-            <a th:href="@{'/bus-station/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-            <form th:action="@{'/bus-station/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:if="${busStationPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
-    <a th:if="${busStationPage.hasPrevious()}"
-       th:href="@{/bus-station(
-           page=${busStationPage.number - 1},
-           size=${busStationPage.size},
-           sort=${busStationPage.sort.toString().replace(': ', ',')},
-           id=${filterId}, name=${filterName}, city=${filterCity}
-       )}"
-       class="btn btn-primary">⬅ Previous</a>
-
-    <span th:text="'Page ' + ${busStationPage.number + 1} + ' of ' + ${busStationPage.totalPages}" style="margin: 0 15px; font-weight: bold;"></span>
-
-    <a th:if="${busStationPage.hasNext()}"
-       th:href="@{/bus-station(
-           page=${busStationPage.number + 1},
-           size=${busStationPage.size},
-           sort=${busStationPage.sort.toString().replace(': ', ',')},
-           id=${filterId}, name=${filterName}, city=${filterCity}
-       )}"
-       class="btn btn-primary">Next ➡</a>
-</div>
-
-<div style="height: 40px;"></div>
-<div class="action-button-right">
-    <a th:href="@{/bus-station/new}" class="btn btn-success">Add New Bus Station</a>
-</div>
 </body>
 </html>

@@ -6,178 +6,174 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
-        function goToNewDriverPage() {
-            window.location.href = '/driver/new';
+        // Scriptul pentru Dual Slider
+        function updateDualSlider(groupId) {
+            const container = document.getElementById(groupId);
+            if(!container) return;
+
+            const rangeMin = container.querySelector('.range-min');
+            const rangeMax = container.querySelector('.range-max');
+            const inputMin = container.querySelector('.input-min');
+            const inputMax = container.querySelector('.input-max');
+
+            function syncInputs() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+
+                if (val1 > val2) {
+                    rangeMin.value = val2;
+                    return;
+                }
+                inputMin.value = rangeMin.value;
+                inputMax.value = rangeMax.value;
+            }
+
+            function syncRanges() {
+                rangeMin.value = inputMin.value;
+                rangeMax.value = inputMax.value;
+            }
+
+            rangeMin.addEventListener('input', syncInputs);
+            rangeMax.addEventListener('input', function() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+                if (val2 < val1) {
+                    rangeMax.value = val1;
+                    return;
+                }
+                inputMax.value = rangeMax.value;
+            });
+
+            inputMin.addEventListener('change', syncRanges);
+            inputMax.addEventListener('change', syncRanges);
         }
+
+        window.onload = function() {
+            // Inițializăm sliderul pentru experiență
+            updateDualSlider('experience-slider');
+        };
     </script>
 </head>
 <body>
+
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">⬅ Back to Home</a>
 </div>
 
-<h1>Driver List</h1>
+<h1>Driver Management</h1>
 
-<div class="filter-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; max-width: 900px; margin: 0 auto 20px auto;">
-    <h3>Filter Drivers</h3>
-    <form th:action="@{/driver}" method="get">
-        <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+<div class="main-container">
 
-            <div style="flex: 1; min-width: 120px;">
-                <label>ID:</label>
-                <input type="text" name="id" th:value="${filterId}" class="form-control" placeholder="Search ID...">
+    <aside class="sidebar">
+        <form th:action="@{/driver}" method="get">
+            <h3>Filtrează Șoferi</h3>
+
+            <div class="filter-group">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Driver ID..." style="margin-bottom: 10px;">
+                <input type="text" name="name" th:value="${filterName}" placeholder="Driver Name...">
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
-                <label>Name:</label>
-                <input type="text" name="name" th:value="${filterName}" class="form-control" placeholder="Search Name...">
-            </div>
+            <div class="filter-group" id="experience-slider">
+                <label class="group-title">Experiență (Ani)</label>
 
-            <div style="display: flex; gap: 5px; align-items: center;">
-                <div style="display: flex; flex-direction: column;">
-                    <label>Years (Min):</label>
-                    <input type="number" name="minYears" th:value="${filterMinYears}" class="form-control" style="width: 80px;">
+                <div class="price-inputs"> <input type="number" name="minYears" class="input-min"
+                                                  th:value="${filterMinYears != null ? filterMinYears : 0}" min="0" max="60">
+                    <input type="number" name="maxYears" class="input-max"
+                           th:value="${filterMaxYears != null ? filterMaxYears : 60}" min="0" max="60">
                 </div>
-                <span style="margin-top: 20px;">-</span>
-                <div style="display: flex; flex-direction: column;">
-                    <label>Years (Max):</label>
-                    <input type="number" name="maxYears" th:value="${filterMaxYears}" class="form-control" style="width: 80px;">
+
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="60" step="1"
+                           th:value="${filterMinYears != null ? filterMinYears : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="60" step="1"
+                           th:value="${filterMaxYears != null ? filterMaxYears : 60}">
                 </div>
             </div>
 
-            <div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a th:href="@{/driver}" class="btn btn-secondary" style="margin-left: 10px; border: 1px solid #ccc; background: #eee; color: #333; text-decoration: none; padding: 5px 10px;">Reset</a>
-            </div>
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/driver}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
+
+    <main class="content-area">
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <a th:href="@{'/driver/new'}" class="btn btn-success">Add New Driver</a>
         </div>
-    </form>
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/driver(page=${driverPage.number}, sort='id,' + (${driverPage.sort.getOrderFor('id') != null && driverPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}">
+                        ID <span th:if="${driverPage.sort.getOrderFor('id') != null}" th:text="${driverPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/driver(page=${driverPage.number}, sort='name,' + (${driverPage.sort.getOrderFor('name') != null && driverPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}">
+                        Name <span th:if="${driverPage.sort.getOrderFor('name') != null}" th:text="${driverPage.sort.getOrderFor('name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/driver(page=${driverPage.number}, sort='yearsOfExperience,' + (${driverPage.sort.getOrderFor('yearsOfExperience') != null && driverPage.sort.getOrderFor('yearsOfExperience').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}">
+                        Years Exp. <span th:if="${driverPage.sort.getOrderFor('yearsOfExperience') != null}" th:text="${driverPage.sort.getOrderFor('yearsOfExperience').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/driver(page=${driverPage.number}, sort='nrOfAssignments,' + (${driverPage.sort.getOrderFor('nrOfAssignments') != null && driverPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}">
+                        Assignments <span th:if="${driverPage.sort.getOrderFor('nrOfAssignments') != null}" th:text="${driverPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${drivers}">
+                <td th:text="${item.id}">D-01</td>
+                <td th:text="${item.name}">John Doe</td>
+                <td th:text="${item.yearsOfExperience}">5</td>
+                <td th:text="${item.assignments.size}">0</td>
+
+                <td class="action-cell">
+                    <a th:href="@{'/driver/' + ${item.id} + '/assignments'}" class="btn-warning">Assignments</a>
+                    <a th:href="@{'/driver/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(drivers)}">
+                <td colspan="5" style="text-align:center;">No drivers found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${driverPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${driverPage.hasPrevious()}"
+               th:href="@{/driver(page=${driverPage.number - 1}, sort=${driverPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${driverPage.number + 1} + ' of ' + ${driverPage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${driverPage.hasNext()}"
+               th:href="@{/driver(page=${driverPage.number + 1}, sort=${driverPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears})}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
+
+    </main>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>
-            <th:block th:with="sortField='id',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/driver(
-                    page=${driverPage.number},
-                    size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-                  )}">
-                    ID
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='name',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/driver(
-                    page=${driverPage.number},
-                    size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-                  )}">
-                    Name
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='yearsOfExperience',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/driver(
-                    page=${driverPage.number},
-                    size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-                  )}">
-                    Years of Experience
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>
-            <th:block th:with="sortField='nrOfAssignments',
-                       currentSort=${pageable.getSort().getOrderFor(sortField)},
-                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
-                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
-
-                <a class="sort-link" th:href="@{/driver(
-                    page=${driverPage.number},
-                    size=${driverPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__,
-                    id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-                  )}">
-                    Assignments
-                </a>
-                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
-            </th:block>
-        </th>
-
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${drivers}">
-        <td th:text="${item.id}">D-01</td>
-        <td th:text="${item.name}">John Doe</td>
-        <td th:text="${item.yearsOfExperience}">5</td>
-
-        <td th:text="${item.assignments.size}">0</td>
-
-        <td class="action-cell">
-            <a th:href="@{'/driver/' + ${item.id} + '/assignments'}" class="btn-warning" style="margin-right: 5px;">View Assignments</a>
-            <a th:href="@{'/driver/' + ${item.id} + '/edit'}" class="btn-warning">Edit</a>
-            <form th:action="@{'/driver/' + ${item.id} + '/delete'}" method="post" style="display: inline;">
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:if="${driverPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
-    <a th:if="${driverPage.hasPrevious()}"
-       th:href="@{/driver(
-           page=${driverPage.number - 1},
-           size=${driverPage.size},
-           sort=${driverPage.sort.toString().replace(': ', ',')},
-           id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-       )}"
-       class="btn btn-primary">⬅ Previous</a>
-
-    <span th:text="'Page ' + ${driverPage.number + 1} + ' of ' + ${driverPage.totalPages}" style="margin: 0 15px; font-weight: bold;"></span>
-
-    <a th:if="${driverPage.hasNext()}"
-       th:href="@{/driver(
-           page=${driverPage.number + 1},
-           size=${driverPage.size},
-           sort=${driverPage.sort.toString().replace(': ', ',')},
-           id=${filterId}, name=${filterName}, minYears=${filterMinYears}, maxYears=${filterMaxYears}
-       )}"
-       class="btn btn-primary">Next ➡</a>
-</div>
-
-<div style="height: 40px;"></div>
-
-<div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewDriverPage()">Add New Driver</button>
-</div>
 </body>
 </html>
