@@ -8,6 +8,10 @@ import com.example.busmanagementsystem.service.databaseServices.TicketDatabaseSe
 import com.example.busmanagementsystem.service.inFileServices.PassengerService;
 import com.example.busmanagementsystem.service.inFileServices.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,8 +47,15 @@ public class PassengerController {
 //    }
 
     @GetMapping
-    public String getAllPassengers(Model model) {
-        model.addAttribute("passengers", passengerService.findAll().values());
+    public String getAllPassengers(
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+        Page<Passenger> passengerPage = passengerService.findAllPage(pageable);
+        model.addAttribute("passengerPage", passengerPage);
+        model.addAttribute("passengers", passengerPage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "passenger/index";
     }
 

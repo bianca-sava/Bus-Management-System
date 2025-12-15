@@ -9,6 +9,8 @@ import com.example.busmanagementsystem.repository.interfaces.TicketJpaRepository
 import com.example.busmanagementsystem.service.Validate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -82,6 +84,10 @@ public class TicketDatabaseService implements Validate<Ticket> {
             return true;
         }
         return false;
+    }
+
+    public Page<Ticket> findAllPageable(Pageable pageable) {
+        return ticketRepository.findAll(pageable);
     }
 
     public boolean delete (String id) {

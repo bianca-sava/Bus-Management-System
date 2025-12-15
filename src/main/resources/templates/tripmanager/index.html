@@ -6,9 +6,6 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
-        /**
-         * Funcție pentru a naviga la pagina de adăugare a unui nou Trip Manager.
-         */
         function goToNewTripManagerPage() {
             // Ruta către formularul de creare al TripManager este /tripmanager/new
             window.location.href = '/tripmanager/new';
@@ -27,9 +24,24 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Employee Code</th>
+        <th>
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='id,' + (${tripManagerPage.sort.getOrderFor('id') != null && tripManagerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                ID <span th:if="${tripManagerPage.sort.getOrderFor('id') != null}" th:text="${tripManagerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='name,' + (${tripManagerPage.sort.getOrderFor('name') != null && tripManagerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Name <span th:if="${tripManagerPage.sort.getOrderFor('name') != null}" th:text="${tripManagerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='employeeCode,' + (${tripManagerPage.sort.getOrderFor('employeeCode') != null && tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Employee Code <span th:if="${tripManagerPage.sort.getOrderFor('employeeCode') != null}" th:text="${tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
         <th>Assignments</th>
         <th>Action</th>
     </tr>
@@ -56,6 +68,19 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${tripManagerPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${tripManagerPage.hasPrevious()}"
+       th:href="@{/tripmanager(page=${tripManagerPage.number - 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${tripManagerPage.number + 1} + ' of ' + ${tripManagerPage.totalPages}"
+          style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${tripManagerPage.hasNext()}"
+       th:href="@{/tripmanager(page=${tripManagerPage.number + 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 

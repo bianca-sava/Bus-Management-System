@@ -15,10 +15,29 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Currency</th>
-        <th>Tickets</th>
+        <th>
+            <a th:href="@{/passenger(page=${passengerPage.number}, sort='id,' + (${passengerPage.sort.getOrderFor('id') != null && passengerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                ID <span th:if="${passengerPage.sort.getOrderFor('id') != null}" th:text="${passengerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/passenger(page=${passengerPage.number}, sort='name,' + (${passengerPage.sort.getOrderFor('name') != null && passengerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Name <span th:if="${passengerPage.sort.getOrderFor('name') != null}" th:text="${passengerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/passenger(page=${passengerPage.number}, sort='currency,' + (${passengerPage.sort.getOrderFor('currency') != null && passengerPage.sort.getOrderFor('currency').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Currency <span th:if="${passengerPage.sort.getOrderFor('currency') != null}" th:text="${passengerPage.sort.getOrderFor('currency').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/passenger(page=${passengerPage.number}, sort='nrOfTickets,' + (${passengerPage.sort.getOrderFor('nrOfTickets') != null && passengerPage.sort.getOrderFor('nrOfTickets').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Tickets <span th:if="${passengerPage.sort.getOrderFor('nrOfTickets') != null}" th:text="${passengerPage.sort.getOrderFor('nrOfTickets').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -39,6 +58,19 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${passengerPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${passengerPage.hasPrevious()}"
+       th:href="@{/passenger(page=${passengerPage.number - 1}, sort=${passengerPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${passengerPage.number + 1} + ' of ' + ${passengerPage.totalPages}"
+          style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${passengerPage.hasNext()}"
+       th:href="@{/passenger(page=${passengerPage.number + 1}, sort=${passengerPage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 <div class="action-button-right">

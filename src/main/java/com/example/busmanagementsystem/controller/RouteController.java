@@ -13,6 +13,10 @@ import com.example.busmanagementsystem.service.inFileServices.BusStationService;
 import com.example.busmanagementsystem.service.inFileServices.BusTripService; // <-- Import Adăugat
 import com.example.busmanagementsystem.service.inFileServices.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,8 +60,14 @@ public class RouteController {
 
 
     @GetMapping
-    public String getAllRoutes(Model model) {
-        model.addAttribute("routes", routeService.findAll().values());
+    public String getAllRoutes(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+                               Pageable pageable,
+                               Model model) {
+        Page<Route> routePage = routeService.findAllPageable(pageable);
+        model.addAttribute("routePage", routePage);
+        model.addAttribute("routes",routePage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "route/index";
     }
 

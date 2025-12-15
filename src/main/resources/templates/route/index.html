@@ -15,12 +15,41 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Origin</th>
-        <th>Destination</th>
-        <th>Distance (km)</th>
-        <th>Stops</th>
-        <th>Trips</th>
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='id,' + (${routePage.sort.getOrderFor('id') != null && routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                ID <span th:if="${routePage.sort.getOrderFor('id') != null}" th:text="${routePage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='origin.name,' + (${routePage.sort.getOrderFor('origin.name') != null && routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Origin <span th:if="${routePage.sort.getOrderFor('origin.name') != null}" th:text="${routePage.sort.getOrderFor('origin.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='destination.name,' + (${routePage.sort.getOrderFor('destination.name') != null && routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Destination <span th:if="${routePage.sort.getOrderFor('destination.name') != null}" th:text="${routePage.sort.getOrderFor('destination.name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='distance,' + (${routePage.sort.getOrderFor('distance') != null && routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Distance (km) <span th:if="${routePage.sort.getOrderFor('distance') != null}" th:text="${routePage.sort.getOrderFor('distance').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='nrOfStations,' + (${routePage.sort.getOrderFor('nrOfStations') != null && routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Stops <span th:if="${routePage.sort.getOrderFor('nrOfStations') != null}" th:text="${routePage.sort.getOrderFor('nrOfStations').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/route(page=${routePage.number}, sort='nrOfTrips,' + (${routePage.sort.getOrderFor('nrOfTrips') != null && routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+                Trips <span th:if="${routePage.sort.getOrderFor('nrOfTrips') != null}" th:text="${routePage.sort.getOrderFor('nrOfTrips').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            </a>
+        </th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -45,6 +74,18 @@
     </tr>
     </tbody>
 </table>
+<div th:if="${routePage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${routePage.hasPrevious()}"
+       th:href="@{/route(page=${routePage.number - 1}, sort=${routePage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${routePage.number + 1} + ' of ' + ${routePage.totalPages}"
+          style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${routePage.hasNext()}"
+       th:href="@{/route(page=${routePage.number + 1}, sort=${routePage.sort.toString().replace(': ', ',')})}"
+       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 <div class="action-button-right">

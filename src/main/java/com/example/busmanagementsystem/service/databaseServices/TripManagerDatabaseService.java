@@ -1,11 +1,14 @@
 package com.example.busmanagementsystem.service.databaseServices;
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.model.Ticket;
 import com.example.busmanagementsystem.model.TripManager;
 import com.example.busmanagementsystem.repository.interfaces.TripManagerJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -71,6 +74,10 @@ public class TripManagerDatabaseService implements Validate<TripManager> {
             return true;
         }
         return false;
+    }
+
+    public Page<TripManager> findAllPageable(Pageable pageable) {
+        return tripManagerRepository.findAll(pageable);
     }
 
     public boolean deleteTripManager(String id){
