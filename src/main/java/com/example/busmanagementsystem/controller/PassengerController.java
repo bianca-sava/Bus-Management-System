@@ -48,13 +48,27 @@ public class PassengerController {
 
     @GetMapping
     public String getAllPassengers(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String currency,
+            @RequestParam(required = false) Integer minTickets,
+            @RequestParam(required = false) Integer maxTickets,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
-        Page<Passenger> passengerPage = passengerService.findAllPage(pageable);
+
+        Page<Passenger> passengerPage = passengerService.findPassengersByCriteria(
+                id, name, currency, minTickets, maxTickets, pageable
+        );
+
         model.addAttribute("passengerPage", passengerPage);
         model.addAttribute("passengers", passengerPage.getContent());
         model.addAttribute("pageable", pageable);
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterName", name);
+        model.addAttribute("filterCurrency", currency);
+        model.addAttribute("filterMinTickets", minTickets);
+        model.addAttribute("filterMaxTickets", maxTickets);
 
         return "passenger/index";
     }

@@ -86,10 +86,27 @@ public class TicketDatabaseService implements Validate<Ticket> {
         return false;
     }
 
-    public Page<Ticket> findAllPageable(Pageable pageable) {
-        return ticketRepository.findAll(pageable);
-    }
+    public Page<Ticket> findTicketsByCriteria(
+            String id,
+            String tripId,
+            String passengerId,
+            String seatNumber,
+            Double minPrice,
+            Double maxPrice,
+            Boolean checkedIn,
+            Pageable pageable) {
 
+        return ticketRepository.findByFilters(
+                id,
+                tripId,
+                passengerId,
+                seatNumber,
+                minPrice,
+                maxPrice,
+                checkedIn,
+                pageable
+        );
+    }
     public boolean delete (String id) {
         if(ticketRepository.existsById(id)) {
             ticketRepository.deleteById(id);

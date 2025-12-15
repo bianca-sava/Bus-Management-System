@@ -10,6 +10,7 @@ import com.example.busmanagementsystem.repository.interfaces.RouteJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,28 +79,31 @@ public class RouteDatabaseService implements Validate<Route> {
         return false;
     }
 
-    public Page<Route> findAllPageable(Pageable pageable) {
-        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfTrips");
+    public Page<Route> findRoutesByCriteria(
+            String id,
+            String originName,
+            String destinationName,
+            Double minDistance,
+            Double maxDistance,
+            Integer minStations,
+            Integer maxStations,
+            Integer minTrips,
+            Integer maxTrips,
+            Pageable pageable) {
 
-        if (tripCountOrder != null) {
+        Sort.Order tripOrder = pageable.getSort().getOrderFor("nrOfTrips");
+        Pageable activePageable = pageable;
 
-            String sortExpression = "tripCount";
-
-            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
-
-            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
-
-            Page<Object[]> tripCountResult = routeRepository.findAllSortedByTripCount(customPageable);
-
-            List<Route> content = tripCountResult.getContent().stream()
-                    .map(obj -> (Route) obj[0])
-                    .collect(Collectors.toList());
-
-            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
-
-        } else {
-            return routeRepository.findAll(pageable);
+        if (tripOrder != null) {
+            Sort customSort = JpaSort.unsafe(tripOrder.getDirection(), "SIZE(r.trips)");
+            activePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), customSort);
         }
+
+        return routeRepository.findByFilters(
+                id, originName, destinationName, minDistance, maxDistance,
+                minStations, maxStations,
+                minTrips, maxTrips, activePageable
+        );
     }
 
     public boolean delete (String id) {

@@ -60,13 +60,34 @@ public class RouteController {
 
 
     @GetMapping
-    public String getAllRoutes(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
-                               Pageable pageable,
+    public String getAllRoutes(@RequestParam(required = false) String id,
+                               @RequestParam(required = false) String origin,
+                               @RequestParam(required = false) String destination,
+                               @RequestParam(required = false) Double minDistance,
+                               @RequestParam(required = false) Double maxDistance,
+                               @RequestParam(required = false) Integer minStations,
+                               @RequestParam(required = false) Integer maxStations,
+                               @RequestParam(required = false) Integer minTrips,
+                               @RequestParam(required = false) Integer maxTrips,
+                               @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                Model model) {
-        Page<Route> routePage = routeService.findAllPageable(pageable);
+
+        Page<Route> routePage = routeService.findRoutesByCriteria(
+                id, origin, destination, minDistance, maxDistance, minStations, maxStations, minTrips, maxTrips, pageable
+        );
+
         model.addAttribute("routePage", routePage);
-        model.addAttribute("routes",routePage.getContent());
+        model.addAttribute("routes", routePage.getContent());
         model.addAttribute("pageable", pageable);
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterOrigin", origin);
+        model.addAttribute("filterDest", destination);
+        model.addAttribute("filterMinDist", minDistance);
+        model.addAttribute("filterMaxDist", maxDistance);
+        model.addAttribute("filterMinStations", minStations); // Nou
+        model.addAttribute("filterMaxStations", maxStations); // Nou
+        model.addAttribute("filterMinTrips", minTrips);
+        model.addAttribute("filterMaxTrips", maxTrips);
 
         return "route/index";
     }

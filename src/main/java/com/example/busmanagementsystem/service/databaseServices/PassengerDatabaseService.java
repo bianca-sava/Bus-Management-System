@@ -6,6 +6,7 @@ import com.example.busmanagementsystem.repository.interfaces.PassengerJpaReposit
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.data.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,28 +63,26 @@ public class PassengerDatabaseService implements Validate<Passenger> {
         return false;
     }
 
-    public Page<Passenger> findAllPage(Pageable pageable) {
-        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfTickets");
+    public Page<Passenger> findPassengersByCriteria(
+            String id,
+            String name,
+            String currency,
+            Integer minTickets,
+            Integer maxTickets,
+            Pageable pageable) {
 
-        if (tripCountOrder != null) {
+        Sort.Order ticketOrder = pageable.getSort().getOrderFor("ticketCount");
+        Pageable activePageable = pageable;
 
-            String sortExpression = "ticketCount";
+        if (ticketOrder != null) {
+            Sort customSort = JpaSort.unsafe(ticketOrder.getDirection(), "SIZE(p.tickets)");
 
-            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
-
-            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
-
-            Page<Object[]> tripCountResult = passengerRepository.findAllSortedByTicketCount(customPageable);
-
-            List<Passenger> content = tripCountResult.getContent().stream()
-                    .map(obj -> (Passenger) obj[0])
-                    .collect(Collectors.toList());
-
-            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
-
-        } else {
-            return passengerRepository.findAll(pageable);
+            activePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), customSort);
         }
+
+        return passengerRepository.findByFilters(
+                id, name, currency, minTickets, maxTickets, activePageable
+        );
     }
 
     public boolean delete (String id) {
