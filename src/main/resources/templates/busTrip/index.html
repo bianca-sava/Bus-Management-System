@@ -12,6 +12,53 @@
 
 <h1>Bus Trip List</h1>
 
+<div class="filter-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; max-width: 1000px; margin-left: auto; margin-right: auto;">
+    <h3>🔍 Filter Trips</h3>
+    <form th:action="@{/bus-trip}" method="get">
+        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+
+            <div style="flex: 1; min-width: 120px;">
+                <label>Trip ID:</label>
+                <input type="text" name="id" th:value="${filterId}" class="form-control" placeholder="Search ID...">
+            </div>
+
+            <div style="flex: 1; min-width: 120px;">
+                <label>Route ID:</label>
+                <input type="text" name="routeId" th:value="${filterRouteId}" class="form-control" placeholder="Search Route...">
+            </div>
+
+            <div style="flex: 1; min-width: 120px;">
+                <label>Bus ID:</label>
+                <input type="text" name="busId" th:value="${filterBusId}" class="form-control" placeholder="Search Bus...">
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label>Status:</label>
+                <select name="status" class="form-control">
+                    <option value="">-- All --</option>
+                    <option th:each="opt : ${statusOptions}"
+                            th:value="${opt}"
+                            th:text="${opt}"
+                            th:selected="${filterStatus == opt}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 10px; align-items: center;">
+            <label>Start Time:</label>
+            <div style="display: flex; gap: 5px;">
+                <input type="datetime-local" name="minTime" th:value="${filterMinTime}" class="form-control">
+                <span style="align-self: center;">-</span>
+                <input type="datetime-local" name="maxTime" th:value="${filterMaxTime}" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-left: auto;">Filter</button>
+            <a th:href="@{/bus-trip}" class="btn btn-secondary" style="margin-left: 10px; border: 1px solid #ccc; background: #eee; color: #333; text-decoration: none; padding: 5px 10px;">Reset</a>
+        </div>
+    </form>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -24,7 +71,8 @@
                 <a class="sort-link" th:href="@{/bus-trip(
                     page=${busTripPage.number},
                     size=${busTripPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
                   )}">
                     ID
                 </a>
@@ -44,7 +92,8 @@
                 <a class="sort-link" th:href="@{/bus-trip(
                     page=${busTripPage.number},
                     size=${busTripPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
                   )}">
                     Start Time
                 </a>
@@ -61,7 +110,8 @@
                 <a class="sort-link" th:href="@{/bus-trip(
                     page=${busTripPage.number},
                     size=${busTripPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
                   )}">
                     Status
                 </a>
@@ -78,7 +128,8 @@
                 <a class="sort-link" th:href="@{/bus-trip(
                     page=${busTripPage.number},
                     size=${busTripPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
                   )}">
                     Tickets
                 </a>
@@ -95,7 +146,8 @@
                 <a class="sort-link" th:href="@{/bus-trip(
                     page=${busTripPage.number},
                     size=${busTripPage.size},
-                    sort=__${sortField}__ + ',' + __${newDirection}__
+                    sort=__${sortField}__ + ',' + __${newDirection}__,
+                    id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
                   )}">
                     Assignments
                 </a>
@@ -111,7 +163,7 @@
         <td th:text="${item.id}">TRIP1</td>
         <td th:text="${item.routeId}">ROUTE1</td>
         <td th:text="${item.busId}">BUS1</td>
-        <td th:text="${item.startTime}">10:00</td>
+        <td th:text="${item.startTime.replace('T', ' ')}">10:00</td>
         <td th:text="${item.status}">PLANNED</td>
         <td th:text="${item.tickets.size}">0</td>
         <td th:text="${item.assignments.size}">0</td>
@@ -127,6 +179,28 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${busTripPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+    <a th:if="${busTripPage.hasPrevious()}"
+       th:href="@{/bus-trip(
+           page=${busTripPage.number - 1},
+           size=${busTripPage.size},
+           sort=${busTripPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
+       )}"
+       class="btn btn-primary">⬅ Previous</a>
+
+    <span th:text="'Page ' + ${busTripPage.number + 1} + ' of ' + ${busTripPage.totalPages}" style="margin: 0 15px; font-weight: bold;"></span>
+
+    <a th:if="${busTripPage.hasNext()}"
+       th:href="@{/bus-trip(
+           page=${busTripPage.number + 1},
+           size=${busTripPage.size},
+           sort=${busTripPage.sort.toString().replace(': ', ',')},
+           id=${filterId}, routeId=${filterRouteId}, busId=${filterBusId}, status=${filterStatus}, minTime=${filterMinTime}, maxTime=${filterMaxTime}
+       )}"
+       class="btn btn-primary">Next ➡</a>
+</div>
 
 <div style="height: 40px;"></div>
 <div class="action-button-right">
