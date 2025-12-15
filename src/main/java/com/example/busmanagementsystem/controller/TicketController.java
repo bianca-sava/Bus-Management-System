@@ -57,15 +57,30 @@ public class TicketController {
 
     @GetMapping
     public String getAllTickets(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
-            Pageable pageable,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String tripId,
+            @RequestParam(required = false) String passengerId,
+            @RequestParam(required = false) String seatNumber,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean checkedIn,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             Model model) {
 
-        Page<Ticket> ticketPage = ticketService.findAllPageable(pageable);
+        Page<Ticket> ticketPage = ticketService.findTicketsByCriteria(
+                id, tripId, passengerId, seatNumber, minPrice, maxPrice, checkedIn, pageable
+        );
 
         model.addAttribute("ticketPage", ticketPage);
         model.addAttribute("tickets", ticketPage.getContent());
         model.addAttribute("pageable", pageable);
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterTripId", tripId);
+        model.addAttribute("filterPassId", passengerId);
+        model.addAttribute("filterSeat", seatNumber);
+        model.addAttribute("filterMinPrice", minPrice);
+        model.addAttribute("filterMaxPrice", maxPrice);
+        model.addAttribute("filterCheckedIn", checkedIn);
 
         return "ticket/index";
     }

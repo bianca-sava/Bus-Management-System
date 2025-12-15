@@ -1,12 +1,12 @@
-/* --- 1. Stiluri Globale și Reset --- */
+/* --- 1. Stiluri Globale și Reset (PĂSTRAT) --- */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #F7F1DE;
-    color: #f4f4f4; /* Culoarea textului de bază */
+    color: #333; /* Ușor ajustat pentru contrast mai bun pe alb, dar similar */
     line-height: 1.6;
     padding: 2rem;
+    margin: 0;
 }
-
 
 h1 {
     color: #B87C4C;
@@ -16,7 +16,7 @@ h1 {
     letter-spacing: 1px;
 }
 
-/* Stil pentru formurile din tabel (pentru alinierea butonului de Delete) */
+/* Stil pentru formurile din tabel */
 form {
     margin: 0;
     display: inline-block;
@@ -24,15 +24,13 @@ form {
 
 /* Container pentru butonul 'Add New Bus' */
 .action-button-right {
-    width: 80%;
-    margin: 20px auto 20px auto;
+    width: 100%; /* Ajustat pentru noul layout */
     text-align: right;
     padding: 0;
+    margin-top: 20px;
 }
 
-/* --- 2. Stiluri de Bază pentru Butoane (Clasa: .btn) --- */
-
-/* Bază - Aplicată tuturor butoanelor pentru proprietăți comune */
+/* --- 2. Stiluri de Bază pentru Butoane (PĂSTRAT) --- */
 .btn {
     padding: 10px 15px;
     border: none;
@@ -44,49 +42,34 @@ form {
     transition: background-color 0.3s ease;
 }
 
-/* Stilul General/Primar (Culoarea Albastră originală) */
 .btn-primary {
     background-color: #8D9C89;
     color: white;
     font-weight: bold;
 }
+.btn-primary:hover { background-color: #A8BBA3; }
 
-.btn-primary:hover {
-    background-color: #A8BBA3;
-}
-
-
-/* Stilul de Succes (Butonul 'Add New Bus' - Culoarea Verde) */
 .btn-success {
     background-color: #8D9C89;
     color: white;
     font-weight: bold;
 }
+.btn-success:hover { background-color: #A8BBA3; }
 
-.btn-success:hover {
-    background-color: #A8BBA3;
-}
-
-/* Stilul de Pericol (Butonul 'Delete' - Culoarea Roșie) */
 .btn-danger {
     background-color: #dc3545;
     color: white;
-    padding: 6px 10px; /* Setare de padding mai mică, conform cerinței */
-    font-weight: normal; /* Setare font-weight normal, conform cerinței */
-    font-size: 14px; /* Setare de font mai mică, conform cerinței */
+    padding: 6px 10px;
+    font-weight: normal;
+    font-size: 14px;
 }
+.btn-danger:hover { background-color: #c82333; }
 
-.btn-danger:hover {
-    background-color: #c82333;
-}
-
-/* Stil pentru Butonul de Editare (btn-warning) */
 .btn-warning {
-    /* Proprietăți de bază pentru a arăta ca un buton */
     display: inline-block;
     padding: 6px 12px;
-    margin-right: 5px; /* Păstrează un spațiu mic la dreapta */
-    margin-bottom: 5px; /* ADAUGAT: Spațiu sub buton, pentru a le separa pe verticală */
+    margin-right: 5px;
+    margin-bottom: 5px;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.42857143;
@@ -97,87 +80,45 @@ form {
     border: 1px solid transparent;
     border-radius: 4px;
     text-decoration: none;
-
-    /* Culorile specifice de Avertisment (Galben/Portocaliu) */
     color: #fff;
     background-color: #f0ad4e;
     border-color: #eea236;
 }
-
-/* Efectul de hover (la trecerea mouse-ului) */
 .btn-warning:hover {
     color: #fff;
     background-color: #ec971f;
     border-color: #d58512;
 }
 
-/* Containerul pentru Acțiuni (în celula tabelului)
-   Acesta este cel mai important stil pentru a le pune una sub alta!
-*/
+/* Container Acțiuni */
 .action-container {
     display: flex;
-    flex-direction: column; /* Aliniază copiii pe verticală (una sub alta) */
-    align-items: flex-start; /* Asigură că butoanele încep de la stânga (nu sunt centrate) */
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-/* --- 3. Compatibilitate Selectoare Originale (Păstrate pentru siguranță) --- */
-
-/* Aplică stilul primar (albastru) la elementele vechi */
-button, .button-link {
-    /* Replică proprietățile din .btn și .btn-primary */
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-}
-
-button:hover, .button-link:hover {
-    background-color: #0056b3;
-}
-
-/* Aplică stilul de succes (verde) la selectorul onclick */
+/* Butoane vechi (compatibilitate) */
 button[onclick="goToNewBusPage()"] {
     background-color: #8D9C89;
+    color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 16px;
 }
+button[onclick="goToNewBusPage()"]:hover { background-color: #A8BBA3; }
 
-button[onclick="goToNewBusPage()"]:hover {
-    background-color: #A8BBA3;
-}
-
-/* Aplică stilul de pericol (roșu) la selectorul submit */
-button[type="submit"] {
-    background-color: #dc3545;
-    padding: 6px 10px;
-    font-weight: normal;
-    font-size: 14px;
-}
-
-button[type="submit"]:hover {
-    background-color: #c82333;
-}
-
-/* --- 4. Stiluri pentru Tabel --- */
+/* --- 3. Stiluri pentru Tabel (PĂSTRAT) --- */
 table {
     width: 100%;
-    max-width: 1200px;
+    /* max-width scos pentru a lăsa tabelul să umple containerul din dreapta */
     margin: 0 auto;
     border-collapse: collapse;
-    background-color: #C4A484; /* Fundal tabel */
+    background-color: #C4A484;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 thead tr {
-    background-color: #B87C4C; /* Antetul tabelului */
-    color: #ffffff; /* Text antet */
+    background-color: #B87C4C;
+    color: #ffffff;
     text-align: center;
     font-weight: bold;
 }
@@ -185,97 +126,205 @@ thead tr {
 th, td {
     padding: 15px 20px;
     border-bottom: 1px solid black;
-}
-
-tbody tr {
-    transition: background-color 0.2s ease;
-}
-
-/* Efect de "zebra" pentru rânduri (păstrat) */
-tbody tr:nth-of-type(even) {
-    background-color: #C4A484;
-}
-
-tbody tr:hover {
-    background-color: #B87C4C; /* Evidențiere la hover */
-}
-
-/* Aliniere verticală pentru butoanele (form-urile) din celulele tabelului */
-td form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.back-button-container {
-    width: 80%; /* Sau aceeași lățime ca action-button-right */
-    max-width: 1200px;
-    margin: 0 auto 20px auto; /* 20px spațiu sub buton */
-    text-align: left;
-}
-
-/* Modificare: Container principal pentru centrare */
-.main-content-container {
-    /* Nu mai setăm max-width! Lăsăm tabelul să fie cât de lat are nevoie. */
-    width: 90%; /* Păstrează conținutul într-o zonă rezonabilă a ecranului */
-    margin: 30px auto; /* Centrare pe orizontală */
-    padding: 0 20px;
-}
-
-/* Asigură alinierea perfectă a textului în celule */
-table th,
-table td {
-    text-align: center; /* Centrează textul din toate coloanele, inclusiv anteturile */
-}
-
-{
-    text-align: left;
-    padding-left: 10px; /* Adaugă un mic spațiu */
-}
-
-/* Celula de acțiuni are nevoie de aliniere diferită pentru a arăta bine */
-table td:nth-child(6) {
     text-align: center;
 }
 
-.filter-container {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
+tbody tr { transition: background-color 0.2s ease; }
+tbody tr:nth-of-type(even) { background-color: #C4A484; }
+tbody tr:hover { background-color: #B87C4C; }
+
+td form { display: flex; align-items: center; justify-content: center; }
+
+.back-button-container {
+    width: 100%;
     margin-bottom: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.filter-row {
+
+/* ==========================================================================
+   NOILE STILURI PENTRU LAYOUT eMAG & SIDEBAR
+   ========================================================================== */
+
+/* Layout principal cu 2 coloane */
+.main-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 10px;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px; /* Spațiu între sidebar și tabel */
+    align-items: flex-start; /* Sidebar-ul stă sus */
 }
+
+/* --- SIDEBAR (Stânga) --- */
+.sidebar {
+    width: 280px; /* Lățime fixă ca la eMAG */
+    background: #C4A484; /* Fundal alb pentru contrast curat */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-shrink: 0; /* Nu se micșorează */
+    position: sticky; /* Rămâne pe ecran când dai scroll */
+    top: 20px;
+    border: 1px solid #C4A484;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    font-size: 18px;
+    border-bottom: 1px solid black;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: left;
+}
+
 .filter-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 150px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
 }
-.filter-group label {
+
+.filter-group:last-child {
+    border-bottom: none;
+}
+
+.filter-group label.group-title {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Inputuri Text în Sidebar */
+.sidebar input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #C4A484;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Butoane Sidebar */
+.btn-apply {
+    width: 100%;
+    background-color: #B87C4C; /* Albastru eMAG */
+    color: white;
+    border: none;
+    padding: 12px;
     font-weight: bold;
-    font-size: 0.9em;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+.btn-apply:hover { background-color: #004990; }
+
+.btn-reset {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #666;
+    text-decoration: underline;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* --- CHECKBOX / RADIO STYLE (eMAG) --- */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.checkbox-item input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #B87C4C;
+}
+
+/* --- CONTENT AREA (Dreapta) --- */
+.content-area {
+    flex-grow: 1; /* Ocupă restul spațiului */
+    /* Putem lăsa transparent sau alb.
+       Dacă vrei tabelul direct pe fundalul bej, nu pune background aici.
+       Dacă vrei "card" alb în spate la tabel, decomentează liniile de mai jos: */
+    /* background: #fff; */
+    /* padding: 20px; */
+    /* border-radius: 8px; */
+    /* box-shadow: 0 1px 3px rgba(0,0,0,0.1); */
+    overflow-x: auto;
+}
+
+/* --- DUAL RANGE SLIDER --- */
+.range-slider-container {
+    position: relative;
+    height: 40px;
+    margin-top: 5px;
+}
+
+.slider-track {
+    width: 100%;
+    height: 4px;
+    background-color: #B87C4C;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+/* Inputurile invizibile care se suprapun */
+.range-input {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    background: none;
+    pointer-events: none; /* Permite click-ul să treacă */
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Butonul rotund (Thumb) */
+.range-input::-webkit-slider-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #005eb8; /* Albastru eMAG */
+    cursor: pointer;
+    pointer-events: auto; /* Reactivăm click-ul */
+    -webkit-appearance: none;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    position: relative;
+    z-index: 10;
+}
+
+/* Câmpurile numerice mici de sub slider */
+.price-inputs {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 5px;
 }
-.range-group {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+.price-inputs input {
+    width: 70px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 13px;
+    color: #333;
 }
-.range-group input {
-    width: 80px;
-}
+
+/* Paginare */
 .pagination-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    text-align: center;
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 15px;
+    align-items: center;
 }

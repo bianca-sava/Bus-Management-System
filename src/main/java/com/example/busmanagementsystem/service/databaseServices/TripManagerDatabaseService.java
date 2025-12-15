@@ -8,6 +8,7 @@ import com.example.busmanagementsystem.service.Validate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,28 +77,25 @@ public class TripManagerDatabaseService implements Validate<TripManager> {
         return false;
     }
 
-    public Page<TripManager> findAllPageable(Pageable pageable) {
-        Sort.Order tripCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
+    public Page<TripManager> findTripManagersByCriteria(
+            String id,
+            String name,
+            String employeeCode,
+            Integer minAssignments,
+            Integer maxAssignments,
+            Pageable pageable) {
 
-        if (tripCountOrder != null) {
+        Sort.Order assignOrder = pageable.getSort().getOrderFor("nrOfAssignments");
+        Pageable activePageable = pageable;
 
-            String sortExpression = "assignmentCount";
-
-            Sort newSort = Sort.by(tripCountOrder.getDirection(), sortExpression);
-
-            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
-
-            Page<Object[]> tripCountResult = tripManagerRepository.findAllSortedByAssignmentCount(customPageable);
-
-            List<TripManager> content = tripCountResult.getContent().stream()
-                    .map(obj -> (TripManager) obj[0])
-                    .collect(Collectors.toList());
-
-            return new PageImpl<>(content, pageable, tripCountResult.getTotalElements());
-
-        } else {
-            return tripManagerRepository.findAll(pageable);
+        if (assignOrder != null) {
+            Sort customSort = JpaSort.unsafe(assignOrder.getDirection(), "SIZE(tm.assignments)");
+            activePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), customSort);
         }
+
+        return tripManagerRepository.findByFilters(
+                id, name, employeeCode, minAssignments, maxAssignments, activePageable
+        );
     }
 
     public boolean deleteTripManager(String id){

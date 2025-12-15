@@ -2,93 +2,120 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Trip Manager Management</title>
+    <title>Trip Managers List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        function goToNewTripManagerPage() {
-            // Ruta către formularul de creare al TripManager este /tripmanager/new
-            window.location.href = '/tripmanager/new';
-        }
-    </script>
 </head>
 <body>
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/home}" class="btn btn-primary">🏠 Home</a>
 </div>
 
-<h1>Trip Manager List</h1>
+<h1>Trip Managers List</h1>
+
+<div class="filter-container">
+    <form th:action="@{/tripmanager}" method="get">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>ID</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Search ID...">
+            </div>
+            <div class="filter-group">
+                <label>Name</label>
+                <input type="text" name="name" th:value="${filterName}" placeholder="Search Name...">
+            </div>
+            <div class="filter-group">
+                <label>Employee Code</label>
+                <input type="text" name="employeeCode" th:value="${filterCode}" placeholder="Search Code...">
+            </div>
+        </div>
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>Assignments Count</label>
+                <div class="range-group">
+                    <input type="number" name="minAssignments" th:value="${filterMinAssign}" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" name="maxAssignments" th:value="${filterMaxAssign}" placeholder="Max">
+                </div>
+            </div>
+
+            <div class="filter-group" style="justify-content: flex-end; flex-direction: row; gap: 10px;">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a th:href="@{/tripmanager}" class="btn-warning" style="text-decoration:none; padding:6px 12px; border-radius:4px;">Reset</a>
+            </div>
+        </div>
+    </form>
+</div>
 
 <table>
     <thead>
     <tr>
         <th>
-            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='id,' + (${tripManagerPage.sort.getOrderFor('id') != null && tripManagerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='id,' + (${tripManagerPage.sort.getOrderFor('id') != null && tripManagerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+               id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}">
                 ID <span th:if="${tripManagerPage.sort.getOrderFor('id') != null}" th:text="${tripManagerPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
             </a>
         </th>
 
         <th>
-            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='name,' + (${tripManagerPage.sort.getOrderFor('name') != null && tripManagerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='name,' + (${tripManagerPage.sort.getOrderFor('name') != null && tripManagerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+               id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}">
                 Name <span th:if="${tripManagerPage.sort.getOrderFor('name') != null}" th:text="${tripManagerPage.sort.getOrderFor('name').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
             </a>
         </th>
 
         <th>
-            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='employeeCode,' + (${tripManagerPage.sort.getOrderFor('employeeCode') != null && tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Employee Code <span th:if="${tripManagerPage.sort.getOrderFor('employeeCode') != null}" th:text="${tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='employeeCode,' + (${tripManagerPage.sort.getOrderFor('employeeCode') != null && tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+               id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}">
+                Code <span th:if="${tripManagerPage.sort.getOrderFor('employeeCode') != null}" th:text="${tripManagerPage.sort.getOrderFor('employeeCode').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
             </a>
         </th>
 
         <th>
-            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='nrOfAssignments,' + (${tripManagerPage.sort.getOrderFor('nrOfAssignments') != null && tripManagerPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
+            <a th:href="@{/tripmanager(page=${tripManagerPage.number}, sort='nrOfAssignments,' + (${tripManagerPage.sort.getOrderFor('nrOfAssignments') != null && tripManagerPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+               id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}">
                 Assignments <span th:if="${tripManagerPage.sort.getOrderFor('nrOfAssignments') != null}" th:text="${tripManagerPage.sort.getOrderFor('nrOfAssignments').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
             </a>
-        </th>        <th>Action</th>
+        </th>
+
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${tripmanagers}">
-        <td th:text="${item.id}">0</td>
-        <td th:text="${item.name}">John Doe</td>
-        <td th:text="${item.employeeCode}">EM-001</td>
+    <tr th:each="tm : ${tripManagers}">
+        <td th:text="${tm.id}">TM1</td>
+        <td th:text="${tm.name}">Manager Popescu</td>
+        <td th:text="${tm.employeeCode}">EMP001</td>
 
-        <td th:text="${item.assignments.size}">0</td>
+        <td th:text="${tm.assignments.size()}">3</td>
 
         <td class="action-cell">
-            <a th:href="@{'/tripmanager/' + ${item.id} + '/assignments'}" class="btn-warning" style="margin-right: 5px;">View Assignments</a>
-
-            <a th:href="@{'/tripmanager/' + ${item.id} + '/edit'}" class="btn-warning">
-                Edit
-            </a>
-
-            <form th:action="@{'/tripmanager/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
+            <a th:href="@{'/tripmanager/' + ${tm.id} + '/edit'}" class="btn-warning">Edit</a>
+            <form th:action="@{'/tripmanager/' + ${tm.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
+            <a th:href="@{'/tripmanager/' + ${tm.id} + '/assignments'}" class="btn btn-success">View Assignments</a>
         </td>
     </tr>
     </tbody>
 </table>
 
-<div th:if="${tripManagerPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
+<div th:if="${tripManagerPage.totalPages > 1}" class="pagination-container">
     <a th:if="${tripManagerPage.hasPrevious()}"
-       th:href="@{/tripmanager(page=${tripManagerPage.number - 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')})}"
-       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+       th:href="@{/tripmanager(page=${tripManagerPage.number - 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')},
+         id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}"
+       class="btn btn-primary">⬅ Previous</a>
 
-    <span th:text="'Page ' + ${tripManagerPage.number + 1} + ' of ' + ${tripManagerPage.totalPages}"
-          style="margin: 0 15px; font-weight: bold;"></span>
+    <span th:text="'Page ' + ${tripManagerPage.number + 1} + ' of ' + ${tripManagerPage.totalPages}" style="margin:0 15px; font-weight:bold;"></span>
 
     <a th:if="${tripManagerPage.hasNext()}"
-       th:href="@{/tripmanager(page=${tripManagerPage.number + 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')})}"
-       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+       th:href="@{/tripmanager(page=${tripManagerPage.number + 1}, sort=${tripManagerPage.sort.toString().replace(': ', ',')},
+         id=${filterId}, name=${filterName}, employeeCode=${filterCode}, minAssignments=${filterMinAssign}, maxAssignments=${filterMaxAssign})}"
+       class="btn btn-primary">Next ➡</a>
 </div>
 
 <div style="height: 40px;"></div>
-
 <div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewTripManagerPage()">Add New Trip Manager</button>
+    <a th:href="@{/tripmanager/new}" class="btn btn-success">Add New Manager</a>
 </div>
 </body>
 </html>

@@ -45,13 +45,27 @@ public class TripManagerController {
 
     @GetMapping
     public String getAllTripManagers(
-            @PageableDefault(size = 10, sort = "employeeCode", direction = Sort.Direction.ASC)
-            Pageable pageable,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String employeeCode,
+            @RequestParam(required = false) Integer minAssignments,
+            @RequestParam(required = false) Integer maxAssignments,
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
             Model model) {
-        Page<TripManager> tripManagerPage = tripManagerService.findAllPageable(pageable);
+
+        Page<TripManager> tripManagerPage = tripManagerService.findTripManagersByCriteria(
+                id, name, employeeCode, minAssignments, maxAssignments, pageable
+        );
+
         model.addAttribute("tripManagerPage", tripManagerPage);
-        model.addAttribute("tripmanagers", tripManagerPage.getContent());
+        model.addAttribute("tripManagers", tripManagerPage.getContent());
         model.addAttribute("pageable", pageable);
+        model.addAttribute("filterId", id);
+        model.addAttribute("filterName", name);
+        model.addAttribute("filterCode", employeeCode);
+        model.addAttribute("filterMinAssign", minAssignments);
+        model.addAttribute("filterMaxAssign", maxAssignments);
+
         return "tripmanager/index";
     }
 

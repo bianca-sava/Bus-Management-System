@@ -1,106 +1,213 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Ticket Management</title>
+    <title>Passenger Tickets</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
-        function goToNewTicketPage() {
-            window.location.href = '/ticket/new';
+        function updateDualSlider(groupId) {
+            const container = document.getElementById(groupId);
+            if(!container) return;
+
+            const rangeMin = container.querySelector('.range-min');
+            const rangeMax = container.querySelector('.range-max');
+            const inputMin = container.querySelector('.input-min');
+            const inputMax = container.querySelector('.input-max');
+
+            function syncInputs() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+
+                if (val1 > val2) {
+                    rangeMin.value = val2;
+                    return;
+                }
+                inputMin.value = rangeMin.value;
+                inputMax.value = rangeMax.value;
+            }
+
+            function syncRanges() {
+                rangeMin.value = inputMin.value;
+                rangeMax.value = inputMax.value;
+            }
+
+            rangeMin.addEventListener('input', syncInputs);
+            rangeMax.addEventListener('input', function() {
+                const val1 = parseFloat(rangeMin.value);
+                const val2 = parseFloat(rangeMax.value);
+                if (val2 < val1) {
+                    rangeMax.value = val1;
+                    return;
+                }
+                inputMax.value = rangeMax.value;
+            });
+
+            inputMin.addEventListener('change', syncRanges);
+            inputMax.addEventListener('change', syncRanges);
         }
+
+        window.onload = function() {
+            updateDualSlider('price-slider');
+        };
     </script>
 </head>
 <body>
+
 <div class="back-button-container">
-    <a th:href="@{/home}" class="btn btn-primary">
-        🏠 Go to Home Page
-    </a>
+    <a th:href="@{/passenger}" class="btn btn-primary">⬅ Back to Passengers</a>
 </div>
 
-<h1>Ticket List</h1>
+<h1>Tickets Management</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='id,' + (${ticketPage.sort.getOrderFor('id') != null && ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                ID <span th:if="${ticketPage.sort.getOrderFor('id') != null}" th:text="${ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+<div class="main-container">
 
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='tripId,' + (${ticketPage.sort.getOrderFor('tripId') != null && ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Trip ID <span th:if="${ticketPage.sort.getOrderFor('tripId') != null}" th:text="${ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+    <aside class="sidebar">
+        <form th:action="@{/ticket}" method="get">
+            <h3>Filtrează Bilete</h3>
 
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='passengerId,' + (${ticketPage.sort.getOrderFor('passengerId') != null && ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Passenger ID <span th:if="${ticketPage.sort.getOrderFor('passengerId') != null}" th:text="${ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+            <div class="filter-group">
+                <label class="group-title">Identificare</label>
+                <input type="text" name="id" th:value="${filterId}" placeholder="Ticket ID..." style="margin-bottom: 10px;">
+                <input type="text" name="tripId" th:value="${filterTripId}" placeholder="Trip ID..." style="margin-bottom: 10px;">
+                <input type="text" name="passengerId" th:value="${filterPassId}" placeholder="Passenger ID...">
+            </div>
 
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='seatNumber,' + (${ticketPage.sort.getOrderFor('seatNumber') != null && ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Seat Number <span th:if="${ticketPage.sort.getOrderFor('seatNumber') != null}" th:text="${ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+            <div class="filter-group">
+                <label class="group-title">Loc (Seat)</label>
+                <input type="text" name="seatNumber" th:value="${filterSeat}" placeholder="Search Seat...">
+            </div>
 
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='price,' + (${ticketPage.sort.getOrderFor('price') != null && ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Price <span th:if="${ticketPage.sort.getOrderFor('price') != null}" th:text="${ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+            <div class="filter-group">
+                <label class="group-title">Status Check-in</label>
 
-        <th>
-            <a th:href="@{/ticket(page=${ticketPage.number}, sort='checkedIn,' + (${ticketPage.sort.getOrderFor('checkedIn') != null && ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? 'DESC' : 'ASC'}))}">
-                Checked In <span th:if="${ticketPage.sort.getOrderFor('checkedIn') != null}" th:text="${ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
-            </a>
-        </th>
+                <div class="checkbox-item">
+                    <input type="radio" name="checkedIn" value="" id="chk-all" th:checked="${filterCheckedIn == null}">
+                    <label for="chk-all">Toate</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="radio" name="checkedIn" value="true" id="chk-yes" th:checked="${filterCheckedIn == true}">
+                    <label for="chk-yes">Checked In (Yes)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="radio" name="checkedIn" value="false" id="chk-no" th:checked="${filterCheckedIn == false}">
+                    <label for="chk-no">Not Checked In (No)</label>
+                </div>
+            </div>
 
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${tickets}">
-        <td th:text="${item.id}">TKT-001</td>
-        <td th:text="${item.tripId}">TRIP-101</td>
-        <td th:text="${item.passengerId}">PASS-500</td>
-        <td th:text="${item.seatNumber}">15A</td>
-        <td th:text="${item.price}">25.50</td>
+            <div class="filter-group" id="price-slider">
+                <label class="group-title">Preț (Price)</label>
 
-        <td th:text="${item.isCheckedIn ? 'Yes' : 'No'}">No</td>
+                <div class="price-inputs">
+                    <input type="number" step="0.1" name="minPrice" class="input-min" th:value="${filterMinPrice != null ? filterMinPrice : 0}" min="0" max="1000">
+                    <input type="number" step="0.1" name="maxPrice" class="input-max" th:value="${filterMaxPrice != null ? filterMaxPrice : 1000}" min="0" max="1000">
+                </div>
 
-        <td class="action-cell">
-                <a th:href="@{'/ticket/' + ${item.id} + '/edit'}" class="btn-warning">
-                    Edit
-                </a>
-                <form th:action="@{'/ticket/' + ${item.id} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn-danger">Delete</button>
-                </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                <div class="range-slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" class="range-input range-min" min="0" max="1000" step="1"
+                           th:value="${filterMinPrice != null ? filterMinPrice : 0}">
+                    <input type="range" class="range-input range-max" min="0" max="1000" step="1"
+                           th:value="${filterMaxPrice != null ? filterMaxPrice : 1000}">
+                </div>
+            </div>
 
-<div th:if="${ticketPage.totalPages > 1}" class="pagination-container" style="text-align: center; margin-top: 15px;">
-    <a th:if="${ticketPage.hasPrevious()}"
-       th:href="@{/ticket(page=${ticketPage.number - 1}, sort=${ticketPage.sort.toString().replace(': ', ',')})}"
-       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">⬅ Previous</a>
+            <button type="submit" class="btn-apply">Aplică Filtrele</button>
+            <a th:href="@{/ticket}" class="btn-reset">Resetează filtre</a>
+        </form>
+    </aside>
 
-    <span th:text="'Page ' + ${ticketPage.number + 1} + ' of ' + ${ticketPage.totalPages}"
-          style="margin: 0 15px; font-weight: bold;"></span>
+    <main class="content-area">
 
-    <a th:if="${ticketPage.hasNext()}"
-       th:href="@{/ticket(page=${ticketPage.number + 1}, sort=${ticketPage.sort.toString().replace(': ', ',')})}"
-       class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;">Next ➡</a>
+        <div style="text-align: right; margin-bottom: 15px;">
+            <a th:href="@{'/ticket/new'}" class="btn btn-success">Add New Ticket</a>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='id,' + (${ticketPage.sort.getOrderFor('id') != null && ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        ID <span th:if="${ticketPage.sort.getOrderFor('id') != null}" th:text="${ticketPage.sort.getOrderFor('id').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='tripId,' + (${ticketPage.sort.getOrderFor('tripId') != null && ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        Trip ID <span th:if="${ticketPage.sort.getOrderFor('tripId') != null}" th:text="${ticketPage.sort.getOrderFor('tripId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='passengerId,' + (${ticketPage.sort.getOrderFor('passengerId') != null && ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        Passenger ID <span th:if="${ticketPage.sort.getOrderFor('passengerId') != null}" th:text="${ticketPage.sort.getOrderFor('passengerId').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='seatNumber,' + (${ticketPage.sort.getOrderFor('seatNumber') != null && ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        Seat <span th:if="${ticketPage.sort.getOrderFor('seatNumber') != null}" th:text="${ticketPage.sort.getOrderFor('seatNumber').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='price,' + (${ticketPage.sort.getOrderFor('price') != null && ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        Price <span th:if="${ticketPage.sort.getOrderFor('price') != null}" th:text="${ticketPage.sort.getOrderFor('price').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>
+                    <a th:href="@{/ticket(page=${ticketPage.number}, sort='checkedIn,' + (${ticketPage.sort.getOrderFor('checkedIn') != null && ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? 'DESC' : 'ASC'}),
+                       id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}">
+                        Checked In <span th:if="${ticketPage.sort.getOrderFor('checkedIn') != null}" th:text="${ticketPage.sort.getOrderFor('checkedIn').direction.name() == 'ASC' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.id}">T1</td>
+                <td th:text="${ticket.tripId}">TRIP1</td>
+                <td th:text="${ticket.passengerId}">PASS1</td>
+                <td th:text="${ticket.seatNumber}">1A</td>
+                <td th:text="${ticket.price}">15.0</td>
+                <td th:text="${ticket.checkedIn}">false</td>
+                <td class="action-cell">
+                    <a th:href="@{'/ticket/' + ${ticket.id} + '/edit'}" class="btn-warning">Edit</a>
+                    <form th:action="@{'/ticket/' + ${ticket.id} + '/delete'}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(tickets)}">
+                <td colspan="7" style="text-align:center;">No tickets found.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${ticketPage.totalPages > 1}" class="pagination-container">
+            <a th:if="${ticketPage.hasPrevious()}"
+               th:href="@{/ticket(page=${ticketPage.number - 1}, sort=${ticketPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}"
+               class="btn btn-primary">⬅ Previous</a>
+
+            <span th:text="'Page ' + ${ticketPage.number + 1} + ' of ' + ${ticketPage.totalPages}" style="font-weight: bold;"></span>
+
+            <a th:if="${ticketPage.hasNext()}"
+               th:href="@{/ticket(page=${ticketPage.number + 1}, sort=${ticketPage.sort.toString().replace(': ', ',')},
+                 id=${filterId}, tripId=${filterTripId}, passengerId=${filterPassId}, seatNumber=${filterSeat}, checkedIn=${filterCheckedIn}, minPrice=${filterMinPrice}, maxPrice=${filterMaxPrice})}"
+               class="btn btn-primary">Next ➡</a>
+        </div>
+
+    </main>
 </div>
 
-<div style="height: 40px;"></div>
-
-<div class="action-button-right">
-    <button type="button" class="btn btn-success" onclick="goToNewTicketPage()">Add New Ticket</button>
-</div>
 </body>
 </html>
