@@ -328,3 +328,31 @@ td form { display: flex; align-items: center; justify-content: center; }
     gap: 15px;
     align-items: center;
 }
+
+th a {
+    color: #ffffff;          /* Text alb */
+    text-decoration: none;   /* Fără subliniere */
+    display: inline-block;   /* Permite tranziții mai bune */
+    width: 100%;             /* Face click-ul mai ușor */
+    transition: all 0.2s ease; /* Animație fină la hover */
+    position: relative;
+}
+
+/* Când duci mouse-ul peste (Hover): Ușor evidențiat */
+th a:hover {
+    color: #F7F1DE;          /* Se schimbă în culoarea de fundal a paginii (bej deschis) */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* O mică umbră pentru efect de ridicare */
+    transform: translateY(-1px); /* Se ridică 1px subtil */
+}
+
+/* Link-uri vizitate: Rămân albe (să nu se facă mov) */
+th a:visited {
+    color: #ffffff;
+}
+
+/* Săgețile de sortare (▲ ▼) */
+th a span {
+    font-size: 0.8em;        /* Săgeata puțin mai mică */
+    opacity: 0.8;            /* Puțin transparentă */
+    margin-left: 5px;
+}
