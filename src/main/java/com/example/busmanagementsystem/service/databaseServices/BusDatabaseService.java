@@ -5,6 +5,8 @@ import com.example.busmanagementsystem.model.Bus;
 import com.example.busmanagementsystem.repository.interfaces.BusJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +79,10 @@ public class BusDatabaseService implements Validate<Bus> {
             return true;
         }
         return false;
+    }
+
+    public Page<Bus> findAllPageable(Pageable pageable) {
+        return busRepository.findAll(pageable);
     }
 
     public void delete(String id) {
