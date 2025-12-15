@@ -23,11 +23,76 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Trip ID</th>
-        <th>Staff ID</th>
-        <th>Role</th>
-        <th>Actions</th> </tr>
+        <th>
+            <th:block th:with="sortField='id',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/duty-assignment(
+                    page=${assignmentPage.number},
+                    size=${assignmentPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    ID
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='tripId',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/duty-assignment(
+                    page=${assignmentPage.number},
+                    size=${assignmentPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Trip ID
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='staffId',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/duty-assignment(
+                    page=${assignmentPage.number},
+                    size=${assignmentPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Staff ID
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='role',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/duty-assignment(
+                    page=${assignmentPage.number},
+                    size=${assignmentPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Role
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${dutyAssignments}">

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DutyAssignmentsDatabaseService implements Validate<DutyAssignment> {
@@ -64,6 +67,10 @@ public class DutyAssignmentsDatabaseService implements Validate<DutyAssignment> 
 
     public DutyAssignment getAssignmentById(String id){
         return assignmentRepository.findById(id).orElse(null);
+    }
+
+    public Page<DutyAssignment> findAllAssignmentsPageable(Pageable pageable){
+        return assignmentRepository.findAll(pageable);
     }
 
     public Map<String, DutyAssignment> getAllAssignments(){

@@ -13,6 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/duty-assignment")
@@ -32,8 +37,15 @@ public class DutyAssignmentController {
     }
 
     @GetMapping
-    public String getAllDutyAssignments(Model model) {
-        model.addAttribute("dutyAssignments", dutyAssignmentService.getAllAssignments().values());
+    public String getAllDutyAssignments(
+            @PageableDefault(size = 10, sort = "tripId", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
+        Page<DutyAssignment> assignmentPage = dutyAssignmentService.findAllAssignmentsPageable(pageable);
+        model.addAttribute("assignmentPage", assignmentPage);
+        model.addAttribute("dutyAssignments", assignmentPage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "dutyAssignment/index";
     }
 
