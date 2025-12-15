@@ -15,13 +15,94 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
+        <th>
+            <th:block th:with="sortField='id',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/bus-trip(
+                    page=${busTripPage.number},
+                    size=${busTripPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    ID
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
         <th>Route ID</th>
         <th>Bus ID</th>
-        <th>Start Time</th>
-        <th>Status</th>
-        <th>Tickets</th>
-        <th>Assignments</th>
+
+        <th>
+            <th:block th:with="sortField='startTime',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/bus-trip(
+                    page=${busTripPage.number},
+                    size=${busTripPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Start Time
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='status',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/bus-trip(
+                    page=${busTripPage.number},
+                    size=${busTripPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Status
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='nrOfTickets',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/bus-trip(
+                    page=${busTripPage.number},
+                    size=${busTripPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Tickets
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
+        <th>
+            <th:block th:with="sortField='nrOfAssignments',
+                       currentSort=${pageable.getSort().getOrderFor(sortField)},
+                       currentDirection=${currentSort != null ? currentSort.direction.name() : 'ASC'},
+                       newDirection=${currentDirection == 'ASC' ? 'DESC' : 'ASC'}">
+
+                <a class="sort-link" th:href="@{/bus-trip(
+                    page=${busTripPage.number},
+                    size=${busTripPage.size},
+                    sort=__${sortField}__ + ',' + __${newDirection}__
+                  )}">
+                    Assignments
+                </a>
+                <span th:if="${currentSort != null}" th:text="${currentDirection == 'ASC' ? ' ▲' : ' ▼'}"></span>
+            </th:block>
+        </th>
+
         <th>Actions</th>
     </tr>
     </thead>

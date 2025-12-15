@@ -9,6 +9,13 @@ import com.example.busmanagementsystem.repository.interfaces.RouteJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import java.util.List;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,4 +95,46 @@ public class BusTripDatabaseService {
         }
         return false;
     }
+
+    public Page<BusTrip> findAllPageable(Pageable pageable) {
+
+        Sort.Order ticketCountOrder = pageable.getSort().getOrderFor("nrOfTickets");
+        Sort.Order assignmentCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
+
+        if (ticketCountOrder != null) {
+
+            // Sortare după Bilete (ticketCount)
+            String sortAlias = "ticketCount";
+            Sort newSort = Sort.by(ticketCountOrder.getDirection(), sortAlias);
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> result = busTripRepository.findAllSortedByTicketCount(customPageable);
+
+            List<BusTrip> content = result.getContent().stream()
+                    .map(obj -> (BusTrip) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, result.getTotalElements());
+
+        } else if (assignmentCountOrder != null) {
+
+            // Sortare după Sarcini (assignmentCount)
+            String sortAlias = "assignmentCount";
+            Sort newSort = Sort.by(assignmentCountOrder.getDirection(), sortAlias);
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> result = busTripRepository.findAllSortedByAssignmentCount(customPageable);
+
+            List<BusTrip> content = result.getContent().stream()
+                    .map(obj -> (BusTrip) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, result.getTotalElements());
+
+        } else {
+            return busTripRepository.findAll(pageable);
+        }
+    }
+
+
 }
