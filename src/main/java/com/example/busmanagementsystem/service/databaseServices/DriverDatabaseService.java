@@ -6,7 +6,9 @@ import com.example.busmanagementsystem.repository.interfaces.DriverJpaRepository
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +37,30 @@ public class DriverDatabaseService implements Validate<Driver> {
 
     public Driver getDriverById(String id){
         return driverRepository.findById(id).orElse(null);
+    }
+
+    public Page<Driver> findAllDriversPageable(Pageable pageable){
+
+        Sort.Order assignmentCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
+
+        if (assignmentCountOrder != null) {
+
+            String sortAlias = "assignmentCount";
+            Sort newSort = Sort.by(assignmentCountOrder.getDirection(), sortAlias);
+
+            Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
+
+            Page<Object[]> result = driverRepository.findAllSortedByAssignmentCount(customPageable);
+
+            List<Driver> content = result.getContent().stream()
+                    .map(obj -> (Driver) obj[0])
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(content, pageable, result.getTotalElements());
+
+        } else {
+            return driverRepository.findAll(pageable);
+        }
     }
 
     public Map<String, Driver> findAllDrivers(){

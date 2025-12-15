@@ -14,6 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 @Controller
 @RequestMapping("/driver")
@@ -42,9 +46,17 @@ public class DriverController {
 //    }
 
     @GetMapping
-    public String getAllDrivers(Model model) {
+    public String getAllDrivers(
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
+            Pageable pageable,
+            Model model) {
 
-        model.addAttribute("drivers", driverService.findAllDrivers().values());
+        Page<Driver> driverPage = driverService.findAllDriversPageable(pageable);
+
+        model.addAttribute("driverPage", driverPage);
+        model.addAttribute("drivers", driverPage.getContent());
+        model.addAttribute("pageable", pageable);
+
         return "driver/index";
     }
 
