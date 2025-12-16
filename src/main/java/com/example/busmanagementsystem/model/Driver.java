@@ -10,7 +10,7 @@ import java.util.List;
 public class Driver extends Staff {
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "staffId")
     private List<DutyAssignment> assignments;
 
     private String yearsOfExperience;

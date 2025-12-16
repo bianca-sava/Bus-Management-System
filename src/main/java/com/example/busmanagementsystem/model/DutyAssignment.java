@@ -15,7 +15,6 @@ public class DutyAssignment {
     @NotBlank(message = "Trip ID cannot be blank")
     private String tripId;
 
-    @NotBlank(message = "Staff ID cannot be blank")
     private String staffId;
 
     @Enumerated(EnumType.STRING)

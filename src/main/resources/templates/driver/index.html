@@ -78,17 +78,17 @@
                 <label class="group-title">Experiență (Ani)</label>
 
                 <div class="price-inputs"> <input type="number" name="minYears" class="input-min"
-                                                  th:value="${filterMinYears != null ? filterMinYears : 0}" min="0" max="60">
+                                                  th:value="${filterMinYears != null ? filterMinYears : 0}" min="0" max="30">
                     <input type="number" name="maxYears" class="input-max"
-                           th:value="${filterMaxYears != null ? filterMaxYears : 60}" min="0" max="60">
+                           th:value="${filterMaxYears != null ? filterMaxYears : 30}" min="0" max="30">
                 </div>
 
                 <div class="range-slider-container">
                     <div class="slider-track"></div>
-                    <input type="range" class="range-input range-min" min="0" max="60" step="1"
+                    <input type="range" class="range-input range-min" min="0" max="30" step="1"
                            th:value="${filterMinYears != null ? filterMinYears : 0}">
-                    <input type="range" class="range-input range-max" min="0" max="60" step="1"
-                           th:value="${filterMaxYears != null ? filterMaxYears : 60}">
+                    <input type="range" class="range-input range-max" min="0" max="30" step="1"
+                           th:value="${filterMaxYears != null ? filterMaxYears : 30}">
                 </div>
             </div>
 

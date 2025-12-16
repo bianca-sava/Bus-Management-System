@@ -5,8 +5,7 @@ import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.model.DutyAssignment;
 import com.example.busmanagementsystem.service.databaseServices.DriverDatabaseService;
 import com.example.busmanagementsystem.service.databaseServices.DutyAssignmentsDatabaseService;
-import com.example.busmanagementsystem.service.inFileServices.DriverService;
-import com.example.busmanagementsystem.service.inFileServices.DutyAssignmentsService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +22,6 @@ import org.springframework.data.web.PageableDefault;
 @RequestMapping("/driver")
 public class DriverController {
 
-//    private final DriverService driverService;
-//    private final DutyAssignmentsService dutyAssignmentsService;
     private final DriverDatabaseService driverService;
     private final DutyAssignmentsDatabaseService dutyAssignmentsService;
     private final Validator validator;
@@ -37,31 +34,18 @@ public class DriverController {
         this.validator = validator;
     }
 
-//    @Autowired
-//    public DriverController(DriverService driverService, DutyAssignmentsService dutyAssignmentsService,
-//                              Validator validator) {
-//        this.driverService = driverService;
-//        this.dutyAssignmentsService = dutyAssignmentsService;
-//        this.validator = validator;
-//    }
-
     @GetMapping
     public String getAllDrivers(
             @RequestParam(required = false) String id,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String minYears,
-            @RequestParam(required = false) String maxYears,
-
+            @RequestParam(required = false) Integer minYears,
+            @RequestParam(required = false) Integer maxYears,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
 
         Page<Driver> driverPage = driverService.findAllDriversPageable(
-                check(id),
-                check(name),
-                check(minYears),
-                check(maxYears),
-                pageable
+                check(id), check(name), minYears, maxYears, pageable
         );
 
         model.addAttribute("driverPage", driverPage);
@@ -77,18 +61,14 @@ public class DriverController {
     }
 
     private String check(String s) {
-        if (s == null || s.trim().isEmpty()) {
-            return null;
-        }
+        if (s == null || s.trim().isEmpty()) return null;
         return s.trim();
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-
         model.addAttribute("driver", new Driver());
         model.addAttribute("isEditMode", false);
-
         return "driver/form";
     }
 
@@ -98,10 +78,8 @@ public class DriverController {
         if (existingDriver != null) {
             model.addAttribute("driver", existingDriver);
             model.addAttribute("isEditMode", true);
-
             return "driver/form";
         }
-
         return "redirect:/driver";
     }
 
@@ -110,45 +88,38 @@ public class DriverController {
                                @RequestParam String name,
                                @RequestParam String yearsOfExperience,
                                Model model){
-
         Driver existingDriver = driverService.getDriverById(id);
-
         if (existingDriver != null) {
             existingDriver.setName(name);
             existingDriver.setYearsOfExperience(yearsOfExperience);
 
-            DataBinder binder = new DataBinder(existingDriver, "dirver");
+            DataBinder binder = new DataBinder(existingDriver, "driver");
             binder.setValidator(validator);
             binder.validate();
             BindingResult bindingResult = binder.getBindingResult();
 
             if (bindingResult.hasErrors()) {
                 model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
-
                 model.addAttribute("driver", existingDriver);
                 model.addAttribute("isEditMode", true);
                 return "driver/form";
             }
             driverService.updateDriver(id,  existingDriver);
         }
-
         return "redirect:/driver";
     }
 
     @PostMapping("/create")
     public String createDriver(@RequestParam String id, @RequestParam String name, @RequestParam String yearsOfExperience,
                                Model model) {
-
         Driver newdriver = new Driver(id, name, yearsOfExperience);
-
-        DataBinder binder = new DataBinder(newdriver, "dirver");
+        DataBinder binder = new DataBinder(newdriver, "driver");
         binder.setValidator(validator);
         binder.validate();
         BindingResult bindingResult = binder.getBindingResult();
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("org.springframework.validation.BindingResult.driver", bindingResult);
-
             model.addAttribute("driver", newdriver);
             model.addAttribute("isEditMode", false);
             return "driver/form";
@@ -160,7 +131,6 @@ public class DriverController {
         catch (DuplicateAttributeException e){
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("errorField", e.getAttributeName());
-
             model.addAttribute("driver", newdriver);
             model.addAttribute("isEditMode", false);
             return "driver/form";
@@ -182,10 +152,8 @@ public class DriverController {
             model.addAttribute("assignments", driver.getAssignments());
             model.addAttribute("drivarId", driver.getId());
             model.addAttribute("driverName", driver.getName());
-
             return "driver/assignments";
         }
-
         return "redirect:/driver";
     }
 
@@ -195,11 +163,9 @@ public class DriverController {
 
         if(driver != null) {
             model.addAttribute("driverId", id);
-            model.addAttribute("availableAssignments", dutyAssignmentsService.getAllAssignments().values());
-
+            model.addAttribute("availableAssignments", dutyAssignmentsService.getUnassignedAssignments());
             return "driver/assignAssignment";
         }
-
         return "redirect:/driver";
     }
 
@@ -209,8 +175,9 @@ public class DriverController {
         DutyAssignment assignmentToAdd = dutyAssignmentsService.getAssignmentById(selectedAssignmentId);
 
         if(driver != null && assignmentToAdd != null) {
+            assignmentToAdd.setStaffId(driverId);
+            dutyAssignmentsService.updateAssignment(assignmentToAdd.getId(), assignmentToAdd);
             driver.getAssignments().add(assignmentToAdd);
-
             driverService.updateDriver(driverId, driver);
         }
 
@@ -223,7 +190,9 @@ public class DriverController {
         DutyAssignment assignmentToDelete = dutyAssignmentsService.getAssignmentById(assignmentId);
 
         if(driver != null && assignmentToDelete != null) {
-            driver.getAssignments().remove(assignmentToDelete);
+            assignmentToDelete.setStaffId(null);
+            dutyAssignmentsService.updateAssignment(assignmentToDelete.getId(), assignmentToDelete);
+            driver.getAssignments().removeIf(a -> a.getId().equals(assignmentId));
             driverService.updateDriver(driverId, driver);
         }
 

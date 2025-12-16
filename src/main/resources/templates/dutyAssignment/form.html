@@ -47,8 +47,10 @@
         <div>
             <label for="staffId">Driver / Staff:</label>
             <select id="staffId" th:field="*{staffId}"
-                    th:classappend="${#fields.hasErrors('staffId')} ? 'input-error' : ''" required>
-                <option value="" disabled>-- Select Staff --</option>
+                    th:classappend="${#fields.hasErrors('staffId')} ? 'input-error' : ''">
+
+                <option value="">-- Unassigned (No Driver) --</option>
+
                 <option th:each="driver : ${availableStaff}"
                         th:value="${driver.id}"
                         th:text="${driver.name} + ' (ID: ' + ${driver.id} + ')'">

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DutyAssignmentJpaRepository extends JpaRepository<DutyAssignment, String> {
     @Query("SELECT d FROM DutyAssignment d WHERE " +
@@ -22,4 +24,7 @@ public interface DutyAssignmentJpaRepository extends JpaRepository<DutyAssignmen
             @Param("role") Role role,
             Pageable pageable
     );
+
+    @Query("SELECT d FROM DutyAssignment d WHERE d.staffId IS NULL OR TRIM(d.staffId) = ''")
+    List<DutyAssignment> findUnassignedDuties();
 }
