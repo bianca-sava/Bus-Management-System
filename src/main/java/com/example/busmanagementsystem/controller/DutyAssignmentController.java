@@ -46,10 +46,14 @@ public class DutyAssignmentController {
             Model model) {
 
         Page<DutyAssignment> page = dutyAssignmentService.findAllAssignmentsPageable(
-                id, tripId, staffId, role, pageable
+                check(id),
+                check(tripId),
+                check(staffId),
+                role,
+                pageable
         );
 
-        model.addAttribute("dutyAssignmentPage", page); // <--- AICI ERA PROBLEMA (lipsea)
+        model.addAttribute("dutyAssignmentPage", page);
         model.addAttribute("dutyAssignments", page.getContent());
         model.addAttribute("pageable", pageable);
         model.addAttribute("filterId", id);

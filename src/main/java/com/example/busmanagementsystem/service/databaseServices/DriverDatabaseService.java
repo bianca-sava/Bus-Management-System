@@ -5,6 +5,7 @@ import com.example.busmanagementsystem.model.Driver;
 import com.example.busmanagementsystem.repository.interfaces.DriverJpaRepository;
 import com.example.busmanagementsystem.service.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 
@@ -42,12 +43,11 @@ public class DriverDatabaseService implements Validate<Driver> {
     public Page<Driver> findAllDriversPageable(
             String id,
             String name,
-            String minYears,
-            String maxYears,
+            Integer minYears,
+            Integer maxYears,
             Pageable pageable) {
 
         Sort.Order assignmentCountOrder = pageable.getSort().getOrderFor("nrOfAssignments");
-
         if (assignmentCountOrder != null) {
             String sortAlias = "assignmentCount";
             Sort newSort = Sort.by(assignmentCountOrder.getDirection(), sortAlias);
@@ -60,10 +60,19 @@ public class DriverDatabaseService implements Validate<Driver> {
                     .collect(Collectors.toList());
 
             return new PageImpl<>(content, pageable, result.getTotalElements());
-
-        } else {
-            return driverRepository.findByFilters(id, name, minYears, maxYears, pageable);
         }
+
+        Pageable activePageable = pageable;
+        Sort.Order experienceOrder = pageable.getSort().getOrderFor("yearsOfExperience");
+
+        if (experienceOrder != null) {
+            Sort customSort = JpaSort.unsafe(experienceOrder.getDirection(), "CAST(d.yearsOfExperience AS int)");
+            activePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), customSort);
+        }
+
+        Page<Driver> resultPage = driverRepository.findByFilters(id, name, minYears, maxYears, activePageable);
+
+        return new PageImpl<>(resultPage.getContent(), pageable, resultPage.getTotalElements());
     }
 
     public Map<String, Driver> findAllDrivers(){
