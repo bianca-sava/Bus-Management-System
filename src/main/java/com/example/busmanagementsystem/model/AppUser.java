@@ -13,8 +13,10 @@ public class AppUser {
 
     @Column(nullable = false)
     private String password;
+    private String role;
+    private String passengerId; //USER
+    private String staffId; //ADMIN
 
-    private String role; // "ROLE_ADMIN" or "ROLE_USER"
 
     public Long getId() {
         return id;
@@ -38,6 +40,22 @@ public class AppUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(String passengerId) {
+        this.passengerId = passengerId;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public String getRole() {

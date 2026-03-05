@@ -173,7 +173,7 @@
                     <form th:action="@{'/passenger/' + ${passenger.id} + '/delete'}" method="post" style="display:inline;">
                         <button type="submit" class="btn-danger">Delete</button>
                     </form>
-                    <a th:href="@{'/passenger/' + ${passenger.id} + '/tickets'}" class="btn btn-success" style="margin-top: 5px; display:inline-block;">View Tickets</a>
+                    <a th:href="@{'/passenger/' + ${passenger.id} + '/tickets'}" class="btn btn-warning" style="margin-top: 5px; display:inline-block;">View Tickets</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(passengers)}">

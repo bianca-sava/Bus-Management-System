@@ -1,8 +1,10 @@
 package com.example.busmanagementsystem.controller;
 
 import com.example.busmanagementsystem.exceptions.DuplicateAttributeException;
+import com.example.busmanagementsystem.model.AppUser;
 import com.example.busmanagementsystem.model.Passenger;
 import com.example.busmanagementsystem.model.Ticket;
+import com.example.busmanagementsystem.repository.interfaces.AppUserRepository;
 import com.example.busmanagementsystem.service.databaseServices.PassengerDatabaseService;
 import com.example.busmanagementsystem.service.databaseServices.TicketDatabaseService;
 import com.example.busmanagementsystem.service.inFileServices.PassengerService;
@@ -12,12 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/passenger")
@@ -27,14 +32,26 @@ public class PassengerController {
     private final PassengerDatabaseService passengerService;
     private final TicketDatabaseService ticketService;
     private final Validator validator;
+    private final AppUserRepository appUserRepository;
 
     @Autowired
     public PassengerController(PassengerDatabaseService passengerService,
                                TicketDatabaseService ticketService,
-                               Validator validator) {
+                               Validator validator, AppUserRepository appUserRepository) {
         this.passengerService = passengerService;
         this.ticketService = ticketService;
         this.validator = validator;
+        this.appUserRepository = appUserRepository;
+    }
+
+    private Passenger getLoggedPassenger() {
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+
+        AppUser appUser = appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return passengerService.findById(appUser.getPassengerId());
     }
 
 //    @Autowired
