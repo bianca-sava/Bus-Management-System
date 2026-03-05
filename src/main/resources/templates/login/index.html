@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Management System - Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>Login</h2>
+<form th:action="@{/login}" method="post">
+    <input type="text" name="username" placeholder="Username" />
+    <input type="password" name="password" placeholder="Password" />
+    <button type="submit">Login</button>
+
+    <p th:if="${param.error}" style="color:red">Username sau parola greșite!</p>
+    <p th:if="${param.logout}" style="color:green">Ai fost delogat cu succes.</p>
+</form>
+</body>
+</html>
